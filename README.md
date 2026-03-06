@@ -1,54 +1,75 @@
-# Shield360 Cybersecurity Platform
+# Shield360 — Cybersecurity Platform
 
-**AI-Driven Security for SMEs**
+**Enterprise-grade security. Built for SMEs.**
 
-A unified cybersecurity research platform dashboard that aggregates four independent security research components into a professional SaaS-grade interface.
+Shield360 is a unified SaaS cybersecurity platform that brings together phishing simulation, behaviour analytics, device monitoring, and compliance enforcement — all in one intelligent dashboard. Designed as a direct B2C solution so small and medium businesses can protect themselves without the enterprise price tag.
 
 ![Shield360](https://img.shields.io/badge/Shield360-Cybersecurity-00f0ff?style=for-the-badge)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square)
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?style=flat-square)
 
 ---
 
-## Overview
+## What It Does
 
-Shield360 is a frontend-only unified dashboard that provides a central interface for four independent cybersecurity research modules:
+Shield360 aggregates four independent security modules into a single admin dashboard with subscription-based access:
 
-| Module | Description |
-|--------|-------------|
-| **Behaviour Intelligence Engine** | AI-powered user behavior analytics, insider threat detection, risk scoring |
-| **Device Behaviour Monitoring** | Real-time device inventory, health tracking, anomaly detection |
-| **Threat Intelligence** | Aggregated threat feeds, IOC tracking, attack pattern analysis |
-| **Compliance & Policy Engine** | Automated compliance monitoring (ISO 27001, GDPR, SOC 2, NIST) |
-
-Each module connects to its own independent microservice via configurable API endpoints.
+| Module | Status | Description |
+|--------|--------|-------------|
+| **Spear Phishing Simulation** | 🟢 Live | AI-driven adaptive phishing campaigns, click detection, risk scoring, and automated micro-training. Deployed at [spear-phishing-dashboard.onrender.com](https://spear-phishing-dashboard.onrender.com/) |
+| **Behaviour Intelligence Engine** | 🔧 In Progress | User behaviour analytics using isolation forest models for insider threat detection and dynamic risk scoring |
+| **Device Behaviour Monitoring** | 🔧 In Progress | Continuous device inventory, health tracking, and anomalous network behaviour detection across endpoints |
+| **Compliance & Policy Engine** | 🔧 In Progress | Automated compliance monitoring across ISO 27001, GDPR, SOC 2, and NIST with policy enforcement |
 
 ---
 
-## Quick Start
+## Features
+
+### Landing Page
+- Premium glassmorphism design with animated particle background
+- Module showcase with feature pills and gradient accents
+- Pricing teaser with three subscription tiers (Starter, Professional, Enterprise)
+- Fully responsive with smooth scroll animations
+
+### Admin Dashboard
+- **Sidebar** with module-specific icon boxes and colour-coded navigation
+- **5 key metrics** — employees monitored, high-risk users, active threats, compliance score, system health
+- **Threat activity chart** — area chart showing threats detected vs blocked over 6 months
+- **Compliance donut** — real-time compliance posture score
+- **Connected modules grid** — status indicators for each security module
+- **Activity feed** — cross-module event stream with severity tagging
+
+### Subscription System
+- Three plans: Starter ($49/mo), Professional ($129/mo), Enterprise ($299/mo)
+- Module access gating based on subscription tier
+- Checkout flow with dummy payment processing
+- Plan management from the sidebar
+
+### Live Integrations
+- Spear Phishing module links directly to the deployed dashboard on Render
+- Each module connects to its own microservice via configurable API endpoints
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
 - npm 9+
 
-### Installation
+### Install & Run
 
 ```bash
-git clone https://github.com/yourusername/shield360-cybersecurity-platform.git
+git clone https://github.com/Xmicka/shield360-cybersecurity-platform.git
 cd shield360-cybersecurity-platform
 npm install
-```
-
-### Run Locally
-
-```bash
 npm run dev
 ```
 
-The dashboard will be available at `http://localhost:5173`.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ### Build for Production
 
@@ -56,13 +77,11 @@ The dashboard will be available at `http://localhost:5173`.
 npm run build
 ```
 
-The output will be in the `dist/` directory.
+Output goes to `dist/`.
 
 ---
 
-## Connecting Component APIs
-
-### Option 1: Environment Variables (Recommended)
+## Connecting APIs
 
 Create a `.env` file in the project root:
 
@@ -73,91 +92,7 @@ VITE_THREAT_API=https://your-threat-api.example.com
 VITE_COMPLIANCE_API=https://your-compliance-api.example.com
 ```
 
-### Option 2: Configuration File
-
-Edit `src/config/services.ts` directly:
-
-```typescript
-export const SERVICES = {
-  behaviorEngine: "https://your-behavior-api.example.com",
-  deviceMonitoring: "https://your-device-api.example.com",
-  threatIntel: "https://your-threat-api.example.com",
-  complianceEngine: "https://your-compliance-api.example.com",
-};
-```
-
-> **Note:** Environment variables override config file values.
-
-### Expected API Endpoints
-
-Each microservice should expose:
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/metrics` | GET | Returns high-level module metrics |
-| `/alerts` | GET | Returns recent alerts/events |
-
-If an API is not configured or unreachable, the dashboard displays a "Service not connected" notice with demo placeholder data.
-
----
-
-## Deployment
-
-### Render Static Site
-
-1. Connect your GitHub repository to Render
-2. Set **Build Command**: `npm install && npm run build`
-3. Set **Publish Directory**: `dist`
-4. Add environment variables in Render dashboard
-
-### Firebase Hosting
-
-```bash
-npm install -g firebase-tools
-firebase init hosting  # Select 'dist' as public directory, configure as SPA
-npm run build
-firebase deploy
-```
-
-### Vercel
-
-```bash
-npm install -g vercel
-vercel
-```
-
-Vercel auto-detects Vite projects. Add environment variables in the Vercel dashboard.
-
----
-
-## Adding Additional Modules
-
-1. **Create the API service** in `src/services/yourModuleApi.ts`:
-   ```typescript
-   import axios from "axios";
-   import { SERVICES } from "../config/services";
-
-   export const fetchYourModuleMetrics = async () => {
-     try {
-       const res = await axios.get(`${SERVICES.yourModule}/metrics`);
-       return res.data;
-     } catch { return null; }
-   };
-   ```
-
-2. **Add config entry** in `src/config/services.ts`:
-   ```typescript
-   yourModule: import.meta.env.VITE_YOUR_MODULE_API || "REPLACE_WITH_COMPONENT_API",
-   ```
-
-3. **Create the page** in `src/pages/YourModule.tsx`
-
-4. **Add the route** in `src/App.tsx`:
-   ```tsx
-   <Route path="/your-module" element={<AnimatedPage><YourModule /></AnimatedPage>} />
-   ```
-
-5. **Add navigation links** in `Navbar.tsx` and `Sidebar.tsx`
+Or edit `src/config/services.ts` directly. If an API isn't configured, the dashboard falls back to demo data with a "Service not connected" notice.
 
 ---
 
@@ -166,43 +101,70 @@ Vercel auto-detects Vite projects. Add environment variables in the Vercel dashb
 ```
 src/
 ├── components/
-│   ├── Navbar.tsx              # Top navigation bar
-│   ├── Sidebar.tsx             # Side navigation panel
-│   ├── ModuleCard.tsx          # Animated module card component
 │   ├── AnimatedBackground.tsx  # Three.js particle background
-│   └── MetricsPanel.tsx        # Metrics display widget
+│   ├── MetricsPanel.tsx        # Animated metric cards with count-up
+│   ├── ModuleCard.tsx          # Module preview cards
+│   ├── ModuleGate.tsx          # Subscription access gating
+│   ├── Navbar.tsx              # Top navigation bar
+│   └── Sidebar.tsx             # Admin sidebar with module nav
+├── context/
+│   └── subscriptionContext.tsx  # Subscription state management
 ├── pages/
-│   ├── PlatformOverview.tsx    # Dashboard home with aggregated metrics
-│   ├── BehaviourEngine.tsx     # User behavior analytics module
-│   ├── DeviceMonitoring.tsx    # Device monitoring module
-│   ├── ThreatIntel.tsx         # Threat intelligence module
-│   └── ComplianceEngine.tsx    # Compliance & policy module
+│   ├── Landing.tsx             # Public landing page
+│   ├── Login.tsx               # Login page
+│   ├── Signup.tsx              # Registration page
+│   ├── Dashboard.tsx           # Admin overview dashboard
+│   ├── Pricing.tsx             # Subscription plans
+│   ├── Checkout.tsx            # Payment flow
+│   ├── About.tsx               # Company info
+│   ├── Contact.tsx             # Contact page
+│   └── modules/
+│       ├── SpearPhishing.tsx   # Phishing simulation module
+│       ├── BehaviourEngine.tsx # Behaviour analytics module
+│       ├── DeviceMonitoring.tsx# Device tracking module
+│       └── ComplianceEngine.tsx# Compliance monitoring module
 ├── services/
 │   ├── behaviorApi.ts          # Behaviour Engine API connector
 │   ├── deviceApi.ts            # Device Monitoring API connector
 │   ├── threatApi.ts            # Threat Intel API connector
 │   └── complianceApi.ts        # Compliance Engine API connector
 ├── config/
-│   └── services.ts             # Configurable service endpoints
+│   └── services.ts             # API endpoint configuration
 ├── styles/
-│   └── animations.css          # Custom animation keyframes
+│   └── animations.css          # Glass effects, animations, design system
 ├── App.tsx                     # Root component with routing
-├── main.tsx                    # Application entry point
-└── index.css                   # Global styles & Tailwind theme
+├── main.tsx                    # Entry point
+└── index.css                   # Global styles & Tailwind config
 ```
 
 ---
 
 ## Tech Stack
 
-- **React 19** + **Vite 7** — Fast development and build
-- **TypeScript** — Type-safe development
-- **TailwindCSS v4** — Utility-first styling
-- **Framer Motion** — Smooth animations and transitions
-- **Three.js** — 3D animated background effects
-- **Recharts** — Data visualization charts
-- **Axios** — HTTP client for API calls
-- **React Router** — Client-side routing
+- **React 19** + **Vite 7** — dev server and production builds
+- **TypeScript** — type safety
+- **TailwindCSS v4** — utility-first styling
+- **Framer Motion** — animations and page transitions
+- **Three.js** — 3D animated background
+- **Recharts** — charts and data viz
+- **React Router v7** — client-side routing
+- **Axios** — API calls
+
+---
+
+## Deployment
+
+### Render (Static Site)
+1. Connect the GitHub repo
+2. Build command: `npm install && npm run build`
+3. Publish directory: `dist`
+4. Add env variables in Render dashboard
+
+### Vercel
+```bash
+vercel
+```
+Auto-detects Vite. Add env variables in the Vercel dashboard.
 
 ---
 
