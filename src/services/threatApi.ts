@@ -1,14 +1,17 @@
 import axios from "axios";
 import { SERVICE_URLS } from "../config/services";
 
-const isConfigured = () => SERVICE_URLS.spearPhishing.apiUrl !== "http://localhost:5000" && SERVICE_URLS.spearPhishing.apiUrl !== "";
+const isConfigured = () =>
+    SERVICE_URLS.spearPhishing.apiUrl !== "http://localhost:5000" &&
+    SERVICE_URLS.spearPhishing.apiUrl !== "";
 
 export const fetchThreatMetrics = async () => {
     if (!isConfigured()) return null;
     try {
         const res = await axios.get(`${SERVICE_URLS.spearPhishing.apiUrl}/metrics`);
         return res.data;
-    } catch {
+    } catch (error) {
+        console.error("[Shield360] Threat Intel /metrics failed:", error);
         return null;
     }
 };
@@ -18,7 +21,8 @@ export const fetchThreatAlerts = async () => {
     try {
         const res = await axios.get(`${SERVICE_URLS.spearPhishing.apiUrl}/alerts`);
         return res.data;
-    } catch {
+    } catch (error) {
+        console.error("[Shield360] Threat Intel /alerts failed:", error);
         return null;
     }
 };

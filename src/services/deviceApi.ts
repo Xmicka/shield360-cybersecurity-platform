@@ -1,14 +1,17 @@
 import axios from "axios";
 import { SERVICE_URLS } from "../config/services";
 
-const isConfigured = () => SERVICE_URLS.deviceMonitoring.apiUrl !== "http://localhost:5002" && SERVICE_URLS.deviceMonitoring.apiUrl !== "";
+const isConfigured = () =>
+    SERVICE_URLS.deviceMonitoring.apiUrl !== "http://localhost:5002" &&
+    SERVICE_URLS.deviceMonitoring.apiUrl !== "";
 
 export const fetchDeviceMetrics = async () => {
     if (!isConfigured()) return null;
     try {
         const res = await axios.get(`${SERVICE_URLS.deviceMonitoring.apiUrl}/metrics`);
         return res.data;
-    } catch {
+    } catch (error) {
+        console.error("[Shield360] Device Monitoring /metrics failed:", error);
         return null;
     }
 };
@@ -18,7 +21,8 @@ export const fetchDeviceAlerts = async () => {
     try {
         const res = await axios.get(`${SERVICE_URLS.deviceMonitoring.apiUrl}/alerts`);
         return res.data;
-    } catch {
+    } catch (error) {
+        console.error("[Shield360] Device Monitoring /alerts failed:", error);
         return null;
     }
 };

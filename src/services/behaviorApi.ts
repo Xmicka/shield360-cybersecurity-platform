@@ -1,14 +1,17 @@
 import axios from "axios";
 import { SERVICE_URLS } from "../config/services";
 
-const isConfigured = () => SERVICE_URLS.behaviorEngine.apiUrl !== "http://localhost:5001" && SERVICE_URLS.behaviorEngine.apiUrl !== "";
+const isConfigured = () =>
+    SERVICE_URLS.behaviorEngine.apiUrl !== "http://localhost:5001" &&
+    SERVICE_URLS.behaviorEngine.apiUrl !== "";
 
 export const fetchBehaviorMetrics = async () => {
     if (!isConfigured()) return null;
     try {
         const res = await axios.get(`${SERVICE_URLS.behaviorEngine.apiUrl}/metrics`);
         return res.data;
-    } catch {
+    } catch (error) {
+        console.error("[Shield360] Behaviour Engine /metrics failed:", error);
         return null;
     }
 };
@@ -18,7 +21,8 @@ export const fetchBehaviorAlerts = async () => {
     try {
         const res = await axios.get(`${SERVICE_URLS.behaviorEngine.apiUrl}/alerts`);
         return res.data;
-    } catch {
+    } catch (error) {
+        console.error("[Shield360] Behaviour Engine /alerts failed:", error);
         return null;
     }
 };

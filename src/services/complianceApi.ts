@@ -1,14 +1,17 @@
 import axios from "axios";
 import { SERVICE_URLS } from "../config/services";
 
-const isConfigured = () => SERVICE_URLS.complianceEngine.apiUrl !== "http://localhost:5003" && SERVICE_URLS.complianceEngine.apiUrl !== "";
+const isConfigured = () =>
+    SERVICE_URLS.complianceEngine.apiUrl !== "http://localhost:5003" &&
+    SERVICE_URLS.complianceEngine.apiUrl !== "";
 
 export const fetchComplianceMetrics = async () => {
     if (!isConfigured()) return null;
     try {
         const res = await axios.get(`${SERVICE_URLS.complianceEngine.apiUrl}/metrics`);
         return res.data;
-    } catch {
+    } catch (error) {
+        console.error("[Shield360] Compliance Engine /metrics failed:", error);
         return null;
     }
 };
@@ -18,7 +21,8 @@ export const fetchComplianceAlerts = async () => {
     try {
         const res = await axios.get(`${SERVICE_URLS.complianceEngine.apiUrl}/alerts`);
         return res.data;
-    } catch {
+    } catch (error) {
+        console.error("[Shield360] Compliance Engine /alerts failed:", error);
         return null;
     }
 };

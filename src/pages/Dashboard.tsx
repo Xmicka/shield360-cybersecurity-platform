@@ -1,7 +1,10 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import MetricsPanel from "../components/MetricsPanel";
+import HealthMonitor from "../components/HealthMonitor";
+import LoadingSkeleton from "../components/LoadingSkeleton";
 
 const SPEAR_PHISHING_URL = "https://spear-phishing-dashboard.onrender.com/";
 
@@ -51,6 +54,16 @@ const fadeIn = {
 };
 
 export default function Dashboard() {
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Simulate initial data fetch
+        const timer = setTimeout(() => setLoading(false), 800);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (loading) return <LoadingSkeleton type="full" />;
+
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
             {/* Header */}
@@ -71,6 +84,9 @@ export default function Dashboard() {
                 <MetricsPanel label="Compliance" value={87} suffix="%" icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>} trend="up" trendValue="+4.2%" color="emerald" />
                 <MetricsPanel label="System Health" value="Online" icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} color="emerald" />
             </motion.div>
+
+            {/* Health Monitor */}
+            <HealthMonitor />
 
             {/* Charts */}
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20 }}>
