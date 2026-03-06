@@ -1,12 +1,12 @@
 import axios from "axios";
-import { SERVICES } from "../config/services";
+import { SERVICE_URLS } from "../config/services";
 
-const isConfigured = () => SERVICES.deviceMonitoring !== "REPLACE_WITH_COMPONENT_API" && SERVICES.deviceMonitoring !== "";
+const isConfigured = () => SERVICE_URLS.deviceMonitoring.apiUrl !== "http://localhost:5002" && SERVICE_URLS.deviceMonitoring.apiUrl !== "";
 
 export const fetchDeviceMetrics = async () => {
     if (!isConfigured()) return null;
     try {
-        const res = await axios.get(`${SERVICES.deviceMonitoring}/metrics`);
+        const res = await axios.get(`${SERVICE_URLS.deviceMonitoring.apiUrl}/metrics`);
         return res.data;
     } catch {
         return null;
@@ -16,7 +16,7 @@ export const fetchDeviceMetrics = async () => {
 export const fetchDeviceAlerts = async () => {
     if (!isConfigured()) return null;
     try {
-        const res = await axios.get(`${SERVICES.deviceMonitoring}/alerts`);
+        const res = await axios.get(`${SERVICE_URLS.deviceMonitoring.apiUrl}/alerts`);
         return res.data;
     } catch {
         return null;

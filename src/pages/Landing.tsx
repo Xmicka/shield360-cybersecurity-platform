@@ -6,68 +6,79 @@ import AnimatedBackground from "../components/AnimatedBackground";
 const modules = [
     {
         title: "Spear Phishing Simulation",
-        desc: "AI-driven adaptive phishing campaigns with real-time click detection, behavioral analysis, and automated micro-training enforcement.",
+        desc: "AI-driven adaptive phishing campaigns with real-time click detection, behavioral analysis, and automated micro-training enforcement for your entire organisation.",
         icon: (
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
         ),
         gradient: "from-cyan-400 to-blue-500",
+        color: "#00f0ff",
         tag: "Phishing & Training",
+        link: "/modules/spear-phishing",
+        features: ["Click Detection", "Risk Scoring", "Auto-Training"],
     },
     {
         title: "Behaviour Intelligence Engine",
-        desc: "Real-time user behaviour analytics using isolation forest models to detect insider threats, anomalous access, and risk scoring.",
+        desc: "Real-time user behaviour analytics using isolation forest models to detect insider threats, anomalous access patterns, and dynamic risk scoring across your workforce.",
         icon: (
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
             </svg>
         ),
         gradient: "from-purple-400 to-pink-500",
+        color: "#a78bfa",
         tag: "User Analytics",
+        link: "/modules/behaviour-engine",
+        features: ["Anomaly Detection", "Insider Threats", "Risk Profiles"],
     },
     {
         title: "Device Behaviour Monitoring",
-        desc: "Continuous device inventory, health tracking, and anomalous network behaviour detection across endpoints and IoT devices.",
+        desc: "Continuous device inventory, health tracking, and anomalous network behaviour detection across all endpoints, IoT devices, and mobile assets in your infrastructure.",
         icon: (
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" />
             </svg>
         ),
         gradient: "from-amber-400 to-orange-500",
+        color: "#fbbf24",
         tag: "Device Security",
+        link: "/modules/device-monitoring",
+        features: ["Asset Inventory", "Health Monitoring", "IoT Security"],
     },
     {
         title: "Compliance & Policy Engine",
-        desc: "Automated compliance monitoring across ISO 27001, GDPR, SOC 2, and NIST with real-time policy enforcement and audit logging.",
+        desc: "Automated compliance monitoring across ISO 27001, GDPR, SOC 2, and NIST frameworks with real-time policy enforcement, violation alerts, and audit trail logging.",
         icon: (
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
         ),
         gradient: "from-emerald-400 to-teal-500",
+        color: "#34d399",
         tag: "Compliance",
+        link: "/modules/compliance-engine",
+        features: ["ISO 27001", "GDPR", "SOC 2"],
     },
 ];
 
-const stats = [
-    { value: "99.7%", label: "Threat Detection Rate" },
-    { value: "< 5s", label: "Response Time" },
-    { value: "1,247", label: "Attacks Blocked" },
-    { value: "24/7", label: "Active Monitoring" },
-];
+const containerStagger = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+    },
+};
+const childFade = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+};
 
 const fadeInUp = {
     initial: { opacity: 0, y: 40 },
     whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-100px" },
+    viewport: { once: true, margin: "-80px" },
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
-};
-
-const stagger = {
-    initial: { opacity: 0, y: 30 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
 };
 
 export default function Landing() {
@@ -85,224 +96,400 @@ export default function Landing() {
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
+                className="fixed top-0 left-0 right-0 z-50"
+                style={{ padding: "16px 24px" }}
             >
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-3 group">
-                        <div className="relative w-10 h-10">
-                            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 opacity-80 group-hover:opacity-100 transition-opacity" />
-                            <div className="absolute inset-[2px] rounded-[10px] bg-navy-900 flex items-center justify-center">
-                                <svg viewBox="0 0 24 24" className="w-5 h-5 text-cyan-400" fill="currentColor">
+                <div style={{
+                    maxWidth: 1200,
+                    margin: "0 auto",
+                    background: "rgba(7, 11, 22, 0.7)",
+                    backdropFilter: "blur(20px) saturate(1.5)",
+                    WebkitBackdropFilter: "blur(20px) saturate(1.5)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderRadius: 16,
+                    padding: "12px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                }}>
+                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{
+                            width: 36, height: 36, borderRadius: 10,
+                            background: "linear-gradient(135deg, #00f0ff, #7c3aed)",
+                            padding: 2, display: "flex",
+                        }}>
+                            <div style={{
+                                flex: 1, borderRadius: 8, background: "#070b16",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                            }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#00f0ff" }} fill="currentColor">
                                     <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
                                 </svg>
                             </div>
                         </div>
-                        <span className="text-lg font-bold text-white tracking-tight">Shield360</span>
+                        <span style={{ fontSize: 16, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>Shield360</span>
                     </Link>
-                    <div className="flex items-center gap-3">
-                        <Link to="/login" className="btn-ghost text-sm !py-2.5 !px-5">Sign In</Link>
-                        <Link to="/signup" className="btn-primary text-sm !py-2.5 !px-5">Get Started</Link>
+                    <div style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13, color: "#94a3b8" }}>
+                        <Link to="/about" style={{ transition: "color 0.2s" }} className="hover:text-white">About</Link>
+                        <Link to="/pricing" style={{ transition: "color 0.2s" }} className="hover:text-white">Pricing</Link>
+                        <Link to="/contact" style={{ transition: "color 0.2s" }} className="hover:text-white">Contact</Link>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <Link to="/login" style={{ fontSize: 13, color: "#94a3b8", padding: "8px 16px" }} className="hover:text-white">Sign In</Link>
+                        <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>Get Started</Link>
                     </div>
                 </div>
             </motion.nav>
 
             {/* ─── Hero ─── */}
-            <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
-                {/* Gradient blobs */}
+            <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ padding: "0 32px" }}>
                 <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-400/5 rounded-full blur-[120px] animate-blob" />
                 <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px] animate-blob" style={{ animationDelay: "2s" }} />
-                <div className="absolute top-1/2 left-1/2 w-[300px] h-[300px] bg-rose-500/3 rounded-full blur-[80px] animate-blob" style={{ animationDelay: "4s" }} />
 
-                <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 text-center max-w-4xl mx-auto">
-                    {/* Badge */}
+                <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 text-center" >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.3, duration: 0.5 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-sm mb-8"
+                        style={{
+                            display: "inline-flex", alignItems: "center", gap: 10,
+                            padding: "10px 20px", borderRadius: 100,
+                            background: "rgba(10,15,30,0.5)", border: "1px solid rgba(255,255,255,0.06)",
+                            marginBottom: 40,
+                        }}
                     >
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-xs font-medium text-slate-400">AI-Driven Cybersecurity Platform for SMEs</span>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#34d399" }} className="animate-pulse" />
+                        <span style={{ fontSize: 13, fontWeight: 500, color: "#94a3b8" }}>AI-Driven Cybersecurity Platform for SMEs</span>
                     </motion.div>
 
-                    {/* Heading */}
                     <motion.h1
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-                        className="text-5xl sm:text-6xl md:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6"
+                        style={{ fontSize: "clamp(40px, 6vw, 76px)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: 24 }}
                     >
-                        <span className="text-white">Unified Security.</span>
+                        <span style={{ color: "#fff" }}>Unified Security.</span>
                         <br />
                         <span className="gradient-text">Complete Visibility.</span>
                     </motion.h1>
 
-                    {/* Subtitle */}
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6, duration: 0.6 }}
-                        className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+                        style={{ fontSize: 18, color: "#94a3b8", maxWidth: 560, margin: "0 auto 40px", lineHeight: 1.7 }}
                     >
                         Shield360 aggregates threat intelligence, behaviour analytics, phishing simulation, and compliance enforcement into one{" "}
-                        <span className="text-white font-medium">intelligent platform</span>.
+                        <span style={{ color: "#fff", fontWeight: 500 }}>intelligent platform</span>.
                     </motion.p>
 
-                    {/* CTAs */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.8, duration: 0.5 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}
                     >
-                        <Link to="/signup" className="btn-primary text-base !py-4 !px-8 flex items-center gap-2">
+                        <Link to="/signup" className="btn-primary" style={{ fontSize: 15, padding: "16px 32px", display: "flex", alignItems: "center", gap: 8 }}>
                             Start Free Trial
-                            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                            <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                             </svg>
                         </Link>
-                        <Link to="/login" className="btn-ghost text-base !py-4 !px-8">Sign In →</Link>
+                        <Link to="/login" className="btn-ghost" style={{ fontSize: 15, padding: "16px 32px" }}>Sign In →</Link>
                     </motion.div>
 
-                    {/* Scroll indicator */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 1.5 }}
-                        className="mt-20"
+                        style={{ marginTop: 80 }}
                     >
                         <motion.div
                             animate={{ y: [0, 8, 0] }}
                             transition={{ duration: 2, repeat: Infinity }}
-                            className="w-6 h-10 border-2 border-slate-700 rounded-full mx-auto flex justify-center pt-2"
+                            style={{
+                                width: 28, height: 44, border: "2px solid #334155", borderRadius: 100,
+                                margin: "0 auto", display: "flex", justifyContent: "center", paddingTop: 10,
+                            }}
                         >
-                            <div className="w-1 h-2 bg-cyan-400 rounded-full" />
+                            <div style={{ width: 3, height: 8, background: "#00f0ff", borderRadius: 100 }} />
                         </motion.div>
                     </motion.div>
                 </motion.div>
             </section>
 
             {/* ─── Stats Bar ─── */}
-            <motion.section {...fadeInUp} className="relative z-10 py-16 px-6">
-                <div className="max-w-5xl mx-auto glass rounded-2xl p-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {stats.map((stat, i) => (
-                            <motion.div
-                                key={i}
-                                {...stagger}
-                                transition={{ delay: 0.1 * i, duration: 0.5 }}
-                                className="text-center"
-                            >
-                                <p className="text-3xl sm:text-4xl font-bold gradient-text-cyan mb-1">{stat.value}</p>
-                                <p className="text-sm text-slate-500">{stat.label}</p>
-                            </motion.div>
-                        ))}
+            <motion.section {...fadeInUp} className="relative z-10" style={{ padding: "0 32px 80px" }}>
+                <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+                    <div className="glass" style={{ padding: "40px 48px", borderRadius: 24 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32 }}>
+                            {[
+                                { value: "99.7%", label: "Threat Detection", color: "#00f0ff" },
+                                { value: "< 5s", label: "Response Time", color: "#a78bfa" },
+                                { value: "1,247", label: "Attacks Blocked", color: "#f43f5e" },
+                                { value: "24/7", label: "Active Monitoring", color: "#34d399" },
+                            ].map((stat, i) => (
+                                <div key={i} style={{ textAlign: "center" }}>
+                                    <p style={{ fontSize: 36, fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 4 }}>
+                                        {stat.value}
+                                    </p>
+                                    <p style={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", color: stat.color }}>
+                                        {stat.label}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </motion.section>
 
             {/* ─── Modules Section ─── */}
-            <section className="relative z-10 py-24 px-6">
-                <div className="max-w-6xl mx-auto">
-                    <motion.div {...fadeInUp} className="text-center mb-16">
-                        <p className="text-xs uppercase tracking-[0.3em] text-cyan-400 font-semibold mb-4">Security Modules</p>
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-                            Four pillars of{" "}
-                            <span className="gradient-text">intelligent defence</span>
+            <section className="relative z-10" style={{ padding: "80px 32px 100px" }}>
+                <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+                    <motion.div {...fadeInUp} style={{ textAlign: "center", marginBottom: 72 }}>
+                        <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.25em", color: "#00f0ff", marginBottom: 16 }}>
+                            Security Modules
+                        </p>
+                        <h2 style={{ fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>
+                            Four pillars of <span className="gradient-text">intelligent defence</span>
                         </h2>
-                        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+                        <p style={{ fontSize: 16, color: "#64748b", maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>
                             Each module is independently developed and deployed. Shield360 unifies them into a single operational dashboard.
                         </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {modules.map((mod, i) => (
-                            <motion.div
-                                key={i}
-                                {...stagger}
-                                transition={{ delay: 0.15 * i, duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-                                className="glass glass-hover p-8 group relative overflow-hidden"
-                            >
-                                {/* Gradient accent */}
-                                <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${mod.gradient} opacity-50 group-hover:opacity-100 transition-opacity duration-500`} />
+                    <motion.div
+                        variants={containerStagger}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-50px" }}
+                        style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}
+                    >
+                        {modules.map((mod) => (
+                            <motion.div key={mod.title} variants={childFade}>
+                                <Link to={mod.link} className="glass-card" style={{ display: "block", padding: 36, position: "relative", overflow: "hidden" }}>
+                                    {/* Top accent line */}
+                                    <div style={{
+                                        position: "absolute", top: 0, left: 0, right: 0, height: 2,
+                                        background: `linear-gradient(90deg, ${mod.color}, transparent)`,
+                                        opacity: 0.4,
+                                    }} />
 
-                                {/* Tag */}
-                                <div className="flex items-center justify-between mb-6">
-                                    <span className="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-semibold">{mod.tag}</span>
-                                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${mod.gradient} p-[1px]`}>
-                                        <div className="w-full h-full rounded-xl bg-navy-900 flex items-center justify-center text-white">
+                                    {/* Header: Icon + Tag/Title */}
+                                    <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 20 }}>
+                                        <div style={{
+                                            width: 52, height: 52, borderRadius: 16,
+                                            background: `linear-gradient(135deg, ${mod.color}15, ${mod.color}08)`,
+                                            border: `1px solid ${mod.color}20`,
+                                            display: "flex", alignItems: "center", justifyContent: "center",
+                                            color: mod.color, flexShrink: 0,
+                                        }}>
                                             {mod.icon}
                                         </div>
+                                        <div style={{ flex: 1 }}>
+                                            <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569" }}>
+                                                {mod.tag}
+                                            </span>
+                                            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginTop: 4, letterSpacing: "-0.01em" }}>
+                                                {mod.title}
+                                            </h3>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors duration-300">{mod.title}</h3>
-                                <p className="text-sm text-slate-400 leading-relaxed">{mod.desc}</p>
+                                    {/* Description */}
+                                    <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7, marginBottom: 20 }}>
+                                        {mod.desc}
+                                    </p>
 
-                                {/* Hover arrow */}
-                                <div className="mt-6 flex items-center gap-2 text-sm text-slate-600 group-hover:text-cyan-400 transition-all duration-300">
-                                    <span className="font-medium">Learn more</span>
-                                    <svg viewBox="0 0 24 24" className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                                    </svg>
-                                </div>
+                                    {/* Feature pills */}
+                                    <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
+                                        {mod.features.map((f) => (
+                                            <span key={f} style={{
+                                                fontSize: 11, fontWeight: 600, color: mod.color,
+                                                background: `${mod.color}0a`, border: `1px solid ${mod.color}18`,
+                                                padding: "5px 12px", borderRadius: 8,
+                                            }}>
+                                                {f}
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    {/* CTA */}
+                                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#475569" }}>
+                                        <span>Explore module</span>
+                                        <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                        </svg>
+                                    </div>
+                                </Link>
                             </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
+            {/* ─── Divider ─── */}
+            <div className="relative z-10" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 32px" }}>
+                <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)" }} />
+            </div>
+
             {/* ─── How It Works ─── */}
-            <section className="relative z-10 py-24 px-6">
-                <div className="max-w-5xl mx-auto">
-                    <motion.div {...fadeInUp} className="text-center mb-16">
-                        <p className="text-xs uppercase tracking-[0.3em] text-cyan-400 font-semibold mb-4">How It Works</p>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-                            Connect. Monitor. Protect.
+            <section className="relative z-10" style={{ padding: "100px 32px" }}>
+                <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+                    <motion.div {...fadeInUp} style={{ textAlign: "center", marginBottom: 72 }}>
+                        <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.25em", color: "#00f0ff", marginBottom: 16 }}>
+                            How It Works
+                        </p>
+                        <h2 style={{ fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em" }}>
+                            Three steps to total protection
                         </h2>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <motion.div
+                        variants={containerStagger}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-50px" }}
+                        style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}
+                    >
                         {[
-                            { step: "01", title: "Connect Your Components", desc: "Plug in your team's independent security microservices via simple API URLs. Each component runs independently." },
-                            { step: "02", title: "Unified Monitoring", desc: "Shield360 aggregates data from all connected components into a single real-time admin dashboard." },
-                            { step: "03", title: "Intelligent Response", desc: "Get actionable insights, automated alerts, and AI-driven recommendations across your entire security posture." },
+                            {
+                                step: "01", title: "Connect", subtitle: "Your Components",
+                                desc: "Plug in your team's independent security microservices via simple API URLs. Each component runs independently.",
+                                icon: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101",
+                                color: "#00f0ff",
+                            },
+                            {
+                                step: "02", title: "Monitor", subtitle: "In Real-Time",
+                                desc: "Shield360 aggregates data from all connected components into a single real-time admin dashboard.",
+                                icon: "M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5",
+                                color: "#a78bfa",
+                            },
+                            {
+                                step: "03", title: "Protect", subtitle: "With Intelligence",
+                                desc: "Get actionable insights, automated alerts, and AI-driven recommendations across your entire security posture.",
+                                icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
+                                color: "#34d399",
+                            },
                         ].map((item, i) => (
-                            <motion.div
-                                key={i}
-                                {...stagger}
-                                transition={{ delay: 0.2 * i, duration: 0.6 }}
-                                className="text-center"
-                            >
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl glass mb-6 relative">
-                                    <span className="text-2xl font-bold gradient-text-cyan">{item.step}</span>
-                                    {i < 2 && (
-                                        <div className="hidden md:block absolute -right-12 top-1/2 w-8 border-t border-dashed border-slate-700" />
-                                    )}
+                            <motion.div key={i} variants={childFade} className="glass-card" style={{ padding: 36, textAlign: "center", position: "relative" }}>
+                                {/* Step number badge */}
+                                <div style={{
+                                    position: "absolute", top: 20, right: 20,
+                                    fontSize: 11, fontWeight: 800, color: item.color, opacity: 0.5,
+                                    letterSpacing: "0.05em",
+                                }}>
+                                    {item.step}
                                 </div>
-                                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                                <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+
+                                {/* Icon */}
+                                <div style={{
+                                    width: 64, height: 64, borderRadius: 20, margin: "0 auto 24px",
+                                    background: `linear-gradient(135deg, ${item.color}12, ${item.color}06)`,
+                                    border: `1px solid ${item.color}18`,
+                                    display: "flex", alignItems: "center", justifyContent: "center",
+                                }}>
+                                    <svg viewBox="0 0 24 24" style={{ width: 28, height: 28, color: item.color }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
+                                    </svg>
+                                </div>
+
+                                {/* Title */}
+                                <h3 style={{ fontSize: 22, fontWeight: 800, color: "#fff", marginBottom: 4, letterSpacing: "-0.02em" }}>
+                                    {item.title}
+                                </h3>
+                                <p style={{ fontSize: 14, fontWeight: 500, color: item.color, marginBottom: 16, opacity: 0.7 }}>
+                                    {item.subtitle}
+                                </p>
+
+                                {/* Desc */}
+                                <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>
+                                    {item.desc}
+                                </p>
                             </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
+            {/* ─── Divider ─── */}
+            <div className="relative z-10" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 32px" }}>
+                <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)" }} />
+            </div>
+
+            {/* ─── Pricing Teaser ─── */}
+            <section className="relative z-10" style={{ padding: "100px 32px" }}>
+                <motion.div {...fadeInUp} style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+                    <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.25em", color: "#00f0ff", marginBottom: 16 }}>
+                        Pricing
+                    </p>
+                    <h2 style={{ fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>
+                        Enterprise security, <span className="gradient-text">SME pricing</span>
+                    </h2>
+                    <p style={{ fontSize: 16, color: "#64748b", maxWidth: 480, margin: "0 auto 48px", lineHeight: 1.7 }}>
+                        Plans starting at $49/month. No hidden fees, no long-term contracts. Cancel anytime.
+                    </p>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }}>
+                        {[
+                            { name: "Starter", price: "$49", desc: "Phishing simulation & basic reports", color: "#00f0ff", popular: false },
+                            { name: "Professional", price: "$129", desc: "Full analytics suite & priority support", color: "#a78bfa", popular: true },
+                            { name: "Enterprise", price: "$299", desc: "Complete platform with SLA guarantee", color: "#34d399", popular: false },
+                        ].map((p) => (
+                            <div key={p.name} className="glass-card" style={{
+                                padding: 32, textAlign: "center",
+                                border: p.popular ? "1px solid rgba(167,139,250,0.2)" : undefined,
+                            }}>
+                                {p.popular && (
+                                    <span style={{
+                                        display: "inline-block", fontSize: 9, fontWeight: 800,
+                                        textTransform: "uppercase", letterSpacing: "0.15em",
+                                        color: "#a78bfa", background: "rgba(167,139,250,0.1)",
+                                        padding: "4px 12px", borderRadius: 6, marginBottom: 12,
+                                    }}>
+                                        Most Popular
+                                    </span>
+                                )}
+                                <p style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 8 }}>{p.name}</p>
+                                <p style={{ fontSize: 36, fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 4 }}>
+                                    {p.price}<span style={{ fontSize: 14, color: "#475569", fontWeight: 400 }}>/mo</span>
+                                </p>
+                                <p style={{ fontSize: 13, color: "#64748b" }}>{p.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <Link to="/pricing" className="btn-primary" style={{ fontSize: 14, padding: "14px 32px", display: "inline-flex", alignItems: "center", gap: 8 }}>
+                        View All Plans
+                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </Link>
+                </motion.div>
+            </section>
+
             {/* ─── CTA Section ─── */}
-            <section className="relative z-10 py-24 px-6">
-                <motion.div {...fadeInUp} className="max-w-4xl mx-auto text-center">
-                    <div className="glass p-12 sm:p-16 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-purple-500/5" />
-                        <div className="relative z-10">
-                            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 tracking-tight">
-                                Ready to secure your organization?
+            <section className="relative z-10" style={{ padding: "40px 32px 100px" }}>
+                <motion.div {...fadeInUp} style={{ maxWidth: 900, margin: "0 auto" }}>
+                    <div className="glass-card" style={{ padding: "72px 48px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+                        {/* Background glow */}
+                        <div style={{
+                            position: "absolute", inset: 0,
+                            background: "radial-gradient(ellipse at 50% 0%, rgba(0,240,255,0.06) 0%, transparent 60%)",
+                        }} />
+                        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg, transparent, #00f0ff40, #7c3aed40, transparent)" }} />
+
+                        <div style={{ position: "relative", zIndex: 1 }}>
+                            <h2 style={{ fontSize: "clamp(26px, 3vw, 40px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>
+                                Ready to secure your organisation?
                             </h2>
-                            <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto">
-                                Get started with Shield360 and bring unified cybersecurity intelligence to your SME.
+                            <p style={{ fontSize: 16, color: "#64748b", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
+                                Get started with Shield360 and bring unified cybersecurity intelligence to your business.
                             </p>
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <Link to="/signup" className="btn-primary text-base !py-4 !px-8">Create Free Account</Link>
-                                <Link to="/login" className="btn-ghost text-base !py-4 !px-8">Sign In</Link>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
+                                <Link to="/signup" className="btn-primary" style={{ fontSize: 15, padding: "16px 32px" }}>Create Free Account</Link>
+                                <Link to="/pricing" className="btn-ghost" style={{ fontSize: 15, padding: "16px 32px" }}>View Pricing</Link>
                             </div>
                         </div>
                     </div>
@@ -310,22 +497,56 @@ export default function Landing() {
             </section>
 
             {/* ─── Footer ─── */}
-            <footer className="relative z-10 border-t border-white/5 py-12 px-6">
-                <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-500 p-[1.5px]">
-                            <div className="w-full h-full rounded-[6px] bg-navy-900 flex items-center justify-center">
-                                <svg viewBox="0 0 24 24" className="w-4 h-4 text-cyan-400" fill="currentColor">
-                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                                </svg>
+            <footer className="relative z-10" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", padding: "56px 32px" }}>
+                <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 48, marginBottom: 40 }}>
+                        <div>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                                <div style={{
+                                    width: 32, height: 32, borderRadius: 8,
+                                    background: "linear-gradient(135deg, #00f0ff, #7c3aed)",
+                                    padding: 1.5, display: "flex",
+                                }}>
+                                    <div style={{
+                                        flex: 1, borderRadius: 6, background: "#070b16",
+                                        display: "flex", alignItems: "center", justifyContent: "center",
+                                    }}>
+                                        <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, color: "#00f0ff" }} fill="currentColor">
+                                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>Shield360</span>
                             </div>
+                            <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.7, maxWidth: 260 }}>
+                                AI-driven cybersecurity made accessible for small and medium enterprises worldwide.
+                            </p>
                         </div>
-                        <span className="text-sm font-semibold text-white">Shield360</span>
+                        {[
+                            { title: "Platform", links: [{ label: "Dashboard", to: "/dashboard" }, { label: "Pricing", to: "/pricing" }, { label: "Documentation", to: "#" }] },
+                            { title: "Company", links: [{ label: "About", to: "/about" }, { label: "Contact", to: "/contact" }, { label: "Careers", to: "#" }] },
+                            { title: "Legal", links: [{ label: "Privacy", to: "#" }, { label: "Terms", to: "#" }, { label: "Security", to: "#" }] },
+                        ].map((col) => (
+                            <div key={col.title}>
+                                <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569", marginBottom: 16 }}>
+                                    {col.title}
+                                </p>
+                                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                                    {col.links.map((link) => (
+                                        <Link key={link.label} to={link.to} style={{ fontSize: 13, color: "#64748b" }} className="hover:text-white">
+                                            {link.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <p className="text-xs text-slate-600">© 2025 Shield360 Cybersecurity Platform — AI-Driven Security for SMEs</p>
-                    <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-xs text-slate-500">All systems operational</span>
+                    <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <p style={{ fontSize: 12, color: "#334155" }}>© 2025 Shield360 Cybersecurity Platform. All rights reserved.</p>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399" }} className="animate-pulse" />
+                            <span style={{ fontSize: 12, color: "#475569" }}>All systems operational</span>
+                        </div>
                     </div>
                 </div>
             </footer>

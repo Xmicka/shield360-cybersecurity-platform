@@ -1,12 +1,12 @@
 import axios from "axios";
-import { SERVICES } from "../config/services";
+import { SERVICE_URLS } from "../config/services";
 
-const isConfigured = () => SERVICES.threatIntel !== "REPLACE_WITH_COMPONENT_API" && SERVICES.threatIntel !== "";
+const isConfigured = () => SERVICE_URLS.spearPhishing.apiUrl !== "http://localhost:5000" && SERVICE_URLS.spearPhishing.apiUrl !== "";
 
 export const fetchThreatMetrics = async () => {
     if (!isConfigured()) return null;
     try {
-        const res = await axios.get(`${SERVICES.threatIntel}/metrics`);
+        const res = await axios.get(`${SERVICE_URLS.spearPhishing.apiUrl}/metrics`);
         return res.data;
     } catch {
         return null;
@@ -16,7 +16,7 @@ export const fetchThreatMetrics = async () => {
 export const fetchThreatAlerts = async () => {
     if (!isConfigured()) return null;
     try {
-        const res = await axios.get(`${SERVICES.threatIntel}/alerts`);
+        const res = await axios.get(`${SERVICE_URLS.spearPhishing.apiUrl}/alerts`);
         return res.data;
     } catch {
         return null;

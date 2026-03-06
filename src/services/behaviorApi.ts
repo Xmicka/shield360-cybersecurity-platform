@@ -1,12 +1,12 @@
 import axios from "axios";
-import { SERVICES } from "../config/services";
+import { SERVICE_URLS } from "../config/services";
 
-const isConfigured = () => SERVICES.behaviorEngine !== "REPLACE_WITH_COMPONENT_API" && SERVICES.behaviorEngine !== "";
+const isConfigured = () => SERVICE_URLS.behaviorEngine.apiUrl !== "http://localhost:5001" && SERVICE_URLS.behaviorEngine.apiUrl !== "";
 
 export const fetchBehaviorMetrics = async () => {
     if (!isConfigured()) return null;
     try {
-        const res = await axios.get(`${SERVICES.behaviorEngine}/metrics`);
+        const res = await axios.get(`${SERVICE_URLS.behaviorEngine.apiUrl}/metrics`);
         return res.data;
     } catch {
         return null;
@@ -16,7 +16,7 @@ export const fetchBehaviorMetrics = async () => {
 export const fetchBehaviorAlerts = async () => {
     if (!isConfigured()) return null;
     try {
-        const res = await axios.get(`${SERVICES.behaviorEngine}/alerts`);
+        const res = await axios.get(`${SERVICE_URLS.behaviorEngine.apiUrl}/alerts`);
         return res.data;
     } catch {
         return null;

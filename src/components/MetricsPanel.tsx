@@ -12,12 +12,12 @@ interface MetricsPanelProps {
     color?: "cyan" | "purple" | "emerald" | "rose" | "amber";
 }
 
-const colorMap = {
-    cyan: { bg: "from-cyan-400/10 to-cyan-400/5", border: "border-cyan-400/20", text: "text-cyan-400" },
-    purple: { bg: "from-purple-400/10 to-purple-400/5", border: "border-purple-400/20", text: "text-purple-400" },
-    emerald: { bg: "from-emerald-400/10 to-emerald-400/5", border: "border-emerald-400/20", text: "text-emerald-400" },
-    rose: { bg: "from-rose-400/10 to-rose-400/5", border: "border-rose-400/20", text: "text-rose-400" },
-    amber: { bg: "from-amber-400/10 to-amber-400/5", border: "border-amber-400/20", text: "text-amber-400" },
+const colorMap: Record<string, { accent: string; bg: string; border: string }> = {
+    cyan: { accent: "#00f0ff", bg: "rgba(0,240,255,0.06)", border: "rgba(0,240,255,0.12)" },
+    purple: { accent: "#a78bfa", bg: "rgba(167,139,250,0.06)", border: "rgba(167,139,250,0.12)" },
+    emerald: { accent: "#34d399", bg: "rgba(52,211,153,0.06)", border: "rgba(52,211,153,0.12)" },
+    rose: { accent: "#f43f5e", bg: "rgba(244,63,94,0.06)", border: "rgba(244,63,94,0.12)" },
+    amber: { accent: "#fbbf24", bg: "rgba(251,191,36,0.06)", border: "rgba(251,191,36,0.12)" },
 };
 
 function useCountUp(end: number, duration: number = 2000) {
@@ -73,26 +73,40 @@ export default function MetricsPanel({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
-            className={`glass-panel glass-panel-hover p-5 border ${styles.border} relative overflow-hidden group`}
+            className="glass-card group"
+            style={{ padding: 20, position: "relative", overflow: "hidden" }}
         >
-            {/* Background gradient */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${styles.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+            {/* Top accent line */}
+            <div style={{
+                position: "absolute", top: 0, left: 0, right: 0, height: 2,
+                background: styles.accent, opacity: 0.3,
+            }} />
 
-            <div className="relative z-10">
-                <div className="flex items-center justify-between mb-3">
-                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${styles.bg} border ${styles.border} flex items-center justify-center ${styles.text}`}>
+            <div style={{ position: "relative", zIndex: 1 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                    <div style={{
+                        width: 40, height: 40, borderRadius: 10,
+                        background: styles.bg, border: `1px solid ${styles.border}`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        color: styles.accent,
+                    }}>
                         {icon}
                     </div>
                     {trend && trendValue && (
-                        <div className={`flex items-center gap-1 text-xs font-medium ${trend === "up" ? "text-emerald-400" : trend === "down" ? "text-rose-400" : "text-slate-400"
-                            }`}>
+                        <div style={{
+                            display: "flex", alignItems: "center", gap: 4,
+                            fontSize: 12, fontWeight: 600,
+                            color: trend === "up" ? "#34d399" : trend === "down" ? "#f43f5e" : "#94a3b8",
+                        }}>
                             {trend === "up" ? "↑" : trend === "down" ? "↓" : "→"} {trendValue}
                         </div>
                     )}
                 </div>
 
-                <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">{label}</p>
-                <p className="text-2xl font-bold text-white">
+                <p style={{ fontSize: 11, color: "#475569", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: 4 }}>
+                    {label}
+                </p>
+                <p style={{ fontSize: 24, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>
                     {prefix}
                     {isNumeric ? (
                         <>
@@ -103,7 +117,7 @@ export default function MetricsPanel({
                     ) : (
                         value
                     )}
-                    {suffix && <span className={`text-sm ml-1 ${styles.text}`}>{suffix}</span>}
+                    {suffix && <span style={{ fontSize: 14, marginLeft: 2, color: styles.accent }}>{suffix}</span>}
                 </p>
             </div>
         </motion.div>

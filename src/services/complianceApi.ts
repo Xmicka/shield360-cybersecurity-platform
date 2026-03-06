@@ -1,12 +1,12 @@
 import axios from "axios";
-import { SERVICES } from "../config/services";
+import { SERVICE_URLS } from "../config/services";
 
-const isConfigured = () => SERVICES.complianceEngine !== "REPLACE_WITH_COMPONENT_API" && SERVICES.complianceEngine !== "";
+const isConfigured = () => SERVICE_URLS.complianceEngine.apiUrl !== "http://localhost:5003" && SERVICE_URLS.complianceEngine.apiUrl !== "";
 
 export const fetchComplianceMetrics = async () => {
     if (!isConfigured()) return null;
     try {
-        const res = await axios.get(`${SERVICES.complianceEngine}/metrics`);
+        const res = await axios.get(`${SERVICE_URLS.complianceEngine.apiUrl}/metrics`);
         return res.data;
     } catch {
         return null;
@@ -16,7 +16,7 @@ export const fetchComplianceMetrics = async () => {
 export const fetchComplianceAlerts = async () => {
     if (!isConfigured()) return null;
     try {
-        const res = await axios.get(`${SERVICES.complianceEngine}/alerts`);
+        const res = await axios.get(`${SERVICE_URLS.complianceEngine.apiUrl}/alerts`);
         return res.data;
     } catch {
         return null;
