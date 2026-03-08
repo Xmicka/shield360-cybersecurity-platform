@@ -1,20 +1,22 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { checkServiceHealth, SERVICE_URLS } from "../config/services";
+import { MODULES } from "../config/services";
 
 interface ServiceStatus {
     name: string;
-    key: keyof typeof SERVICE_URLS;
+    slug: string;
     color: string;
+    deployedUrl: string;
     status: "checking" | "online" | "offline";
 }
 
-const initialServices: ServiceStatus[] = [
-    { name: "Spear Phishing", key: "spearPhishing", color: "#00f0ff", status: "checking" },
-    { name: "Behaviour Engine", key: "behaviorEngine", color: "#a78bfa", status: "checking" },
-    { name: "Device Monitoring", key: "deviceMonitoring", color: "#fbbf24", status: "checking" },
-    { name: "Compliance Engine", key: "complianceEngine", color: "#34d399", status: "checking" },
-];
+const initialServices: ServiceStatus[] = MODULES.map((m) => ({
+    name: m.shortName,
+    slug: m.slug,
+    color: m.color,
+    deployedUrl: m.deployedUrl,
+    status: "checking" as const,
+}));
 
 export default function HealthMonitor() {
     const [services, setServices] = useState<ServiceStatus[]>(initialServices);
@@ -23,14 +25,20 @@ export default function HealthMonitor() {
         const checkAll = async () => {
             const results = await Promise.all(
                 initialServices.map(async (svc) => {
-                    const ok = await checkServiceHealth(svc.key);
-                    return { ...svc, status: ok ? "online" as const : "offline" as const };
+                    try {
+                        const controller = new AbortController();
+                        const timeout = setTimeout(() => controller.abort(), 8000);
+                        await fetch(svc.deployedUrl, { mode: "no-cors", signal: controller.signal });
+                        clearTimeout(timeout);
+                        return { ...svc, status: "online" as const };
+                    } catch {
+                        return { ...svc, status: "offline" as const };
+                    }
                 })
             );
             setServices(results);
         };
         checkAll();
-        // Re-check every 60 seconds
         const interval = setInterval(checkAll, 60000);
         return () => clearInterval(interval);
     }, []);
@@ -88,7 +96,7 @@ export default function HealthMonitor() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
                 {services.map((svc) => (
                     <div
-                        key={svc.key}
+                        key={svc.slug}
                         style={{
                             padding: "12px 14px", borderRadius: 12,
                             background: "rgba(10,15,30,0.5)",
