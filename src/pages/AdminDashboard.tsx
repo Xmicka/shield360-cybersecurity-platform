@@ -1,9 +1,20 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSubscription } from "../context/subscriptionContext";
+import { useAuth } from "../context/authContext";
 import { MODULES } from "../config/services";
 import type { ModuleConfig } from "../config/services";
 import UpgradeModal from "../components/UpgradeModal";
+import {
+    getTotalUserCount,
+    getTotalLaunchCount,
+    getModuleLaunchStats,
+    getRecentActivity,
+    getRecentUsers,
+    logActivity,
+    logModuleLaunch,
+} from "../services/firestoreService";
+import type { ActivityLog, UserProfile } from "../services/firestoreService";
 
 const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -14,15 +25,66 @@ const fadeIn = {
 
 export default function AdminDashboard() {
     const { plan, setPlan, role, setRole, hasAccess, enabledModules, toggleModule } = useSubscription();
+    const { user } = useAuth();
     const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string }>({
         open: false,
         moduleName: "",
         deployedUrl: "",
     });
 
+    // Real Firestore stats
+    const [totalUsers, setTotalUsers] = useState<number | null>(null);
+    const [totalLaunches, setTotalLaunches] = useState<number | null>(null);
+    const [launchStats, setLaunchStats] = useState<Record<string, number>>({});
+    const [recentActivity, setRecentActivity] = useState<ActivityLog[]>([]);
+    const [recentUsers, setRecentUsers] = useState<UserProfile[]>([]);
+    const [statsLoading, setStatsLoading] = useState(true);
+
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const [users, launches, modStats, activity, newUsers] = await Promise.all([
+                    getTotalUserCount(),
+                    getTotalLaunchCount(),
+                    getModuleLaunchStats(),
+                    getRecentActivity(10),
+                    getRecentUsers(5),
+                ]);
+                if (!cancelled) {
+                    setTotalUsers(users);
+                    setTotalLaunches(launches);
+                    setLaunchStats(modStats);
+                    setRecentActivity(activity);
+                    setRecentUsers(newUsers);
+                }
+            } catch {
+                // Firestore not configured — use fallback values
+            } finally {
+                if (!cancelled) setStatsLoading(false);
+            }
+        })();
+        return () => { cancelled = true; };
+    }, []);
+
     const handleModuleLaunch = (mod: ModuleConfig) => {
         if (hasAccess(mod.slug)) {
             window.open(mod.deployedUrl, "_blank", "noopener,noreferrer");
+            if (user) {
+                logModuleLaunch({
+                    userId: user.uid,
+                    userEmail: user.email || "",
+                    moduleSlug: mod.slug,
+                    moduleName: mod.name,
+                }).catch(() => {});
+                logActivity({
+                    userId: user.uid,
+                    userEmail: user.email || "",
+                    event: `Admin launched ${mod.name}`,
+                    module: mod.name,
+                    severity: "info",
+                }).catch(() => {});
+            }
         } else {
             setUpgradeModal({ open: true, moduleName: mod.name, deployedUrl: mod.deployedUrl });
         }
@@ -355,6 +417,133 @@ export default function AdminDashboard() {
             </motion.div>
 
             {/* Tier Info */}
+            <motion.div {...fadeIn} className="glass-card" style={{ padding: 28 }}>
+
+                {/* Platform Analytics (Real Data from Firestore) */}
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>Platform Analytics</h3>
+                <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Live data from Firestore</p>
+
+                {statsLoading ? (
+                    <div style={{ display: "flex", justifyContent: "center", padding: 32 }}>
+                        <div className="w-6 h-6 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
+                    </div>
+                ) : (
+                    <>
+                        {/* Stat Cards */}
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
+                            <div style={{ padding: 20, borderRadius: 14, background: "rgba(34,211,238,0.04)", border: "1px solid rgba(34,211,238,0.1)" }}>
+                                <p style={{ fontSize: 10, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 4 }}>
+                                    Registered Users
+                                </p>
+                                <p style={{ fontSize: 28, fontWeight: 800, color: "#22d3ee" }}>
+                                    {totalUsers ?? 0}
+                                </p>
+                            </div>
+                            <div style={{ padding: 20, borderRadius: 14, background: "rgba(168,85,247,0.04)", border: "1px solid rgba(168,85,247,0.1)" }}>
+                                <p style={{ fontSize: 10, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 4 }}>
+                                    Total Module Launches
+                                </p>
+                                <p style={{ fontSize: 28, fontWeight: 800, color: "#a855f7" }}>
+                                    {totalLaunches ?? 0}
+                                </p>
+                            </div>
+                            <div style={{ padding: 20, borderRadius: 14, background: "rgba(52,211,153,0.04)", border: "1px solid rgba(52,211,153,0.1)" }}>
+                                <p style={{ fontSize: 10, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 4 }}>
+                                    Modules Enabled
+                                </p>
+                                <p style={{ fontSize: 28, fontWeight: 800, color: "#34d399" }}>
+                                    {enabledModules.length} / {MODULES.length}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Per-module launch counts */}
+                        <div style={{ marginBottom: 24 }}>
+                            <p style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600, marginBottom: 12 }}>Module Launch Breakdown</p>
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+                                {MODULES.map((mod) => (
+                                    <div key={mod.slug} style={{ padding: 14, borderRadius: 12, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                                        <p style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>{mod.shortName}</p>
+                                        <p style={{ fontSize: 20, fontWeight: 800, color: mod.color }}>{launchStats[mod.slug] ?? 0}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Recent Activity Feed (from Firestore) */}
+                        {recentActivity.length > 0 && (
+                            <div style={{ marginBottom: 24 }}>
+                                <p style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600, marginBottom: 12 }}>Recent Activity</p>
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    {recentActivity.map((act, i) => {
+                                        const sevColors: Record<string, { text: string; bg: string }> = {
+                                            critical: { text: "#f43f5e", bg: "rgba(244,63,94,0.1)" },
+                                            high: { text: "#fbbf24", bg: "rgba(251,191,36,0.1)" },
+                                            medium: { text: "#a855f7", bg: "rgba(168,85,247,0.1)" },
+                                            info: { text: "#22d3ee", bg: "rgba(34,211,238,0.1)" },
+                                        };
+                                        const sev = sevColors[act.severity] || sevColors.info;
+                                        return (
+                                            <div key={i} style={{
+                                                display: "flex", alignItems: "center", gap: 12,
+                                                padding: "10px 8px",
+                                                borderBottom: i < recentActivity.length - 1 ? "1px solid rgba(148,163,184,0.04)" : "none",
+                                            }}>
+                                                <div style={{ flex: 1, minWidth: 0 }}>
+                                                    <p style={{ fontSize: 13, color: "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{act.event}</p>
+                                                    <p style={{ fontSize: 11, color: "#475569" }}>{act.userEmail} • {act.module}</p>
+                                                </div>
+                                                <span style={{
+                                                    fontSize: 9, fontWeight: 800, textTransform: "uppercase",
+                                                    color: sev.text, background: sev.bg,
+                                                    padding: "3px 8px", borderRadius: 6, flexShrink: 0,
+                                                }}>
+                                                    {act.severity}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Recent Users */}
+                        {recentUsers.length > 0 && (
+                            <div>
+                                <p style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600, marginBottom: 12 }}>Recently Registered Users</p>
+                                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                    {recentUsers.map((u, i) => (
+                                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 10, background: "rgba(255,255,255,0.02)" }}>
+                                            <div style={{
+                                                width: 32, height: 32, borderRadius: 8,
+                                                background: "linear-gradient(135deg, rgba(34,211,238,0.2), rgba(168,85,247,0.2))",
+                                                display: "flex", alignItems: "center", justifyContent: "center",
+                                                fontSize: 12, fontWeight: 700, color: "#f1f5f9",
+                                            }}>
+                                                {u.displayName?.charAt(0)?.toUpperCase() || "?"}
+                                            </div>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <p style={{ fontSize: 13, color: "#f1f5f9", fontWeight: 600 }}>{u.displayName}</p>
+                                                <p style={{ fontSize: 11, color: "#64748b" }}>{u.email} • {u.organization || "No org"}</p>
+                                            </div>
+                                            <span style={{
+                                                fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
+                                                padding: "2px 8px", borderRadius: 6,
+                                                background: u.plan === "premium" ? "rgba(168,85,247,0.1)" : "rgba(34,211,238,0.1)",
+                                                color: u.plan === "premium" ? "#a855f7" : "#22d3ee",
+                                            }}>
+                                                {u.plan}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
+            </motion.div>
+
+            {/* Subscription Tiers */}
             <motion.div {...fadeIn} className="glass-card" style={{ padding: 28 }}>
                 <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 2 }}>Subscription Tiers</h3>
                 <p style={{ fontSize: 12, color: "#64748b", marginBottom: 20 }}>Compare what's included in each tier</p>

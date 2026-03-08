@@ -2,10 +2,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSubscription } from "../context/subscriptionContext";
+import { useAuth } from "../context/authContext";
 import { PREMIUM_MODULES } from "../config/services";
+import { logActivity } from "../services/firestoreService";
 
 export default function Checkout() {
     const { setPlan, plan } = useSubscription();
+    const { user } = useAuth();
     const [step, setStep] = useState<"confirm" | "processing" | "success">(plan === "premium" ? "success" : "confirm");
 
     const handleUpgrade = () => {
@@ -13,6 +16,16 @@ export default function Checkout() {
         setTimeout(() => {
             setPlan("premium");
             setStep("success");
+            // Log upgrade to Firestore
+            if (user) {
+                logActivity({
+                    userId: user.uid,
+                    userEmail: user.email || "",
+                    event: "Upgraded to Premium",
+                    module: "platform",
+                    severity: "info",
+                }).catch(() => {});
+            }
         }, 1500);
     };
 

@@ -1,6 +1,8 @@
 import { Routes, Route, useLocation, Outlet } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { AuthProvider } from "./context/authContext";
 import { SubscriptionProvider } from "./context/subscriptionContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -45,26 +47,28 @@ function App() {
   const location = useLocation();
 
   return (
-    <SubscriptionProvider>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          {/* Public */}
-          <Route path="/" element={<PageWrap><Landing /></PageWrap>} />
-          <Route path="/login" element={<PageWrap><Login /></PageWrap>} />
-          <Route path="/signup" element={<PageWrap><Signup /></PageWrap>} />
-          <Route path="/pricing" element={<PageWrap><Pricing /></PageWrap>} />
-          <Route path="/checkout" element={<PageWrap><Checkout /></PageWrap>} />
-          <Route path="/about" element={<PageWrap><About /></PageWrap>} />
-          <Route path="/contact" element={<PageWrap><Contact /></PageWrap>} />
+    <AuthProvider>
+      <SubscriptionProvider>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            {/* Public */}
+            <Route path="/" element={<PageWrap><Landing /></PageWrap>} />
+            <Route path="/login" element={<PageWrap><Login /></PageWrap>} />
+            <Route path="/signup" element={<PageWrap><Signup /></PageWrap>} />
+            <Route path="/pricing" element={<PageWrap><Pricing /></PageWrap>} />
+            <Route path="/checkout" element={<PageWrap><Checkout /></PageWrap>} />
+            <Route path="/about" element={<PageWrap><About /></PageWrap>} />
+            <Route path="/contact" element={<PageWrap><Contact /></PageWrap>} />
 
-          {/* App (sidebar + navbar) */}
-          <Route element={<AppLayout />}>
-            <Route path="/dashboard" element={<PageWrap><Dashboard /></PageWrap>} />
-            <Route path="/admin" element={<PageWrap><AdminDashboard /></PageWrap>} />
-          </Route>
-        </Routes>
-      </AnimatePresence>
-    </SubscriptionProvider>
+            {/* App (sidebar + navbar) — protected */}
+            <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+              <Route path="/dashboard" element={<PageWrap><Dashboard /></PageWrap>} />
+              <Route path="/admin" element={<PageWrap><AdminDashboard /></PageWrap>} />
+            </Route>
+          </Routes>
+        </AnimatePresence>
+      </SubscriptionProvider>
+    </AuthProvider>
   );
 }
 

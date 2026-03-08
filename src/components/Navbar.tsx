@@ -1,13 +1,33 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
 import { useSubscription } from "../context/subscriptionContext";
+import { useAuth } from "../context/authContext";
 
 export default function AppNavbar() {
     const location = useLocation();
     const navigate = useNavigate();
     const { plan, role } = useSubscription();
+    const { user, logout } = useAuth();
+    const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     const isActive = (path: string) => location.pathname === path;
+
+    // Close menu on click outside
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    const handleLogout = async () => {
+        setMenuOpen(false);
+        await logout();
+        navigate("/");
+    };
 
     return (
         <motion.nav
@@ -85,15 +105,49 @@ export default function AppNavbar() {
                     </div>
 
                     {/* User menu */}
-                    <button
-                        onClick={() => navigate("/")}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
-                        style={{ background: "linear-gradient(135deg, rgba(34,211,238,0.2), rgba(168,85,247,0.2))" }}
-                    >
-                        <svg viewBox="0 0 24 24" className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
-                        </svg>
-                    </button>
+                    <div className="relative" ref={menuRef}>
+                        <button
+                            onClick={() => setMenuOpen(!menuOpen)}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                            style={{ background: "linear-gradient(135deg, rgba(34,211,238,0.2), rgba(168,85,247,0.2))" }}
+                        >
+                            {user?.displayName ? (
+                                <span className="text-xs font-bold text-white">{user.displayName.charAt(0).toUpperCase()}</span>
+                            ) : (
+                                <svg viewBox="0 0 24 24" className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+                                </svg>
+                            )}
+                        </button>
+
+                        {/* Dropdown */}
+                        {menuOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                                transition={{ duration: 0.15 }}
+                                className="absolute right-0 mt-2 w-56 rounded-xl overflow-hidden"
+                                style={{ background: "rgba(10,14,26,0.95)", backdropFilter: "blur(20px)", border: "1px solid rgba(148,163,184,0.08)" }}
+                            >
+                                <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(148,163,184,0.06)" }}>
+                                    <p className="text-sm font-medium text-white truncate">{user?.displayName || "User"}</p>
+                                    <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                                </div>
+                                <div className="py-1">
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full text-left px-4 py-2.5 text-sm text-rose-400 hover:bg-rose-400/5 transition-colors flex items-center gap-3"
+                                    >
+                                        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                        </svg>
+                                        Sign Out
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </div>
                 </div>
             </div>
         </motion.nav>

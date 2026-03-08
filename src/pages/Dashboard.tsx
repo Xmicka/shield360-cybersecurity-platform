@@ -4,7 +4,9 @@ import { AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis
 import MetricsPanel from "../components/MetricsPanel";
 import { MODULES } from "../config/services";
 import { useSubscription } from "../context/subscriptionContext";
+import { useAuth } from "../context/authContext";
 import UpgradeModal from "../components/UpgradeModal";
+import { logModuleLaunch, logActivity } from "../services/firestoreService";
 
 const threatTrend = [
     { name: "Jan", threats: 42, blocked: 380 },
@@ -46,6 +48,7 @@ const fadeIn = {
 
 export default function Dashboard() {
     const { hasAccess, setPlan } = useSubscription();
+    const { user } = useAuth();
     const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string }>({
         open: false,
         moduleName: "",
@@ -55,6 +58,22 @@ export default function Dashboard() {
     const handleModuleClick = (slug: string, name: string, deployedUrl: string) => {
         if (hasAccess(slug)) {
             window.open(deployedUrl, "_blank", "noopener,noreferrer");
+            // Log the launch to Firestore
+            if (user) {
+                logModuleLaunch({
+                    userId: user.uid,
+                    userEmail: user.email || "",
+                    moduleSlug: slug,
+                    moduleName: name,
+                }).catch(() => {});
+                logActivity({
+                    userId: user.uid,
+                    userEmail: user.email || "",
+                    event: `Launched ${name}`,
+                    module: name,
+                    severity: "info",
+                }).catch(() => {});
+            }
         } else {
             setUpgradeModal({ open: true, moduleName: name, deployedUrl });
         }
