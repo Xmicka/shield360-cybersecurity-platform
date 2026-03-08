@@ -5,10 +5,10 @@ import AnimatedBackground from "../components/AnimatedBackground";
 const fadeIn = { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true as const }, transition: { duration: 0.5 } };
 
 const team = [
-    { name: "Akesh", role: "Lead Developer", component: "Spear Phishing Simulation", gradient: "from-cyan-400 to-blue-500" },
-    { name: "Team Member", role: "Security Engineer", component: "Behaviour Intelligence Engine", gradient: "from-purple-400 to-pink-500" },
-    { name: "Team Member", role: "IoT Security Specialist", component: "Device Behaviour Monitoring", gradient: "from-amber-400 to-orange-500" },
-    { name: "Team Member", role: "Compliance Analyst", component: "Compliance & Policy Engine", gradient: "from-emerald-400 to-teal-500" },
+    { name: "Akesh Chandrasiri", role: "Lead Developer", component: "Spear Phishing Simulation", gradient: "from-cyan-400 to-blue-500" },
+    { name: "Shanuki Liyanage", role: "Compliance Analyst/Developer", component: "Compliance Assistant", gradient: "from-emerald-400 to-teal-500" },
+    { name: "Shenal Somaweera", role: "Shadow IT Developer", component: "Shadow IT Dashboard", gradient: "from-blue-400 to-indigo-500" },
+    { name: "Yasindu De Silva", role: "Endpoint Scanner Developer", component: "Endpoint Risk Scanner", gradient: "from-amber-400 to-orange-500" },
 ];
 
 const techStack = [

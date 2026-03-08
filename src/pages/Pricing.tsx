@@ -128,7 +128,7 @@ export default function Pricing() {
                                                     background: "rgba(148,163,184,0.03)",
                                                     border: "1px solid rgba(148,163,184,0.06)",
                                                 }}>
-                                                    <span style={{ fontSize: 16 }}>{mod.icon}</span>
+                                                    <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
                                                     <div>
                                                         <p style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9" }}>{mod.shortName}</p>
                                                         <p style={{ fontSize: 11, color: "#64748b" }}>{mod.tag}</p>
@@ -214,7 +214,7 @@ export default function Pricing() {
                                     borderBottom: i < MODULES.length - 1 ? "1px solid rgba(148,163,184,0.04)" : "none",
                                 }}>
                                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                                        <span style={{ fontSize: 16 }}>{mod.icon}</span>
+                                        <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
                                         <span style={{ fontSize: 14, color: "#f1f5f9", fontWeight: 500 }}>{mod.shortName}</span>
                                     </div>
                                     <div style={{ textAlign: "center" }}>

@@ -106,7 +106,7 @@ export default function Checkout() {
                                 background: "rgba(148,163,184,0.03)",
                                 border: "1px solid rgba(148,163,184,0.06)",
                             }}>
-                                <span style={{ fontSize: 16 }}>{mod.icon}</span>
+                                <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
                                 <div>
                                     <p style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9" }}>{mod.name}</p>
                                     <p style={{ fontSize: 11, color: "#64748b" }}>{mod.tag}</p>
