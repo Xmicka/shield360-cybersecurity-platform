@@ -9,11 +9,7 @@ import Checkout from "./pages/Checkout";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
-import SpearPhishing from "./pages/modules/SpearPhishing";
-import BehaviourEngine from "./pages/modules/BehaviourEngine";
-import DeviceMonitoring from "./pages/modules/DeviceMonitoring";
-import ComplianceEngine from "./pages/modules/ComplianceEngine";
-import ModuleGate from "./components/ModuleGate";
+import AdminDashboard from "./pages/AdminDashboard";
 import AppNavbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
@@ -64,10 +60,7 @@ function App() {
           {/* App (sidebar + navbar) */}
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<PageWrap><Dashboard /></PageWrap>} />
-            <Route path="/modules/spear-phishing" element={<PageWrap><ModuleGate moduleSlug="spear-phishing" moduleName="Spear Phishing Simulation"><SpearPhishing /></ModuleGate></PageWrap>} />
-            <Route path="/modules/behaviour-engine" element={<PageWrap><ModuleGate moduleSlug="behaviour-engine" moduleName="Behaviour Intelligence Engine"><BehaviourEngine /></ModuleGate></PageWrap>} />
-            <Route path="/modules/device-monitoring" element={<PageWrap><ModuleGate moduleSlug="device-monitoring" moduleName="Device Behaviour Monitoring"><DeviceMonitoring /></ModuleGate></PageWrap>} />
-            <Route path="/modules/compliance-engine" element={<PageWrap><ModuleGate moduleSlug="compliance-engine" moduleName="Compliance & Policy Engine"><ComplianceEngine /></ModuleGate></PageWrap>} />
+            <Route path="/admin" element={<PageWrap><AdminDashboard /></PageWrap>} />
           </Route>
         </Routes>
       </AnimatePresence>

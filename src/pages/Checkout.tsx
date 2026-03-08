@@ -1,46 +1,45 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useSearchParams } from "react-router-dom";
-import { PLANS, useSubscription } from "../context/subscriptionContext";
-import type { PlanType } from "../context/subscriptionContext";
+import { Link } from "react-router-dom";
+import { useSubscription } from "../context/subscriptionContext";
+import { PREMIUM_MODULES } from "../config/services";
 
 export default function Checkout() {
-    const [params] = useSearchParams();
-    const { setPlan } = useSubscription();
+    const { setPlan, plan } = useSubscription();
+    const [step, setStep] = useState<"confirm" | "processing" | "success">(plan === "premium" ? "success" : "confirm");
 
-    const planId = (params.get("plan") || "starter") as PlanType;
-    const billing = (params.get("billing") || "monthly") as "monthly" | "annual";
-    const plan = PLANS.find((p) => p.id === planId) || PLANS[0];
-    const price = billing === "annual" ? plan.annualPrice : plan.price;
-
-    const [card, setCard] = useState({ number: "", expiry: "", cvv: "", name: "" });
-    const [step, setStep] = useState<"form" | "processing" | "success">("form");
-
-    const formatCard = (v: string) => v.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim().slice(0, 19);
-    const formatExpiry = (v: string) => { const d = v.replace(/\D/g, "").slice(0, 4); return d.length > 2 ? d.slice(0, 2) + "/" + d.slice(2) : d; };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleUpgrade = () => {
         setStep("processing");
         setTimeout(() => {
-            setPlan(planId, billing);
+            setPlan("premium");
             setStep("success");
-        }, 2500);
+        }, 1500);
     };
 
     if (step === "success") {
         return (
             <div className="min-h-screen bg-navy-950 flex items-center justify-center px-6">
-                <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass p-12 max-w-md text-center">
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }} className="w-20 h-20 rounded-full bg-emerald-400/10 flex items-center justify-center mx-auto mb-6">
-                        <svg viewBox="0 0 24 24" className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{
+                    background: "rgba(10,14,26,0.6)", backdropFilter: "blur(20px)",
+                    border: "1px solid rgba(148,163,184,0.06)", borderRadius: 24,
+                    padding: 48, maxWidth: 440, textAlign: "center",
+                }}>
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }} style={{
+                        width: 80, height: 80, borderRadius: "50%",
+                        background: "rgba(52,211,153,0.1)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        margin: "0 auto 24px",
+                    }}>
+                        <svg viewBox="0 0 24 24" style={{ width: 40, height: 40, color: "#34d399" }} fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </motion.div>
-                    <h2 className="text-2xl font-bold text-white mb-2">Payment Successful!</h2>
-                    <p className="text-slate-400 mb-2">Welcome to Shield360 <span className="text-cyan-400 font-semibold capitalize">{plan.name}</span></p>
-                    <p className="text-sm text-slate-500 mb-8">Your account has been upgraded. All {plan.name} features are now unlocked.</p>
-                    <Link to="/dashboard" className="btn-primary inline-flex items-center gap-2">
+                    <h2 style={{ fontSize: 24, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>You're on Premium!</h2>
+                    <p style={{ fontSize: 14, color: "#64748b", marginBottom: 8 }}>
+                        All <span style={{ color: "#a855f7", fontWeight: 600 }}>4 security modules</span> are unlocked.
+                    </p>
+                    <p style={{ fontSize: 12, color: "#475569", marginBottom: 32 }}>Access everything from your dashboard — modules open in their deployed environments.</p>
+                    <Link to="/dashboard" className="btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                         Go to Dashboard
-                        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                     </Link>
                 </motion.div>
             </div>
@@ -50,14 +49,14 @@ export default function Checkout() {
     if (step === "processing") {
         return (
             <div className="min-h-screen bg-navy-950 flex items-center justify-center px-6">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
-                    <div className="relative w-20 h-20 mx-auto mb-8">
-                        <div className="absolute inset-0 rounded-full border-2 border-cyan-400/20" />
-                        <div className="absolute inset-0 rounded-full border-2 border-t-cyan-400 animate-spin" />
-                        <div className="absolute inset-2 rounded-full border-2 border-t-purple-400 animate-spin" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: "center" }}>
+                    <div style={{ position: "relative", width: 80, height: 80, margin: "0 auto 32px" }}>
+                        <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid rgba(34,211,238,0.2)" }} />
+                        <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid transparent", borderTopColor: "#22d3ee" }} className="animate-spin" />
+                        <div style={{ position: "absolute", inset: 8, borderRadius: "50%", border: "2px solid transparent", borderTopColor: "#a855f7", animationDirection: "reverse", animationDuration: "1.5s" }} className="animate-spin" />
                     </div>
-                    <h2 className="text-xl font-bold text-white mb-2">Processing Payment</h2>
-                    <p className="text-sm text-slate-500">Securely processing your card details...</p>
+                    <h2 style={{ fontSize: 20, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>Activating Premium</h2>
+                    <p style={{ fontSize: 13, color: "#64748b" }}>Unlocking all security modules...</p>
                 </motion.div>
             </div>
         );
@@ -65,68 +64,57 @@ export default function Checkout() {
 
     return (
         <div className="min-h-screen bg-navy-950 flex items-center justify-center px-6 py-12">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-5 gap-8">
-                {/* Order Summary */}
-                <div className="lg:col-span-2 glass p-8">
-                    <Link to="/pricing" className="flex items-center gap-2 text-sm text-slate-500 hover:text-cyan-400 transition-colors mb-6">
-                        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-                        Back to plans
-                    </Link>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{
+                width: "100%", maxWidth: 520,
+                background: "rgba(10,14,26,0.6)", backdropFilter: "blur(20px)",
+                border: "1px solid rgba(148,163,184,0.06)", borderRadius: 24,
+                padding: 40, position: "relative", overflow: "hidden",
+            }}>
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg, #22d3ee, #a855f7)" }} />
 
-                    <h3 className="text-lg font-bold text-white mb-1">Order Summary</h3>
-                    <p className="text-xs text-slate-500 mb-6">Shield360 {plan.name} Plan</p>
+                <Link to="/pricing" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748b", marginBottom: 28 }} className="hover:text-cyan-400">
+                    <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                    Back to pricing
+                </Link>
 
-                    <div className="space-y-3 mb-6">
-                        {plan.features.slice(0, 5).map((f) => (
-                            <div key={f} className="flex items-center gap-2 text-sm">
-                                <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                                <span className="text-slate-400">{f}</span>
+                <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>Upgrade to Premium</h2>
+                <p style={{ fontSize: 13, color: "#64748b", marginBottom: 28 }}>Unlock all 4 security modules — completely free for this demo.</p>
+
+                {/* What you get */}
+                <div style={{ marginBottom: 28 }}>
+                    <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569", marginBottom: 12 }}>
+                        Premium unlocks
+                    </p>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                        {PREMIUM_MODULES.map((mod) => (
+                            <div key={mod.slug} style={{
+                                display: "flex", alignItems: "center", gap: 12,
+                                padding: "12px 16px", borderRadius: 14,
+                                background: "rgba(148,163,184,0.03)",
+                                border: "1px solid rgba(148,163,184,0.06)",
+                            }}>
+                                <span style={{ fontSize: 16 }}>{mod.icon}</span>
+                                <div>
+                                    <p style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9" }}>{mod.name}</p>
+                                    <p style={{ fontSize: 11, color: "#64748b" }}>{mod.tag}</p>
+                                </div>
                             </div>
                         ))}
                     </div>
-
-                    <div className="border-t border-white/5 pt-4 space-y-2">
-                        <div className="flex justify-between text-sm"><span className="text-slate-500">Plan</span><span className="text-white">{plan.name}</span></div>
-                        <div className="flex justify-between text-sm"><span className="text-slate-500">Billing</span><span className="text-white capitalize">{billing}</span></div>
-                        <div className="flex justify-between text-sm border-t border-white/5 pt-2 mt-2"><span className="text-white font-semibold">Total</span><span className="text-xl font-bold text-cyan-400">${price}<span className="text-xs text-slate-500">/mo</span></span></div>
-                    </div>
                 </div>
 
-                {/* Payment Form */}
-                <div className="lg:col-span-3 glass p-8">
-                    <h3 className="text-lg font-bold text-white mb-1">Payment Details</h3>
-                    <p className="text-xs text-slate-500 mb-6">256-bit encrypted • SOC 2 compliant</p>
+                <button
+                    onClick={handleUpgrade}
+                    className="btn-primary"
+                    style={{ width: "100%", padding: "16px 0", fontSize: 15, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, borderRadius: 16 }}
+                >
+                    <svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>
+                    Activate Premium — Free
+                </button>
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div>
-                            <label className="block text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Cardholder Name</label>
-                            <input type="text" required value={card.name} onChange={(e) => setCard({ ...card, name: e.target.value })} placeholder="John Smith" className="input-premium" />
-                        </div>
-                        <div>
-                            <label className="block text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Card Number</label>
-                            <input type="text" required value={card.number} onChange={(e) => setCard({ ...card, number: formatCard(e.target.value) })} placeholder="4242 4242 4242 4242" className="input-premium" maxLength={19} />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Expiry</label>
-                                <input type="text" required value={card.expiry} onChange={(e) => setCard({ ...card, expiry: formatExpiry(e.target.value) })} placeholder="MM/YY" className="input-premium" maxLength={5} />
-                            </div>
-                            <div>
-                                <label className="block text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">CVV</label>
-                                <input type="text" required value={card.cvv} onChange={(e) => setCard({ ...card, cvv: e.target.value.replace(/\D/g, "").slice(0, 3) })} placeholder="123" className="input-premium" maxLength={3} />
-                            </div>
-                        </div>
-
-                        <button type="submit" className="btn-primary w-full !py-4 !text-base flex items-center justify-center gap-2 mt-2">
-                            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
-                            Pay ${price}/month
-                        </button>
-
-                        <p className="text-[11px] text-slate-600 text-center">
-                            By subscribing you agree to our Terms of Service and Privacy Policy.
-                        </p>
-                    </form>
-                </div>
+                <p style={{ fontSize: 11, color: "#475569", textAlign: "center", marginTop: 16 }}>
+                    No payment required — this is a demo platform. Click to instantly unlock.
+                </p>
             </motion.div>
         </div>
     );

@@ -2,65 +2,23 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 import AnimatedBackground from "../components/AnimatedBackground";
+import { MODULES } from "../config/services";
 
-const modules = [
-    {
-        title: "Spear Phishing Simulation",
-        desc: "AI-driven adaptive phishing campaigns with real-time click detection, behavioral analysis, and automated micro-training enforcement for your entire organisation.",
-        icon: (
-            <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-            </svg>
-        ),
-        gradient: "from-cyan-400 to-blue-500",
-        color: "#00f0ff",
-        tag: "Phishing & Training",
-        link: "/modules/spear-phishing",
-        features: ["Click Detection", "Risk Scoring", "Auto-Training"],
-    },
-    {
-        title: "Behaviour Intelligence Engine",
-        desc: "Real-time user behaviour analytics using isolation forest models to detect insider threats, anomalous access patterns, and dynamic risk scoring across your workforce.",
-        icon: (
-            <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-            </svg>
-        ),
-        gradient: "from-purple-400 to-pink-500",
-        color: "#a78bfa",
-        tag: "User Analytics",
-        link: "/modules/behaviour-engine",
-        features: ["Anomaly Detection", "Insider Threats", "Risk Profiles"],
-    },
-    {
-        title: "Device Behaviour Monitoring",
-        desc: "Continuous device inventory, health tracking, and anomalous network behaviour detection across all endpoints, IoT devices, and mobile assets in your infrastructure.",
-        icon: (
-            <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" />
-            </svg>
-        ),
-        gradient: "from-amber-400 to-orange-500",
-        color: "#fbbf24",
-        tag: "Device Security",
-        link: "/modules/device-monitoring",
-        features: ["Asset Inventory", "Health Monitoring", "IoT Security"],
-    },
-    {
-        title: "Compliance & Policy Engine",
-        desc: "Automated compliance monitoring across ISO 27001, GDPR, SOC 2, and NIST frameworks with real-time policy enforcement, violation alerts, and audit trail logging.",
-        icon: (
-            <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-            </svg>
-        ),
-        gradient: "from-emerald-400 to-teal-500",
-        color: "#34d399",
-        tag: "Compliance",
-        link: "/modules/compliance-engine",
-        features: ["ISO 27001", "GDPR", "SOC 2"],
-    },
-];
+const moduleCards = MODULES.map((mod) => ({
+    title: mod.name,
+    desc: mod.description,
+    icon: (
+        <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+        </svg>
+    ),
+    gradient: mod.gradient,
+    color: mod.color,
+    tag: mod.tag,
+    deployedUrl: mod.deployedUrl,
+    tier: mod.tier,
+    features: mod.features,
+}));
 
 const containerStagger = {
     hidden: { opacity: 0 },
@@ -266,9 +224,9 @@ export default function Landing() {
                         viewport={{ once: true, margin: "-50px" }}
                         style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}
                     >
-                        {modules.map((mod) => (
+                        {moduleCards.map((mod) => (
                             <motion.div key={mod.title} variants={childFade}>
-                                <Link to={mod.link} className="glass-card" style={{ display: "block", padding: 36, position: "relative", overflow: "hidden" }}>
+                                <a href={mod.deployedUrl} target="_blank" rel="noopener noreferrer" className="glass-card" style={{ display: "block", padding: 36, position: "relative", overflow: "hidden" }}>
                                     {/* Top accent line */}
                                     <div style={{
                                         position: "absolute", top: 0, left: 0, right: 0, height: 2,
@@ -288,9 +246,19 @@ export default function Landing() {
                                             {mod.icon}
                                         </div>
                                         <div style={{ flex: 1 }}>
-                                            <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569" }}>
-                                                {mod.tag}
-                                            </span>
+                                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569" }}>
+                                                    {mod.tag}
+                                                </span>
+                                                <span style={{
+                                                    fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em",
+                                                    color: mod.tier === "free" ? "#22d3ee" : "#a855f7",
+                                                    background: mod.tier === "free" ? "rgba(34,211,238,0.1)" : "rgba(168,85,247,0.1)",
+                                                    padding: "2px 8px", borderRadius: 6,
+                                                }}>
+                                                    {mod.tier}
+                                                </span>
+                                            </div>
                                             <h3 style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginTop: 4, letterSpacing: "-0.01em" }}>
                                                 {mod.title}
                                             </h3>
@@ -317,12 +285,12 @@ export default function Landing() {
 
                                     {/* CTA */}
                                     <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#475569" }}>
-                                        <span>Explore module</span>
+                                        <span>Launch module</span>
                                         <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                                         </svg>
                                     </div>
-                                </Link>
+                                </a>
                             </motion.div>
                         ))}
                     </motion.div>
@@ -425,35 +393,34 @@ export default function Landing() {
                         Pricing
                     </p>
                     <h2 style={{ fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>
-                        Enterprise security, <span className="gradient-text">SME pricing</span>
+                        Enterprise security, <span className="gradient-text">completely free</span>
                     </h2>
                     <p style={{ fontSize: 16, color: "#64748b", maxWidth: 480, margin: "0 auto 48px", lineHeight: 1.7 }}>
-                        Plans starting at $49/month. No hidden fees, no long-term contracts. Cancel anytime.
+                        Start with two essential modules at no cost. Upgrade instantly to unlock the full suite — no payment required.
                     </p>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20, marginBottom: 40, maxWidth: 640, margin: "0 auto 40px" }}>
                         {[
-                            { name: "Starter", price: "$49", desc: "Phishing simulation & basic reports", color: "#00f0ff", popular: false },
-                            { name: "Professional", price: "$129", desc: "Full analytics suite & priority support", color: "#a78bfa", popular: true },
-                            { name: "Enterprise", price: "$299", desc: "Complete platform with SLA guarantee", color: "#34d399", popular: false },
+                            { name: "Free", price: "$0", desc: "Endpoint Scanner + Shadow IT", color: "#22d3ee", popular: false },
+                            { name: "Premium", price: "$0", desc: "Full security suite — all 4 modules", color: "#a855f7", popular: true },
                         ].map((p) => (
                             <div key={p.name} className="glass-card" style={{
                                 padding: 32, textAlign: "center",
-                                border: p.popular ? "1px solid rgba(167,139,250,0.2)" : undefined,
+                                border: p.popular ? "1px solid rgba(168,85,247,0.2)" : undefined,
                             }}>
                                 {p.popular && (
                                     <span style={{
                                         display: "inline-block", fontSize: 9, fontWeight: 800,
                                         textTransform: "uppercase", letterSpacing: "0.15em",
-                                        color: "#a78bfa", background: "rgba(167,139,250,0.1)",
+                                        color: "#a855f7", background: "rgba(168,85,247,0.1)",
                                         padding: "4px 12px", borderRadius: 6, marginBottom: 12,
                                     }}>
-                                        Most Popular
+                                        Recommended
                                     </span>
                                 )}
                                 <p style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 8 }}>{p.name}</p>
                                 <p style={{ fontSize: 36, fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 4 }}>
-                                    {p.price}<span style={{ fontSize: 14, color: "#475569", fontWeight: 400 }}>/mo</span>
+                                    {p.price}<span style={{ fontSize: 14, color: "#475569", fontWeight: 400 }}>/forever</span>
                                 </p>
                                 <p style={{ fontSize: 13, color: "#64748b" }}>{p.desc}</p>
                             </div>
@@ -461,7 +428,7 @@ export default function Landing() {
                     </div>
 
                     <Link to="/pricing" className="btn-primary" style={{ fontSize: 14, padding: "14px 32px", display: "inline-flex", alignItems: "center", gap: 8 }}>
-                        View All Plans
+                        Compare Plans
                         <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                         </svg>
@@ -542,7 +509,7 @@ export default function Landing() {
                         ))}
                     </div>
                     <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <p style={{ fontSize: 12, color: "#334155" }}>© 2025 Shield360 Cybersecurity Platform. All rights reserved.</p>
+                        <p style={{ fontSize: 12, color: "#334155" }}>© 2025 Shield360 Cybersecurity Platform. Bachelor's Final Project.</p>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399" }} className="animate-pulse" />
                             <span style={{ fontSize: 12, color: "#475569" }}>All systems operational</span>

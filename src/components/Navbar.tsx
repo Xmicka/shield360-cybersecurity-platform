@@ -1,19 +1,21 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useSubscription } from "../context/subscriptionContext";
 
 export default function AppNavbar() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { plan, role } = useSubscription();
 
-    const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + "/");
+    const isActive = (path: string) => location.pathname === path;
 
     return (
         <motion.nav
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="fixed top-0 left-0 right-0 z-50 h-16 glass border-b border-white/5"
-            style={{ borderRadius: 0 }}
+            className="fixed top-0 left-0 right-0 z-50 h-16"
+            style={{ borderRadius: 0, background: "rgba(5,8,16,0.75)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(148,163,184,0.06)" }}
         >
             <div className="h-full px-6 flex items-center justify-between">
                 {/* Logo */}
@@ -30,21 +32,22 @@ export default function AppNavbar() {
                 </Link>
 
                 {/* Center nav links */}
-                <div className="hidden md:flex items-center gap-1 bg-navy-800/50 rounded-xl p-1">
+                <div className="hidden md:flex items-center gap-1 rounded-xl p-1" style={{ background: "rgba(10,14,26,0.5)" }}>
                     {[
                         { path: "/dashboard", label: "Dashboard" },
-                        { path: "/modules", label: "Modules" },
+                        ...(role === "admin" ? [{ path: "/admin", label: "Admin" }] : []),
                     ].map((link) => (
                         <Link
                             key={link.path}
-                            to={link.path === "/modules" ? "/modules/spear-phishing" : link.path}
+                            to={link.path}
                             className={`relative px-4 py-2 text-xs font-medium rounded-lg transition-all ${isActive(link.path) ? "text-white" : "text-slate-500 hover:text-slate-300"
                                 }`}
                         >
                             {isActive(link.path) && (
                                 <motion.div
                                     layoutId="nav-pill"
-                                    className="absolute inset-0 bg-navy-600/60 rounded-lg"
+                                    className="absolute inset-0 rounded-lg"
+                                    style={{ background: "rgba(15,22,41,0.6)" }}
                                     transition={{ type: "spring", stiffness: 500, damping: 35 }}
                                 />
                             )}
@@ -55,7 +58,28 @@ export default function AppNavbar() {
 
                 {/* Right side */}
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-400/8 border border-emerald-400/15">
+                    {/* Plan badge */}
+                    <div
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+                        style={{
+                            background: plan === "premium" ? "rgba(168,85,247,0.08)" : "rgba(34,211,238,0.08)",
+                            border: `1px solid ${plan === "premium" ? "rgba(168,85,247,0.15)" : "rgba(34,211,238,0.15)"}`,
+                        }}
+                    >
+                        <div
+                            className="w-1.5 h-1.5 rounded-full animate-pulse"
+                            style={{ background: plan === "premium" ? "#a855f7" : "#22d3ee" }}
+                        />
+                        <span
+                            className="text-[10px] font-medium hidden sm:inline capitalize"
+                            style={{ color: plan === "premium" ? "#a855f7" : "#22d3ee" }}
+                        >
+                            {plan}
+                        </span>
+                    </div>
+
+                    {/* Status */}
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.15)" }}>
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         <span className="text-[10px] text-emerald-400 font-medium hidden sm:inline">Online</span>
                     </div>
@@ -63,7 +87,8 @@ export default function AppNavbar() {
                     {/* User menu */}
                     <button
                         onClick={() => navigate("/")}
-                        className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400/20 to-purple-500/20 flex items-center justify-center hover:from-cyan-400/30 hover:to-purple-500/30 transition-all"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                        style={{ background: "linear-gradient(135deg, rgba(34,211,238,0.2), rgba(168,85,247,0.2))" }}
                     >
                         <svg viewBox="0 0 24 24" className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />

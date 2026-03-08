@@ -1,71 +1,19 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import { MODULES } from "../config/services";
 
-export type PlanType = "free" | "starter" | "professional" | "enterprise";
+export type PlanType = "free" | "premium";
+export type UserRole = "user" | "admin";
 
-export interface PlanInfo {
-    id: PlanType;
-    name: string;
-    price: number;
-    annualPrice: number;
-    features: string[];
-    modules: string[];
-}
-
-export const PLANS: PlanInfo[] = [
-    {
-        id: "starter",
-        name: "Starter",
-        price: 49,
-        annualPrice: 39,
-        features: [
-            "Dashboard Overview",
-            "Spear Phishing Simulation",
-            "Basic Risk Scoring",
-            "Email Reports",
-            "5 User Seats",
-        ],
-        modules: ["spear-phishing"],
-    },
-    {
-        id: "professional",
-        name: "Professional",
-        price: 129,
-        annualPrice: 99,
-        features: [
-            "Everything in Starter",
-            "Behaviour Intelligence Engine",
-            "Device Behaviour Monitoring",
-            "Advanced Analytics",
-            "25 User Seats",
-            "Priority Support",
-        ],
-        modules: ["spear-phishing", "behaviour-engine", "device-monitoring"],
-    },
-    {
-        id: "enterprise",
-        name: "Enterprise",
-        price: 299,
-        annualPrice: 239,
-        features: [
-            "Everything in Professional",
-            "Compliance & Policy Engine",
-            "Custom Integrations",
-            "Unlimited Seats",
-            "Dedicated Account Manager",
-            "SLA Guarantee",
-            "On-premise Option",
-        ],
-        modules: ["spear-phishing", "behaviour-engine", "device-monitoring", "compliance-engine"],
-    },
-];
-
-interface SubscriptionState {
+export interface SubscriptionState {
     plan: PlanType;
-    billing: "monthly" | "annual";
-    setPlan: (plan: PlanType, billing?: "monthly" | "annual") => void;
+    role: UserRole;
+    setPlan: (plan: PlanType) => void;
+    setRole: (role: UserRole) => void;
     hasAccess: (moduleSlug: string) => boolean;
-    currentPlan: PlanInfo | null;
+    // Admin can toggle individual modules on/off
+    enabledModules: string[];
+    toggleModule: (slug: string) => void;
 }
 
 const SubscriptionContext = createContext<SubscriptionState | undefined>(undefined);
@@ -75,31 +23,58 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         const saved = localStorage.getItem("s360_plan");
         return (saved as PlanType) || "free";
     });
-    const [billing, setBilling] = useState<"monthly" | "annual">(() => {
-        const saved = localStorage.getItem("s360_billing");
-        return (saved as "monthly" | "annual") || "monthly";
+    const [role, setRoleState] = useState<UserRole>(() => {
+        const saved = localStorage.getItem("s360_role");
+        return (saved as UserRole) || "admin";
+    });
+    const [enabledModules, setEnabledModules] = useState<string[]>(() => {
+        const saved = localStorage.getItem("s360_enabled_modules");
+        if (saved) return JSON.parse(saved);
+        // Default: all modules enabled
+        return MODULES.map((m) => m.slug);
     });
 
     useEffect(() => {
         localStorage.setItem("s360_plan", plan);
-        localStorage.setItem("s360_billing", billing);
-    }, [plan, billing]);
+    }, [plan]);
 
-    const currentPlan = PLANS.find((p) => p.id === plan) || null;
+    useEffect(() => {
+        localStorage.setItem("s360_role", role);
+    }, [role]);
+
+    useEffect(() => {
+        localStorage.setItem("s360_enabled_modules", JSON.stringify(enabledModules));
+    }, [enabledModules]);
 
     const hasAccess = (moduleSlug: string): boolean => {
-        if (plan === "free") return false;
-        const p = PLANS.find((pl) => pl.id === plan);
-        return p ? p.modules.includes(moduleSlug) : false;
+        const mod = MODULES.find((m) => m.slug === moduleSlug);
+        if (!mod) return false;
+        // Check if admin has enabled this module
+        if (!enabledModules.includes(moduleSlug)) return false;
+        // Free tier: only free modules
+        if (mod.tier === "free") return true;
+        // Premium tier: need premium plan
+        return plan === "premium";
     };
 
-    const setPlan = (newPlan: PlanType, newBilling?: "monthly" | "annual") => {
+    const setPlan = (newPlan: PlanType) => {
         setPlanState(newPlan);
-        if (newBilling) setBilling(newBilling);
+    };
+
+    const setRole = (newRole: UserRole) => {
+        setRoleState(newRole);
+    };
+
+    const toggleModule = (slug: string) => {
+        setEnabledModules((prev) =>
+            prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
+        );
     };
 
     return (
-        <SubscriptionContext.Provider value={{ plan, billing, setPlan, hasAccess, currentPlan }}>
+        <SubscriptionContext.Provider
+            value={{ plan, role, setPlan, setRole, hasAccess, enabledModules, toggleModule }}
+        >
             {children}
         </SubscriptionContext.Provider>
     );

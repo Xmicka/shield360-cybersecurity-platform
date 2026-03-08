@@ -1,56 +1,88 @@
-// Centralized service endpoint configuration
-// Priority: VITE_*_API env vars > VITE_*_ENGINE_API env vars > defaults
+// ─── Deployed Module URLs ───
+// Each module links to its independently deployed frontend.
+// Clicking a module card/sidebar link opens the deployed version.
 
-export const SERVICE_URLS = {
-    spearPhishing: {
-        apiUrl:
-            import.meta.env.VITE_THREAT_API ||
-            import.meta.env.VITE_SPEAR_PHISHING_API ||
-            "http://localhost:5000",
-        dashboardUrl:
-            import.meta.env.VITE_SPEAR_PHISHING_DASHBOARD ||
-            "https://spear-phishing-dashboard.onrender.com",
-    },
-    behaviorEngine: {
-        apiUrl:
-            import.meta.env.VITE_BEHAVIOR_API ||
-            import.meta.env.VITE_BEHAVIOR_ENGINE_API ||
-            "http://localhost:5001",
-        dashboardUrl:
-            import.meta.env.VITE_BEHAVIOR_ENGINE_DASHBOARD || "",
-    },
-    deviceMonitoring: {
-        apiUrl:
-            import.meta.env.VITE_DEVICE_API ||
-            import.meta.env.VITE_DEVICE_MONITORING_API ||
-            "http://localhost:5002",
-        dashboardUrl:
-            import.meta.env.VITE_DEVICE_MONITORING_DASHBOARD || "",
-    },
-    complianceEngine: {
-        apiUrl:
-            import.meta.env.VITE_COMPLIANCE_API ||
-            import.meta.env.VITE_COMPLIANCE_ENGINE_API ||
-            "http://localhost:5003",
-        dashboardUrl:
-            import.meta.env.VITE_COMPLIANCE_ENGINE_DASHBOARD || "",
-    },
-};
+export interface ModuleConfig {
+    slug: string;
+    name: string;
+    shortName: string;
+    description: string;
+    deployedUrl: string;
+    repoUrl: string;
+    tier: "free" | "premium";
+    icon: string; // SVG path
+    color: string;
+    gradient: string;
+    tag: string;
+    features: string[];
+}
 
-// Health check helper — pings /metrics for each service
-export async function checkServiceHealth(
-    serviceName: keyof typeof SERVICE_URLS
-): Promise<boolean> {
-    const url = SERVICE_URLS[serviceName].apiUrl;
-    // Don't ping default localhost URLs
-    if (url.includes("localhost")) return false;
-    try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
-        const res = await fetch(`${url}/metrics`, { signal: controller.signal });
-        clearTimeout(timeout);
-        return res.ok;
-    } catch {
-        return false;
-    }
+export const MODULES: ModuleConfig[] = [
+    {
+        slug: "endpoint-scanner",
+        name: "Endpoint Risk Scanner",
+        shortName: "Endpoint Scanner",
+        description:
+            "Comprehensive endpoint vulnerability scanning, risk assessment, and real-time security posture monitoring across all networked devices.",
+        deployedUrl: "https://jolly-ground-07ccef300.1.azurestaticapps.net/",
+        repoUrl: "",
+        tier: "free",
+        icon: "M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z",
+        color: "#fbbf24",
+        gradient: "from-amber-400 to-orange-500",
+        tag: "Endpoint Security",
+        features: ["Vulnerability Scanning", "Risk Assessment", "Device Health"],
+    },
+    {
+        slug: "shadow-it",
+        name: "Shadow IT & Asset Vulnerability Dashboard",
+        shortName: "Shadow IT",
+        description:
+            "Discover unauthorized applications, shadow IT assets, and hidden vulnerabilities across your organization's digital footprint.",
+        deployedUrl: "https://shadow-it-eight.vercel.app/",
+        repoUrl: "https://github.com/Lord-Levi/Shield-360",
+        tier: "free",
+        icon: "M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z",
+        color: "#3b82f6",
+        gradient: "from-blue-400 to-indigo-500",
+        tag: "Asset Discovery",
+        features: ["Shadow IT Detection", "Asset Inventory", "Vulnerability Mapping"],
+    },
+    {
+        slug: "compliance-assistant",
+        name: "Compliance Assistant",
+        shortName: "Compliance",
+        description:
+            "AI-powered compliance monitoring across ISO 27001, GDPR, SOC 2, and NIST frameworks with automated policy enforcement and audit trails.",
+        deployedUrl: "https://compliance-assistant-two.vercel.app",
+        repoUrl: "https://github.com/Shanukiliyanage/Compliance-assistant.git",
+        tier: "premium",
+        icon: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
+        color: "#34d399",
+        gradient: "from-emerald-400 to-teal-500",
+        tag: "Compliance & Audit",
+        features: ["ISO 27001", "GDPR", "SOC 2", "NIST"],
+    },
+    {
+        slug: "spear-phishing",
+        name: "Behaviour-Adaptive Spear Phishing Simulation",
+        shortName: "Spear Phishing",
+        description:
+            "AI-driven adaptive phishing campaigns with real-time click detection, behavioral analysis, and automated micro-training enforcement.",
+        deployedUrl: "https://spear-phishing-dashboard.onrender.com/",
+        repoUrl: "https://github.com/Xmicka/behaviour-adaptive-spear-phishing.git",
+        tier: "premium",
+        icon: "M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75",
+        color: "#22d3ee",
+        gradient: "from-cyan-400 to-blue-500",
+        tag: "Phishing & Training",
+        features: ["Click Detection", "Risk Scoring", "Auto-Training"],
+    },
+];
+
+export const FREE_MODULES = MODULES.filter((m) => m.tier === "free");
+export const PREMIUM_MODULES = MODULES.filter((m) => m.tier === "premium");
+
+export function getModuleBySlug(slug: string): ModuleConfig | undefined {
+    return MODULES.find((m) => m.slug === slug);
 }
