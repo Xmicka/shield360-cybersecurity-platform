@@ -52,29 +52,53 @@ export default function About() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
                 className="fixed top-0 left-0 right-0 z-50"
-                style={{ background: "rgba(5,8,16,0.7)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(148,163,184,0.06)" }}
+                style={{ padding: "16px 24px" }}
             >
-                <div className="max-w-7xl mx-auto flex items-center justify-between px-6" style={{ height: 64 }}>
-                    <Link to="/" className="flex items-center gap-3">
-                        <div className="relative w-9 h-9">
-                            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-500 opacity-80" />
-                            <div className="absolute inset-[2px] rounded-[6px] bg-navy-900 flex items-center justify-center">
-                                <svg viewBox="0 0 24 24" className="w-4.5 h-4.5 text-cyan-400" fill="currentColor">
+                <div style={{
+                    maxWidth: 1200,
+                    margin: "0 auto",
+                    background: "rgba(7, 11, 22, 0.7)",
+                    backdropFilter: "blur(20px) saturate(1.5)",
+                    WebkitBackdropFilter: "blur(20px) saturate(1.5)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderRadius: 16,
+                    padding: "12px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                }}>
+                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{
+                            width: 36, height: 36, borderRadius: 10,
+                            background: "linear-gradient(135deg, #00f0ff, #7c3aed)",
+                            padding: 2, display: "flex",
+                        }}>
+                            <div style={{
+                                flex: 1, borderRadius: 8, background: "#070b16",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                            }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#00f0ff" }} fill="currentColor">
                                     <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
                                 </svg>
                             </div>
                         </div>
-                        <span className="text-base font-bold text-white tracking-tight">Shield360</span>
+                        <span style={{ fontSize: 16, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>Shield360</span>
                     </Link>
-                    <div className="flex items-center gap-3">
-                        <Link to="/contact" className="btn-ghost text-sm !py-2.5 !px-5">Contact</Link>
-                        <Link to="/pricing" className="btn-primary text-sm !py-2.5 !px-5">View Plans</Link>
+                    <div style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13, color: "#94a3b8" }}>
+                        <Link to="/about" style={{ transition: "color 0.2s" }} className="hover:text-white">About</Link>
+                        <Link to="/pricing" style={{ transition: "color 0.2s" }} className="hover:text-white">Pricing</Link>
+                        <Link to="/contact" style={{ transition: "color 0.2s" }} className="hover:text-white">Contact</Link>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <Link to="/login" style={{ fontSize: 13, color: "#94a3b8", padding: "8px 16px" }} className="hover:text-white">Sign In</Link>
+                        <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>Get Started</Link>
                     </div>
                 </div>
             </motion.nav>
 
-            <div className="relative z-10 pt-36 pb-32 px-6">
-                <div className="max-w-5xl mx-auto">
+            <div className="relative z-10" style={{ padding: "128px 32px 96px" }}>
+                <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
                     {/* ─── Hero / Mission ─── */}
                     <motion.div {...fadeIn} className="text-center mb-28">
@@ -83,7 +107,7 @@ export default function About() {
                             Democratising <span className="gradient-text">cybersecurity</span> for SMEs
                         </h1>
                         <p style={{ fontSize: 18, color: "#94a3b8", maxWidth: 640, margin: "0 auto", lineHeight: 1.7, marginBottom: 16 }}>
-                            Small and medium enterprises face the same cyber threats as large corporations — but without the budget or expertise to combat them. Shield360 was built to change that.
+                            Small and medium enterprises face the same cyber threats as large corporations, but without the budget or expertise to combat them. Shield360 was built to change that.
                         </p>
                         <p style={{ fontSize: 15, color: "#64748b", maxWidth: 640, margin: "0 auto", lineHeight: 1.7 }}>
                             We combine AI-driven threat simulation, behavioural analytics, device monitoring, and compliance automation into a single, affordable platform. Our mission is to make enterprise-grade security accessible to every business, regardless of size.

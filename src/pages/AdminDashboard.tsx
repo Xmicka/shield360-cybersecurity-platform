@@ -59,7 +59,7 @@ export default function AdminDashboard() {
                     setRecentUsers(newUsers);
                 }
             } catch {
-                // Firestore not configured — use fallback values
+                // Firestore not configured - use fallback values
             } finally {
                 if (!cancelled) setStatsLoading(false);
             }

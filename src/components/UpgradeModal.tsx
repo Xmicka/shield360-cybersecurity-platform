@@ -157,7 +157,7 @@ export default function UpgradeModal({ isOpen, onClose, moduleName, onUpgrade, i
                                 </div>
 
                                 <p className="text-[10px] text-slate-600 mt-4">
-                                    Demo mode — instant activation, no payment required
+                                    Demo mode - instant activation, no payment required
                                 </p>
                             </div>
                         </div>

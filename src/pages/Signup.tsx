@@ -28,7 +28,7 @@ export default function Signup() {
             if (code === "auth/email-already-in-use") {
                 setError("An account with this email already exists");
             } else if (code === "auth/weak-password") {
-                setError("Password is too weak — use at least 6 characters");
+                setError("Password is too weak - use at least 6 characters");
             } else if (code === "auth/invalid-email") {
                 setError("Invalid email address");
             } else {

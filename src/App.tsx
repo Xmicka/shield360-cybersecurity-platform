@@ -60,7 +60,7 @@ function App() {
             <Route path="/about" element={<PageWrap><About /></PageWrap>} />
             <Route path="/contact" element={<PageWrap><Contact /></PageWrap>} />
 
-            {/* App (sidebar + navbar) — protected */}
+            {/* App (sidebar + navbar) - protected */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route path="/dashboard" element={<PageWrap><Dashboard /></PageWrap>} />
               <Route path="/admin" element={<PageWrap><AdminDashboard /></PageWrap>} />

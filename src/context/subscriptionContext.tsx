@@ -87,7 +87,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
                 }
                 if (!cancelled) setMonthlyUsage(usage);
             } catch {
-                // Firestore load failed — fall back to localStorage
+                // Firestore load failed - fall back to localStorage
             } finally {
                 if (!cancelled) setFirestoreLoaded(true);
             }

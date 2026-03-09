@@ -13,21 +13,58 @@ export default function Pricing() {
         <div className="relative min-h-screen">
             <AnimatedBackground />
             {/* Navbar */}
-            <motion.nav initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-3">
-                        <div className="relative w-10 h-10"><div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 opacity-80" /><div className="absolute inset-[2px] rounded-[10px] bg-navy-900 flex items-center justify-center"><svg viewBox="0 0 24 24" className="w-5 h-5 text-cyan-400" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" /></svg></div></div>
-                        <span className="text-lg font-bold text-white tracking-tight">Shield360</span>
+            <motion.nav
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="fixed top-0 left-0 right-0 z-50"
+                style={{ padding: "16px 24px" }}
+            >
+                <div style={{
+                    maxWidth: 1200,
+                    margin: "0 auto",
+                    background: "rgba(7, 11, 22, 0.7)",
+                    backdropFilter: "blur(20px) saturate(1.5)",
+                    WebkitBackdropFilter: "blur(20px) saturate(1.5)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderRadius: 16,
+                    padding: "12px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                }}>
+                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{
+                            width: 36, height: 36, borderRadius: 10,
+                            background: "linear-gradient(135deg, #00f0ff, #7c3aed)",
+                            padding: 2, display: "flex",
+                        }}>
+                            <div style={{
+                                flex: 1, borderRadius: 8, background: "#070b16",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                            }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#00f0ff" }} fill="currentColor">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <span style={{ fontSize: 16, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>Shield360</span>
                     </Link>
-                    <div className="flex items-center gap-3">
-                        <Link to="/login" className="btn-ghost text-sm !py-2.5 !px-5">Sign In</Link>
-                        <Link to="/signup" className="btn-primary text-sm !py-2.5 !px-5">Get Started</Link>
+                    <div style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13, color: "#94a3b8" }}>
+                        <Link to="/about" style={{ transition: "color 0.2s" }} className="hover:text-white">About</Link>
+                        <Link to="/pricing" style={{ transition: "color 0.2s" }} className="hover:text-white">Pricing</Link>
+                        <Link to="/contact" style={{ transition: "color 0.2s" }} className="hover:text-white">Contact</Link>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <Link to="/login" style={{ fontSize: 13, color: "#94a3b8", padding: "8px 16px" }} className="hover:text-white">Sign In</Link>
+                        <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>Get Started</Link>
                     </div>
                 </div>
             </motion.nav>
 
-            <div className="relative z-10 pt-32 pb-24 px-6">
-                <div className="max-w-6xl mx-auto">
+            <div className="relative z-10" style={{ padding: "128px 32px 96px" }}>
+                <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                     {/* Header */}
                     <motion.div {...fadeIn} className="text-center mb-16">
                         <p className="text-xs uppercase tracking-[0.3em] text-cyan-400 font-semibold mb-4">Pricing</p>
@@ -164,7 +201,7 @@ export default function Pricing() {
                                                 fontSize: 13, fontWeight: 600, display: "block",
                                             }}
                                         >
-                                            {tier.id === "enterprise" ? "Contact Sales" : `Upgrade — $${tier.price}/mo`}
+                                            {tier.id === "enterprise" ? "Contact Sales" : `Upgrade to ${tier.name}`}
                                         </Link>
                                     )}
                                 </motion.div>
@@ -223,7 +260,7 @@ export default function Pricing() {
                                                         {limit === -1 ? "∞" : `${limit}/mo`}
                                                     </span>
                                                 ) : (
-                                                    <span style={{ fontSize: 16, color: "#334155" }}>—</span>
+                                                    <span style={{ fontSize: 16, color: "#334155" }}>-</span>
                                                 )}
                                             </div>
                                         );

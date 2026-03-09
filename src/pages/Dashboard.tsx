@@ -120,7 +120,7 @@ export default function Dashboard() {
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20 }}>
                 <motion.div {...fadeIn} className="glass-card" style={{ padding: 28 }}>
                     <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 2 }}>Threat Activity</h3>
-                    <p style={{ fontSize: 12, color: "#64748b", marginBottom: 20 }}>Threats detected vs blocked — last 6 months</p>
+                    <p style={{ fontSize: 12, color: "#64748b", marginBottom: 20 }}>Threats detected vs blocked, last 6 months</p>
                     <ResponsiveContainer width="100%" height={240}>
                         <AreaChart data={threatTrend}>
                             <defs>

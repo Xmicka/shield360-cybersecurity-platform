@@ -27,21 +27,58 @@ export default function Contact() {
     return (
         <div className="relative min-h-screen">
             <AnimatedBackground />
-            <motion.nav initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-3">
-                        <div className="relative w-10 h-10"><div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 opacity-80" /><div className="absolute inset-[2px] rounded-[10px] bg-navy-900 flex items-center justify-center"><svg viewBox="0 0 24 24" className="w-5 h-5 text-cyan-400" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" /></svg></div></div>
-                        <span className="text-lg font-bold text-white tracking-tight">Shield360</span>
+            <motion.nav
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="fixed top-0 left-0 right-0 z-50"
+                style={{ padding: "16px 24px" }}
+            >
+                <div style={{
+                    maxWidth: 1200,
+                    margin: "0 auto",
+                    background: "rgba(7, 11, 22, 0.7)",
+                    backdropFilter: "blur(20px) saturate(1.5)",
+                    WebkitBackdropFilter: "blur(20px) saturate(1.5)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderRadius: 16,
+                    padding: "12px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                }}>
+                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{
+                            width: 36, height: 36, borderRadius: 10,
+                            background: "linear-gradient(135deg, #00f0ff, #7c3aed)",
+                            padding: 2, display: "flex",
+                        }}>
+                            <div style={{
+                                flex: 1, borderRadius: 8, background: "#070b16",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                            }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#00f0ff" }} fill="currentColor">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <span style={{ fontSize: 16, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>Shield360</span>
                     </Link>
-                    <div className="flex items-center gap-3">
-                        <Link to="/about" className="btn-ghost text-sm !py-2.5 !px-5">About</Link>
-                        <Link to="/pricing" className="btn-primary text-sm !py-2.5 !px-5">View Plans</Link>
+                    <div style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13, color: "#94a3b8" }}>
+                        <Link to="/about" style={{ transition: "color 0.2s" }} className="hover:text-white">About</Link>
+                        <Link to="/pricing" style={{ transition: "color 0.2s" }} className="hover:text-white">Pricing</Link>
+                        <Link to="/contact" style={{ transition: "color 0.2s" }} className="hover:text-white">Contact</Link>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <Link to="/login" style={{ fontSize: 13, color: "#94a3b8", padding: "8px 16px" }} className="hover:text-white">Sign In</Link>
+                        <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>Get Started</Link>
                     </div>
                 </div>
             </motion.nav>
 
-            <div className="relative z-10 pt-32 pb-24 px-6">
-                <div className="max-w-6xl mx-auto">
+            <div className="relative z-10" style={{ padding: "128px 32px 96px" }}>
+                <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                     <motion.div {...fadeIn} className="text-center mb-16">
                         <p className="text-xs uppercase tracking-[0.3em] text-cyan-400 font-semibold mb-4">Contact</p>
                         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">Get in <span className="gradient-text">touch</span></h1>
@@ -77,7 +114,7 @@ export default function Contact() {
                             {[
                                 { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />, label: "Email", value: "support@shield360.io" },
                                 { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582" />, label: "Website", value: "shield360.io" },
-                                { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />, label: "Location", value: "Remote First — Global" },
+                                { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />, label: "Location", value: "Remote First, Global" },
                             ].map((info) => (
                                 <div key={info.label} className="glass p-5 flex items-start gap-4">
                                     <div className="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center shrink-0"><svg viewBox="0 0 24 24" className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={1.5}>{info.icon}</svg></div>

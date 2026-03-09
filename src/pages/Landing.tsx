@@ -403,7 +403,7 @@ export default function Landing() {
                         {[
                             { name: "Starter", price: "Free", desc: "Endpoint + Shadow IT · 10/mo", color: "#22d3ee", popular: false },
                             { name: "Professional", price: "$50", period: "/mo", desc: "All 4 modules · usage limits", color: "#a855f7", popular: true },
-                            { name: "Enterprise", price: "$200", period: "/mo", desc: "Unlimited everything", color: "#fbbf24", popular: false },
+                            { name: "Enterprise", price: "$120", period: "/mo", desc: "Unlimited everything", color: "#fbbf24", popular: false },
                         ].map((p) => (
                             <div key={p.name} className="glass-card" style={{
                                 padding: 28, textAlign: "center",
