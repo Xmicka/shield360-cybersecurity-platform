@@ -5,9 +5,12 @@ interface UpgradeModalProps {
     onClose: () => void;
     moduleName: string;
     onUpgrade: () => void;
+    /** If true, user has access but hit usage limit */
+    isUsageLimited?: boolean;
+    usageInfo?: { used: number; limit: number };
 }
 
-export default function UpgradeModal({ isOpen, onClose, moduleName, onUpgrade }: UpgradeModalProps) {
+export default function UpgradeModal({ isOpen, onClose, moduleName, onUpgrade, isUsageLimited, usageInfo }: UpgradeModalProps) {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -62,37 +65,58 @@ export default function UpgradeModal({ isOpen, onClose, moduleName, onUpgrade }:
 
                             {/* Content */}
                             <div className="relative z-10 text-center">
-                                {/* Lock icon */}
+                                {/* Icon */}
                                 <div
                                     className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center"
                                     style={{
-                                        background: "linear-gradient(135deg, rgba(34,211,238,0.1), rgba(168,85,247,0.1))",
-                                        border: "1px solid rgba(34,211,238,0.2)",
+                                        background: isUsageLimited
+                                            ? "linear-gradient(135deg, rgba(251,191,36,0.1), rgba(249,115,22,0.1))"
+                                            : "linear-gradient(135deg, rgba(34,211,238,0.1), rgba(168,85,247,0.1))",
+                                        border: `1px solid ${isUsageLimited ? "rgba(251,191,36,0.2)" : "rgba(34,211,238,0.2)"}`,
                                     }}
                                 >
-                                    <svg viewBox="0 0 24 24" className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                                        />
-                                    </svg>
+                                    {isUsageLimited ? (
+                                        <svg viewBox="0 0 24 24" className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    ) : (
+                                        <svg viewBox="0 0 24 24" className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                        </svg>
+                                    )}
                                 </div>
 
-                                <h2 className="text-xl font-bold text-white mb-2">Premium Module</h2>
-                                <p className="text-sm text-slate-400 mb-6 leading-relaxed">
-                                    <span className="text-white font-semibold">{moduleName}</span> is part of the{" "}
-                                    <span className="text-cyan-400 font-semibold">Shield360 Premium</span> tier. Upgrade
-                                    to unlock advanced security capabilities.
-                                </p>
+                                {isUsageLimited ? (
+                                    <>
+                                        <h2 className="text-xl font-bold text-white mb-2">Monthly Limit Reached</h2>
+                                        <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+                                            You've used{" "}
+                                            <span className="text-amber-400 font-semibold">
+                                                {usageInfo ? `${usageInfo.used}/${usageInfo.limit}` : "all"}
+                                            </span>{" "}
+                                            of your monthly uses for{" "}
+                                            <span className="text-white font-semibold">{moduleName}</span>.
+                                            Upgrade to get higher limits or unlimited access.
+                                        </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <h2 className="text-xl font-bold text-white mb-2">Upgrade Required</h2>
+                                        <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+                                            <span className="text-white font-semibold">{moduleName}</span> requires a higher tier.
+                                            Upgrade to{" "}
+                                            <span className="text-cyan-400 font-semibold">Shield360 Professional</span> or above.
+                                        </p>
+                                    </>
+                                )}
 
-                                {/* Premium features */}
+                                {/* Benefits */}
                                 <div className="mb-6 space-y-2">
                                     {[
                                         "Full access to all 4 security modules",
+                                        "Higher monthly usage limits",
                                         "Advanced AI-driven analytics",
                                         "Priority support & SLA guarantee",
-                                        "Unlimited team seats",
                                     ].map((feat) => (
                                         <div key={feat} className="flex items-center gap-2 text-left">
                                             <svg
@@ -123,7 +147,7 @@ export default function UpgradeModal({ isOpen, onClose, moduleName, onUpgrade }:
                                     </button>
                                     <button
                                         onClick={onUpgrade}
-                                        className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-cyan-500/20"
+                                        className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-cyan-500/20 text-center"
                                         style={{
                                             background: "linear-gradient(135deg, #22d3ee, #3b82f6)",
                                         }}
@@ -133,7 +157,7 @@ export default function UpgradeModal({ isOpen, onClose, moduleName, onUpgrade }:
                                 </div>
 
                                 <p className="text-[10px] text-slate-600 mt-4">
-                                    No payment required for demo — click Upgrade to instantly unlock
+                                    Demo mode — instant activation, no payment required
                                 </p>
                             </div>
                         </div>

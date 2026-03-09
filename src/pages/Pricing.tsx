@@ -1,50 +1,13 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSubscription } from "../context/subscriptionContext";
-import { FREE_MODULES, PREMIUM_MODULES, MODULES } from "../config/services";
+import { PLANS, MODULES } from "../config/services";
 import AnimatedBackground from "../components/AnimatedBackground";
 
 const fadeIn = { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true as const }, transition: { duration: 0.5 } };
 
-const tiers = [
-    {
-        id: "free" as const,
-        name: "Free",
-        price: "0",
-        description: "Essential security tools to get started",
-        color: "#22d3ee",
-        gradient: "from-cyan-400 to-blue-500",
-        modules: FREE_MODULES,
-        features: [
-            "Endpoint Risk Scanner",
-            "Shadow IT & Asset Vulnerability Dashboard",
-            "Basic security metrics dashboard",
-            "Cross-module activity feed",
-            "Community support",
-        ],
-    },
-    {
-        id: "premium" as const,
-        name: "Premium",
-        price: "0",
-        description: "Full suite for complete cybersecurity coverage",
-        color: "#a855f7",
-        gradient: "from-purple-400 to-pink-500",
-        popular: true,
-        modules: PREMIUM_MODULES,
-        features: [
-            "Everything in Free, plus:",
-            "Compliance Assistant (ISO 27001, GDPR, SOC 2)",
-            "Spear Phishing Simulation Engine",
-            "Admin control panel",
-            "Module toggle management",
-            "Priority support",
-        ],
-    },
-];
-
 export default function Pricing() {
-    const { plan: currentPlan, setPlan } = useSubscription();
+    const { plan: currentPlan } = useSubscription();
 
     return (
         <div className="relative min-h-screen">
@@ -64,21 +27,21 @@ export default function Pricing() {
             </motion.nav>
 
             <div className="relative z-10 pt-32 pb-24 px-6">
-                <div className="max-w-5xl mx-auto">
+                <div className="max-w-6xl mx-auto">
                     {/* Header */}
                     <motion.div {...fadeIn} className="text-center mb-16">
                         <p className="text-xs uppercase tracking-[0.3em] text-cyan-400 font-semibold mb-4">Pricing</p>
                         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">
-                            Enterprise security, <span className="gradient-text">completely free</span>
+                            Security that <span className="gradient-text">scales with you</span>
                         </h1>
                         <p className="text-lg text-slate-400 max-w-xl mx-auto">
-                            Start with essential tools at no cost. Upgrade instantly to unlock the full security suite — no payment required for this demo.
+                            Start free with essential tools. Upgrade for full coverage and unlimited access to enterprise-grade cybersecurity.
                         </p>
                     </motion.div>
 
                     {/* Plans */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                        {tiers.map((tier, i) => {
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                        {PLANS.map((tier, i) => {
                             const isCurrent = currentPlan === tier.id;
                             const isPopular = tier.popular;
 
@@ -88,61 +51,83 @@ export default function Pricing() {
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ delay: i * 0.15, duration: 0.5 }}
+                                    transition={{ delay: i * 0.12, duration: 0.5 }}
                                     className="relative"
                                     style={{
                                         background: "rgba(10,14,26,0.6)",
                                         backdropFilter: "blur(20px)",
-                                        border: `1px solid ${isPopular ? "rgba(168,85,247,0.25)" : "rgba(148,163,184,0.06)"}`,
+                                        border: `1px solid ${isPopular ? "rgba(168,85,247,0.3)" : "rgba(148,163,184,0.06)"}`,
                                         borderRadius: 24,
-                                        padding: 40,
+                                        padding: "36px 28px",
                                         display: "flex",
                                         flexDirection: "column",
+                                        ...(isPopular ? { transform: "scale(1.03)", boxShadow: "0 0 60px rgba(168,85,247,0.08)" } : {}),
                                     }}
                                 >
                                     {isPopular && (
                                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full">
-                                            <span className="text-[10px] font-bold text-white uppercase tracking-wider">Recommended</span>
+                                            <span className="text-[10px] font-bold text-white uppercase tracking-wider">Most Popular</span>
                                         </div>
                                     )}
 
-                                    <div style={{ marginBottom: 28 }}>
-                                        <h3 style={{ fontSize: 20, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>{tier.name}</h3>
-                                        <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>{tier.description}</p>
-                                        <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-                                            <span style={{ fontSize: 48, fontWeight: 800, color: "#f1f5f9" }}>${tier.price}</span>
-                                            <span style={{ fontSize: 14, color: "#64748b" }}>/forever</span>
+                                    <div style={{ marginBottom: 24 }}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                                            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#f1f5f9" }}>{tier.name}</h3>
                                         </div>
+                                        <p style={{ fontSize: 12, color: "#64748b", marginBottom: 16 }}>{tier.tagline}</p>
+                                        <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                                            <span style={{ fontSize: 44, fontWeight: 800, color: "#f1f5f9" }}>
+                                                {tier.price === 0 ? "Free" : `$${tier.price}`}
+                                            </span>
+                                            {tier.price > 0 && (
+                                                <span style={{ fontSize: 14, color: "#64748b" }}>/{tier.period}</span>
+                                            )}
+                                        </div>
+                                        <p style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>{tier.description}</p>
                                     </div>
 
                                     {/* Included modules */}
-                                    <div style={{ marginBottom: 24 }}>
-                                        <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569", marginBottom: 12 }}>
-                                            Included Modules
+                                    <div style={{ marginBottom: 20 }}>
+                                        <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569", marginBottom: 10 }}>
+                                            Modules & Limits
                                         </p>
-                                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                                            {tier.modules.map((mod) => (
-                                                <div key={mod.slug} style={{
-                                                    display: "flex", alignItems: "center", gap: 10,
-                                                    padding: "10px 14px", borderRadius: 12,
-                                                    background: "rgba(148,163,184,0.03)",
-                                                    border: "1px solid rgba(148,163,184,0.06)",
-                                                }}>
-                                                    <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
-                                                    <div>
-                                                        <p style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9" }}>{mod.shortName}</p>
-                                                        <p style={{ fontSize: 11, color: "#64748b" }}>{mod.tag}</p>
+                                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                                            {MODULES.map((mod) => {
+                                                const limit = tier.moduleLimits[mod.slug];
+                                                const included = limit !== undefined;
+                                                return (
+                                                    <div key={mod.slug} style={{
+                                                        display: "flex", alignItems: "center", gap: 8,
+                                                        padding: "8px 10px", borderRadius: 10,
+                                                        background: included ? "rgba(148,163,184,0.03)" : "transparent",
+                                                        border: included ? "1px solid rgba(148,163,184,0.06)" : "1px solid transparent",
+                                                        opacity: included ? 1 : 0.35,
+                                                    }}>
+                                                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: included ? mod.color : "#334155", flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
+                                                        <span style={{ fontSize: 12, fontWeight: 500, color: included ? "#e2e8f0" : "#475569", flex: 1 }}>{mod.shortName}</span>
+                                                        {included && (
+                                                            <span style={{
+                                                                fontSize: 10, fontWeight: 700, color: limit === -1 ? "#34d399" : tier.color,
+                                                                background: limit === -1 ? "rgba(52,211,153,0.1)" : `${tier.color}15`,
+                                                                padding: "2px 8px", borderRadius: 6,
+                                                            }}>
+                                                                {limit === -1 ? "Unlimited" : `${limit}/mo`}
+                                                            </span>
+                                                        )}
+                                                        {!included && (
+                                                            <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, color: "#334155" }} fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                                                        )}
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     </div>
 
                                     {/* Features */}
-                                    <ul style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32, flex: 1 }}>
+                                    <ul style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28, flex: 1 }}>
                                         {tier.features.map((f) => (
-                                            <li key={f} style={{ display: "flex", alignItems: "start", gap: 12, fontSize: 14 }}>
-                                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: tier.color, marginTop: 2, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                            <li key={f} style={{ display: "flex", alignItems: "start", gap: 10, fontSize: 13 }}>
+                                                <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, color: tier.color, marginTop: 2, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                                                 <span style={{ color: "#94a3b8" }}>{f}</span>
                                             </li>
                                         ))}
@@ -151,32 +136,35 @@ export default function Pricing() {
                                     {/* CTA */}
                                     {isCurrent ? (
                                         <div style={{
-                                            textAlign: "center", padding: "14px 0", borderRadius: 16,
+                                            textAlign: "center", padding: "12px 0", borderRadius: 14,
                                             background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)",
-                                            color: "#34d399", fontSize: 14, fontWeight: 600,
+                                            color: "#34d399", fontSize: 13, fontWeight: 600,
                                         }}>
                                             ✓ Current Plan
                                         </div>
-                                    ) : tier.id === "premium" ? (
-                                        <button
-                                            onClick={() => setPlan("premium")}
-                                            className="btn-primary"
-                                            style={{ width: "100%", textAlign: "center", padding: "14px 0", borderRadius: 16, fontSize: 14, fontWeight: 600 }}
-                                        >
-                                            Upgrade Now — It's Free
-                                        </button>
-                                    ) : (
+                                    ) : tier.id === "free" ? (
                                         <Link
                                             to="/signup"
                                             style={{
-                                                display: "block", textAlign: "center", padding: "14px 0", borderRadius: 16,
+                                                display: "block", textAlign: "center", padding: "12px 0", borderRadius: 14,
                                                 border: "1px solid rgba(148,163,184,0.1)",
-                                                color: "#f1f5f9", fontSize: 14, fontWeight: 600,
+                                                color: "#f1f5f9", fontSize: 13, fontWeight: 600,
                                                 transition: "all 0.2s",
                                             }}
                                             className="hover:border-cyan-400/30 hover:bg-cyan-400/5"
                                         >
                                             Get Started Free
+                                        </Link>
+                                    ) : (
+                                        <Link
+                                            to={`/checkout?plan=${tier.id}`}
+                                            className="btn-primary"
+                                            style={{
+                                                width: "100%", textAlign: "center", padding: "12px 0", borderRadius: 14,
+                                                fontSize: 13, fontWeight: 600, display: "block",
+                                            }}
+                                        >
+                                            {tier.id === "enterprise" ? "Contact Sales" : `Upgrade — $${tier.price}/mo`}
                                         </Link>
                                     )}
                                 </motion.div>
@@ -198,18 +186,21 @@ export default function Pricing() {
                         }}>
                             {/* Header row */}
                             <div style={{
-                                display: "grid", gridTemplateColumns: "2fr 1fr 1fr",
+                                display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
                                 padding: "16px 24px",
                                 borderBottom: "1px solid rgba(148,163,184,0.06)",
                                 background: "rgba(148,163,184,0.02)",
                             }}>
                                 <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em" }}>Module</span>
-                                <span style={{ fontSize: 12, fontWeight: 700, color: "#22d3ee", textTransform: "uppercase", letterSpacing: "0.1em", textAlign: "center" }}>Free</span>
-                                <span style={{ fontSize: 12, fontWeight: 700, color: "#a855f7", textTransform: "uppercase", letterSpacing: "0.1em", textAlign: "center" }}>Premium</span>
+                                {PLANS.map((p) => (
+                                    <span key={p.id} style={{ fontSize: 12, fontWeight: 700, color: p.color, textTransform: "uppercase", letterSpacing: "0.1em", textAlign: "center" }}>
+                                        {p.name}
+                                    </span>
+                                ))}
                             </div>
                             {MODULES.map((mod, i) => (
                                 <div key={mod.slug} style={{
-                                    display: "grid", gridTemplateColumns: "2fr 1fr 1fr",
+                                    display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
                                     padding: "16px 24px",
                                     borderBottom: i < MODULES.length - 1 ? "1px solid rgba(148,163,184,0.04)" : "none",
                                 }}>
@@ -217,16 +208,26 @@ export default function Pricing() {
                                         <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
                                         <span style={{ fontSize: 14, color: "#f1f5f9", fontWeight: 500 }}>{mod.shortName}</span>
                                     </div>
-                                    <div style={{ textAlign: "center" }}>
-                                        {mod.tier === "free" ? (
-                                            <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#22d3ee", display: "inline-block" }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                                        ) : (
-                                            <span style={{ fontSize: 16, color: "#334155" }}>—</span>
-                                        )}
-                                    </div>
-                                    <div style={{ textAlign: "center" }}>
-                                        <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#a855f7", display: "inline-block" }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                                    </div>
+                                    {PLANS.map((p) => {
+                                        const limit = p.moduleLimits[mod.slug];
+                                        const included = limit !== undefined;
+                                        return (
+                                            <div key={p.id} style={{ textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                {included ? (
+                                                    <span style={{
+                                                        fontSize: 11, fontWeight: 700,
+                                                        color: limit === -1 ? "#34d399" : p.color,
+                                                        background: limit === -1 ? "rgba(52,211,153,0.1)" : `${p.color}12`,
+                                                        padding: "3px 10px", borderRadius: 6,
+                                                    }}>
+                                                        {limit === -1 ? "∞" : `${limit}/mo`}
+                                                    </span>
+                                                ) : (
+                                                    <span style={{ fontSize: 16, color: "#334155" }}>—</span>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             ))}
                         </div>
@@ -235,7 +236,7 @@ export default function Pricing() {
                     {/* Trust badges */}
                     <motion.div {...fadeIn} className="mt-16 text-center">
                         <div className="inline-flex flex-wrap justify-center gap-8 text-sm text-slate-500">
-                            {["No credit card required", "Instant activation", "Cancel anytime", "Demo platform"].map((t) => (
+                            {["No credit card for free tier", "Instant activation", "Cancel anytime", "30-day money-back guarantee"].map((t) => (
                                 <div key={t} className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400" /><span>{t}</span></div>
                             ))}
                         </div>

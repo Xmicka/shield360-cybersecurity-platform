@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
-import { MODULES } from "../config/services";
+import { MODULES, getPlanById } from "../config/services";
+import type { PlanType } from "../config/services";
 import { useAuth } from "./authContext";
-import { getUserProfile, updateUserProfile } from "../services/firestoreService";
+import { getUserProfile, updateUserProfile, getMonthlyUsage, incrementModuleUsage } from "../services/firestoreService";
 
-export type PlanType = "free" | "premium";
+export type { PlanType };
 export type UserRole = "user" | "admin";
 
 export interface SubscriptionState {
@@ -13,21 +14,34 @@ export interface SubscriptionState {
     setPlan: (plan: PlanType) => void;
     setRole: (role: UserRole) => void;
     hasAccess: (moduleSlug: string) => boolean;
+    canUse: (moduleSlug: string) => boolean;
+    getRemainingUses: (moduleSlug: string) => number;
+    getModuleLimit: (moduleSlug: string) => number;
+    getModuleUsage: (moduleSlug: string) => number;
+    recordUsage: (moduleSlug: string) => Promise<boolean>;
     // Admin can toggle individual modules on/off
     enabledModules: string[];
     toggleModule: (slug: string) => void;
     firestoreLoaded: boolean;
+    monthlyUsage: Record<string, number>;
+    refreshUsage: () => Promise<void>;
 }
 
 const SubscriptionContext = createContext<SubscriptionState | undefined>(undefined);
+
+/** Normalize legacy plan values (e.g. "premium" → "professional") */
+function normalizePlan(raw: string | undefined | null): PlanType {
+    if (raw === "premium") return "professional";
+    if (raw === "professional" || raw === "enterprise") return raw;
+    return "free";
+}
 
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
     const [firestoreLoaded, setFirestoreLoaded] = useState(false);
 
     const [plan, setPlanState] = useState<PlanType>(() => {
-        const saved = localStorage.getItem("s360_plan");
-        return (saved as PlanType) || "free";
+        return normalizePlan(localStorage.getItem("s360_plan"));
     });
     const [role, setRoleState] = useState<UserRole>(() => {
         const saved = localStorage.getItem("s360_role");
@@ -38,8 +52,20 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         if (saved) return JSON.parse(saved);
         return MODULES.map((m) => m.slug);
     });
+    const [monthlyUsage, setMonthlyUsage] = useState<Record<string, number>>({});
 
-    // Load user profile from Firestore when authenticated
+    // Load usage from Firestore
+    const refreshUsage = useCallback(async () => {
+        if (!user) return;
+        try {
+            const usage = await getMonthlyUsage(user.uid);
+            setMonthlyUsage(usage);
+        } catch {
+            // Non-critical
+        }
+    }, [user]);
+
+    // Load user profile + usage from Firestore when authenticated
     useEffect(() => {
         if (!user) {
             setFirestoreLoaded(false);
@@ -48,14 +74,18 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         let cancelled = false;
         (async () => {
             try {
-                const profile = await getUserProfile(user.uid);
+                const [profile, usage] = await Promise.all([
+                    getUserProfile(user.uid),
+                    getMonthlyUsage(user.uid),
+                ]);
                 if (profile && !cancelled) {
-                    setPlanState(profile.plan || "free");
+                    setPlanState(normalizePlan(profile.plan));
                     setRoleState(profile.role || "admin");
                     if (profile.enabledModules?.length) {
                         setEnabledModules(profile.enabledModules);
                     }
                 }
+                if (!cancelled) setMonthlyUsage(usage);
             } catch {
                 // Firestore load failed — fall back to localStorage
             } finally {
@@ -80,12 +110,61 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         }
     }, [user]);
 
+    // ─── Access & Usage helpers ───
+
     const hasAccess = (moduleSlug: string): boolean => {
         const mod = MODULES.find((m) => m.slug === moduleSlug);
         if (!mod) return false;
         if (!enabledModules.includes(moduleSlug)) return false;
-        if (mod.tier === "free") return true;
-        return plan === "premium";
+        const planConfig = getPlanById(plan);
+        if (!planConfig) return false;
+        return moduleSlug in planConfig.moduleLimits;
+    };
+
+    const getModuleLimit = (moduleSlug: string): number => {
+        const planConfig = getPlanById(plan);
+        if (!planConfig) return 0;
+        return planConfig.moduleLimits[moduleSlug] ?? 0;
+    };
+
+    const getModuleUsage = (moduleSlug: string): number => {
+        return monthlyUsage[moduleSlug] || 0;
+    };
+
+    const getRemainingUses = (moduleSlug: string): number => {
+        const limit = getModuleLimit(moduleSlug);
+        if (limit === -1) return -1; // unlimited
+        return Math.max(0, limit - getModuleUsage(moduleSlug));
+    };
+
+    const canUse = (moduleSlug: string): boolean => {
+        if (!hasAccess(moduleSlug)) return false;
+        const limit = getModuleLimit(moduleSlug);
+        if (limit === -1) return true; // unlimited
+        return getModuleUsage(moduleSlug) < limit;
+    };
+
+    const recordUsage = async (moduleSlug: string): Promise<boolean> => {
+        if (!canUse(moduleSlug)) return false;
+        // Optimistic local update
+        setMonthlyUsage((prev) => ({
+            ...prev,
+            [moduleSlug]: (prev[moduleSlug] || 0) + 1,
+        }));
+        // Persist to Firestore
+        if (user) {
+            try {
+                await incrementModuleUsage(user.uid, moduleSlug);
+            } catch {
+                // Revert on failure
+                setMonthlyUsage((prev) => ({
+                    ...prev,
+                    [moduleSlug]: Math.max(0, (prev[moduleSlug] || 0) - 1),
+                }));
+                return false;
+            }
+        }
+        return true;
     };
 
     const setPlan = (newPlan: PlanType) => {
@@ -108,7 +187,13 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
     return (
         <SubscriptionContext.Provider
-            value={{ plan, role, setPlan, setRole, hasAccess, enabledModules, toggleModule, firestoreLoaded }}
+            value={{
+                plan, role, setPlan, setRole,
+                hasAccess, canUse, getRemainingUses,
+                getModuleLimit, getModuleUsage, recordUsage,
+                enabledModules, toggleModule,
+                firestoreLoaded, monthlyUsage, refreshUsage,
+            }}
         >
             {children}
         </SubscriptionContext.Provider>

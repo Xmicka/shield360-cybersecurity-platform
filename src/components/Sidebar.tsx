@@ -2,35 +2,38 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useSubscription } from "../context/subscriptionContext";
-import { MODULES } from "../config/services";
+import { MODULES, getNextPlan } from "../config/services";
 import UpgradeModal from "./UpgradeModal";
 
 export default function Sidebar() {
     const location = useLocation();
-    const { plan, hasAccess, role, setPlan } = useSubscription();
-    const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string }>({
+    const { plan, setPlan, hasAccess, canUse, role, getRemainingUses, getModuleLimit } = useSubscription();
+    const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string; isUsageLimited?: boolean; usageInfo?: { used: number; limit: number } }>({
         open: false,
         moduleName: "",
         deployedUrl: "",
     });
 
     const handleModuleClick = (slug: string, name: string, deployedUrl: string) => {
-        if (hasAccess(slug)) {
-            // Open the deployed URL in a new tab
+        if (canUse(slug)) {
             window.open(deployedUrl, "_blank", "noopener,noreferrer");
+        } else if (hasAccess(slug)) {
+            const limit = getModuleLimit(slug);
+            const remaining = getRemainingUses(slug);
+            setUpgradeModal({ open: true, moduleName: name, deployedUrl, isUsageLimited: true, usageInfo: { used: limit - remaining, limit } });
         } else {
-            // Show upgrade modal
             setUpgradeModal({ open: true, moduleName: name, deployedUrl });
         }
     };
 
     const handleUpgrade = () => {
-        setPlan("premium");
-        setUpgradeModal((prev) => ({ ...prev, open: false }));
-        // After upgrading, open the module
+        // Demo: instantly upgrade to the next tier and open the module
+        const nextPlan = getNextPlan(plan);
+        setPlan(nextPlan);
         if (upgradeModal.deployedUrl) {
             window.open(upgradeModal.deployedUrl, "_blank", "noopener,noreferrer");
         }
+        setUpgradeModal((prev) => ({ ...prev, open: false }));
     };
 
     return (
@@ -266,7 +269,7 @@ export default function Sidebar() {
                             Premium Modules
                         </p>
                         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            {MODULES.filter((m) => m.tier === "premium").map((mod) => {
+                            {MODULES.filter((m) => m.tier === "professional").map((mod) => {
                                 const locked = !hasAccess(mod.slug);
                                 return (
                                     <button
@@ -340,7 +343,7 @@ export default function Sidebar() {
 
                 {/* Bottom section */}
                 <div style={{ padding: 12, borderTop: "1px solid rgba(148,163,184,0.08)", display: "flex", flexDirection: "column", gap: 8 }}>
-                    {plan === "premium" ? (
+                    {plan !== "free" ? (
                         <div
                             style={{
                                 display: "block",
@@ -352,11 +355,11 @@ export default function Sidebar() {
                             }}
                         >
                             <p style={{ fontSize: 10, color: "#475569", marginBottom: 2 }}>Current Plan</p>
-                            <p style={{ fontSize: 13, fontWeight: 700, color: "#22d3ee" }}>Premium</p>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: plan === "enterprise" ? "#fbbf24" : "#a855f7", textTransform: "capitalize" }}>{plan}</p>
                         </div>
                     ) : (
-                        <button
-                            onClick={() => setPlan("premium")}
+                        <Link
+                            to="/pricing"
                             style={{
                                 display: "block",
                                 padding: 14,
@@ -370,9 +373,9 @@ export default function Sidebar() {
                             }}
                             className="hover:border-cyan-400/20"
                         >
-                            <p style={{ fontSize: 13, fontWeight: 700, color: "#22d3ee" }}>Upgrade to Premium</p>
-                            <p style={{ fontSize: 11, color: "#475569" }}>Unlock all modules</p>
-                        </button>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: "#22d3ee" }}>Upgrade Plan</p>
+                            <p style={{ fontSize: 11, color: "#475569" }}>From $50/mo</p>
+                        </Link>
                     )}
                     <div
                         style={{
@@ -395,6 +398,8 @@ export default function Sidebar() {
                 onClose={() => setUpgradeModal((prev) => ({ ...prev, open: false }))}
                 moduleName={upgradeModal.moduleName}
                 onUpgrade={handleUpgrade}
+                isUsageLimited={upgradeModal.isUsageLimited}
+                usageInfo={upgradeModal.usageInfo}
             />
         </>
     );

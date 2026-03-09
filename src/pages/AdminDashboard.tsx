@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useSubscription } from "../context/subscriptionContext";
 import { useAuth } from "../context/authContext";
-import { MODULES } from "../config/services";
+import { MODULES, getNextPlan } from "../config/services";
 import type { ModuleConfig } from "../config/services";
 import UpgradeModal from "../components/UpgradeModal";
 import {
@@ -91,11 +91,13 @@ export default function AdminDashboard() {
     };
 
     const handleUpgrade = () => {
-        setPlan("premium");
-        setUpgradeModal((prev) => ({ ...prev, open: false }));
+        // Demo: instantly upgrade to the next tier and open the module
+        const nextPlan = getNextPlan(plan);
+        setPlan(nextPlan);
         if (upgradeModal.deployedUrl) {
             window.open(upgradeModal.deployedUrl, "_blank", "noopener,noreferrer");
         }
+        setUpgradeModal((prev) => ({ ...prev, open: false }));
     };
 
     return (
@@ -122,9 +124,9 @@ export default function AdminDashboard() {
                             onClick={() => setPlan("free")}
                             style={{
                                 flex: 1,
-                                padding: "10px 16px",
+                                padding: "10px 12px",
                                 borderRadius: 10,
-                                fontSize: 13,
+                                fontSize: 12,
                                 fontWeight: 600,
                                 cursor: "pointer",
                                 transition: "all 0.2s",
@@ -136,21 +138,38 @@ export default function AdminDashboard() {
                             Free
                         </button>
                         <button
-                            onClick={() => setPlan("premium")}
+                            onClick={() => setPlan("professional")}
                             style={{
                                 flex: 1,
-                                padding: "10px 16px",
+                                padding: "10px 12px",
                                 borderRadius: 10,
-                                fontSize: 13,
+                                fontSize: 12,
                                 fontWeight: 600,
                                 cursor: "pointer",
                                 transition: "all 0.2s",
-                                background: plan === "premium" ? "linear-gradient(135deg, rgba(34,211,238,0.15), rgba(168,85,247,0.15))" : "rgba(255,255,255,0.03)",
-                                border: plan === "premium" ? "1px solid rgba(34,211,238,0.3)" : "1px solid rgba(255,255,255,0.06)",
-                                color: plan === "premium" ? "#22d3ee" : "#64748b",
+                                background: plan === "professional" ? "linear-gradient(135deg, rgba(168,85,247,0.15), rgba(236,72,153,0.15))" : "rgba(255,255,255,0.03)",
+                                border: plan === "professional" ? "1px solid rgba(168,85,247,0.3)" : "1px solid rgba(255,255,255,0.06)",
+                                color: plan === "professional" ? "#a855f7" : "#64748b",
                             }}
                         >
-                            Premium
+                            Pro
+                        </button>
+                        <button
+                            onClick={() => setPlan("enterprise")}
+                            style={{
+                                flex: 1,
+                                padding: "10px 12px",
+                                borderRadius: 10,
+                                fontSize: 12,
+                                fontWeight: 600,
+                                cursor: "pointer",
+                                transition: "all 0.2s",
+                                background: plan === "enterprise" ? "linear-gradient(135deg, rgba(251,191,36,0.15), rgba(249,115,22,0.15))" : "rgba(255,255,255,0.03)",
+                                border: plan === "enterprise" ? "1px solid rgba(251,191,36,0.3)" : "1px solid rgba(255,255,255,0.06)",
+                                color: plan === "enterprise" ? "#fbbf24" : "#64748b",
+                            }}
+                        >
+                            Enterprise
                         </button>
                     </div>
                 </div>
@@ -226,7 +245,7 @@ export default function AdminDashboard() {
                     {MODULES.map((mod) => {
                         const accessible = hasAccess(mod.slug);
                         const enabled = enabledModules.includes(mod.slug);
-                        const locked = mod.tier === "premium" && plan !== "premium";
+                        const locked = mod.tier === "professional" && plan === "free";
 
                         return (
                             <motion.div
@@ -529,8 +548,8 @@ export default function AdminDashboard() {
                                             <span style={{
                                                 fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
                                                 padding: "2px 8px", borderRadius: 6,
-                                                background: u.plan === "premium" ? "rgba(168,85,247,0.1)" : "rgba(34,211,238,0.1)",
-                                                color: u.plan === "premium" ? "#a855f7" : "#22d3ee",
+                                                background: u.plan === "enterprise" ? "rgba(251,191,36,0.1)" : u.plan === "professional" ? "rgba(168,85,247,0.1)" : "rgba(34,211,238,0.1)",
+                                                color: u.plan === "enterprise" ? "#fbbf24" : u.plan === "professional" ? "#a855f7" : "#22d3ee",
                                             }}>
                                                 {u.plan}
                                             </span>
@@ -576,7 +595,7 @@ export default function AdminDashboard() {
                                     <span style={{ color: "#94a3b8" }}>{m.shortName}</span>
                                 </div>
                             ))}
-                            {MODULES.filter((m) => m.tier === "premium").map((m) => (
+                            {MODULES.filter((m) => m.tier === "professional").map((m) => (
                                 <div key={m.slug} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
                                     <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#334155" }} fill="none" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -587,26 +606,26 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    {/* Premium Tier */}
+                    {/* Professional Tier */}
                     <div
                         style={{
                             padding: 24,
                             borderRadius: 16,
-                            background: plan === "premium"
-                                ? "linear-gradient(135deg, rgba(34,211,238,0.06), rgba(168,85,247,0.06))"
+                            background: plan === "professional" || plan === "enterprise"
+                                ? "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(236,72,153,0.06))"
                                 : "rgba(255,255,255,0.02)",
-                            border: plan === "premium"
-                                ? "1px solid rgba(34,211,238,0.2)"
+                            border: plan === "professional" || plan === "enterprise"
+                                ? "1px solid rgba(168,85,247,0.2)"
                                 : "1px solid rgba(255,255,255,0.06)",
                         }}
                     >
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
                             <div>
-                                <h4 style={{ fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>Premium</h4>
-                                <p style={{ fontSize: 12, color: "#64748b" }}>Complete security suite</p>
+                                <h4 style={{ fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>Professional</h4>
+                                <p style={{ fontSize: 12, color: "#64748b" }}>Full security suite</p>
                             </div>
-                            <span style={{ fontSize: 24, fontWeight: 800, color: "#22d3ee" }}>
-                                Pro<span style={{ fontSize: 12, color: "#64748b" }}> tier</span>
+                            <span style={{ fontSize: 24, fontWeight: 800, color: "#a855f7" }}>
+                                $50<span style={{ fontSize: 12, color: "#64748b" }}>/mo</span>
                             </span>
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

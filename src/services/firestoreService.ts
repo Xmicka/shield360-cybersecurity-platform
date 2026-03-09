@@ -13,10 +13,12 @@ import {
     serverTimestamp,
     where,
     Timestamp,
+    increment,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { MODULES } from "../config/services";
-import type { PlanType, UserRole } from "../context/subscriptionContext";
+import type { PlanType } from "../config/services";
+import type { UserRole } from "../context/subscriptionContext";
 
 // ─── Types ───
 export interface UserProfile {
@@ -138,4 +140,33 @@ export async function getRecentUsers(count: number = 5): Promise<UserProfile[]> 
     const q = query(collection(db, "users"), orderBy("createdAt", "desc"), limit(count));
     const snap = await getDocs(q);
     return snap.docs.map((d) => ({ ...d.data() } as UserProfile));
+}
+
+// ─── Usage Tracking ───
+
+function getCurrentMonthKey(): string {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
+
+export async function getMonthlyUsage(uid: string): Promise<Record<string, number>> {
+    const monthKey = getCurrentMonthKey();
+    const snap = await getDoc(doc(db, "users", uid, "usage", monthKey));
+    if (!snap.exists()) return {};
+    const data = snap.data();
+    // Filter out non-numeric fields (like timestamps)
+    const usage: Record<string, number> = {};
+    for (const [key, value] of Object.entries(data)) {
+        if (typeof value === "number") usage[key] = value;
+    }
+    return usage;
+}
+
+export async function incrementModuleUsage(uid: string, moduleSlug: string): Promise<void> {
+    const monthKey = getCurrentMonthKey();
+    const usageRef = doc(db, "users", uid, "usage", monthKey);
+    await setDoc(usageRef, {
+        [moduleSlug]: increment(1),
+        lastUpdated: serverTimestamp(),
+    }, { merge: true });
 }

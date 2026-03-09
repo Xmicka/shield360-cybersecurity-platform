@@ -82,19 +82,19 @@ export default function AppNavbar() {
                     <div
                         className="flex items-center gap-2 px-3 py-1.5 rounded-full"
                         style={{
-                            background: plan === "premium" ? "rgba(168,85,247,0.08)" : "rgba(34,211,238,0.08)",
-                            border: `1px solid ${plan === "premium" ? "rgba(168,85,247,0.15)" : "rgba(34,211,238,0.15)"}`,
+                            background: plan === "enterprise" ? "rgba(251,191,36,0.08)" : plan === "professional" ? "rgba(168,85,247,0.08)" : "rgba(34,211,238,0.08)",
+                            border: `1px solid ${plan === "enterprise" ? "rgba(251,191,36,0.15)" : plan === "professional" ? "rgba(168,85,247,0.15)" : "rgba(34,211,238,0.15)"}`,
                         }}
                     >
                         <div
                             className="w-1.5 h-1.5 rounded-full animate-pulse"
-                            style={{ background: plan === "premium" ? "#a855f7" : "#22d3ee" }}
+                            style={{ background: plan === "enterprise" ? "#fbbf24" : plan === "professional" ? "#a855f7" : "#22d3ee" }}
                         />
                         <span
                             className="text-[10px] font-medium hidden sm:inline capitalize"
-                            style={{ color: plan === "premium" ? "#a855f7" : "#22d3ee" }}
+                            style={{ color: plan === "enterprise" ? "#fbbf24" : plan === "professional" ? "#a855f7" : "#22d3ee" }}
                         >
-                            {plan}
+                            {plan === "professional" ? "Pro" : plan}
                         </span>
                     </div>
 

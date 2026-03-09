@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import MetricsPanel from "../components/MetricsPanel";
-import { MODULES } from "../config/services";
+import { MODULES, getNextPlan } from "../config/services";
 import { useSubscription } from "../context/subscriptionContext";
 import { useAuth } from "../context/authContext";
 import UpgradeModal from "../components/UpgradeModal";
@@ -47,16 +47,17 @@ const fadeIn = {
 };
 
 export default function Dashboard() {
-    const { hasAccess, setPlan } = useSubscription();
+    const { plan, setPlan, hasAccess, canUse, recordUsage, getRemainingUses, getModuleLimit, getModuleUsage } = useSubscription();
     const { user } = useAuth();
-    const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string }>({
+    const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string; isUsageLimited?: boolean; usageInfo?: { used: number; limit: number } }>({
         open: false,
         moduleName: "",
         deployedUrl: "",
     });
 
-    const handleModuleClick = (slug: string, name: string, deployedUrl: string) => {
-        if (hasAccess(slug)) {
+    const handleModuleClick = async (slug: string, name: string, deployedUrl: string) => {
+        if (canUse(slug)) {
+            await recordUsage(slug);
             window.open(deployedUrl, "_blank", "noopener,noreferrer");
             // Log the launch to Firestore
             if (user) {
@@ -74,17 +75,24 @@ export default function Dashboard() {
                     severity: "info",
                 }).catch(() => {});
             }
+        } else if (hasAccess(slug)) {
+            // Has access but usage limit reached
+            const limit = getModuleLimit(slug);
+            const used = getModuleUsage(slug);
+            setUpgradeModal({ open: true, moduleName: name, deployedUrl, isUsageLimited: true, usageInfo: { used, limit } });
         } else {
             setUpgradeModal({ open: true, moduleName: name, deployedUrl });
         }
     };
 
     const handleUpgrade = () => {
-        setPlan("premium");
-        setUpgradeModal((prev) => ({ ...prev, open: false }));
+        // Demo: instantly upgrade to the next tier and open the module
+        const nextPlan = getNextPlan(plan);
+        setPlan(nextPlan);
         if (upgradeModal.deployedUrl) {
             window.open(upgradeModal.deployedUrl, "_blank", "noopener,noreferrer");
         }
+        setUpgradeModal((prev) => ({ ...prev, open: false }));
     };
 
     return (
@@ -157,7 +165,12 @@ export default function Dashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
                     {MODULES.map((mod, i) => {
                         const accessible = hasAccess(mod.slug);
+                        const usable = canUse(mod.slug);
                         const locked = !accessible;
+                        const remaining = getRemainingUses(mod.slug);
+                        const limit = getModuleLimit(mod.slug);
+                        const isUnlimited = limit === -1;
+                        const usageLimited = accessible && !usable;
 
                         return (
                             <motion.div key={i} whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
@@ -183,7 +196,14 @@ export default function Dashboard() {
                                                         <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: "#a855f7" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                                         </svg>
-                                                        <span style={{ fontSize: 10, color: "#a855f7" }}>Premium</span>
+                                                        <span style={{ fontSize: 10, color: "#a855f7" }}>Upgrade</span>
+                                                    </>
+                                                ) : usageLimited ? (
+                                                    <>
+                                                        <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: "#fbbf24" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        <span style={{ fontSize: 10, color: "#fbbf24" }}>Limit reached</span>
                                                     </>
                                                 ) : (
                                                     <>
@@ -194,7 +214,12 @@ export default function Dashboard() {
                                             </div>
                                         </div>
                                         <p style={{ fontSize: 12, color: "#64748b" }}>
-                                            {locked ? "Upgrade to access" : mod.tag}
+                                            {locked
+                                                ? "Upgrade to access"
+                                                : isUnlimited
+                                                    ? mod.tag
+                                                    : `${remaining}/${limit} uses left this month`
+                                            }
                                         </p>
                                     </div>
                                 </button>
@@ -242,6 +267,8 @@ export default function Dashboard() {
                 onClose={() => setUpgradeModal((prev) => ({ ...prev, open: false }))}
                 moduleName={upgradeModal.moduleName}
                 onUpgrade={handleUpgrade}
+                isUsageLimited={upgradeModal.isUsageLimited}
+                usageInfo={upgradeModal.usageInfo}
             />
         </div>
     );

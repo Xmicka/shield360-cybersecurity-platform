@@ -393,19 +393,20 @@ export default function Landing() {
                         Pricing
                     </p>
                     <h2 style={{ fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>
-                        Enterprise security, <span className="gradient-text">completely free</span>
+                        Security that <span className="gradient-text">scales with you</span>
                     </h2>
                     <p style={{ fontSize: 16, color: "#64748b", maxWidth: 480, margin: "0 auto 48px", lineHeight: 1.7 }}>
-                        Start with two essential modules at no cost. Upgrade instantly to unlock the full suite — no payment required.
+                        Start free with essential modules. Upgrade for full coverage and unlimited enterprise-grade security.
                     </p>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20, marginBottom: 40, maxWidth: 640, margin: "0 auto 40px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40, maxWidth: 720, margin: "0 auto 40px" }}>
                         {[
-                            { name: "Free", price: "$0", desc: "Endpoint Scanner + Shadow IT", color: "#22d3ee", popular: false },
-                            { name: "Premium", price: "$0", desc: "Full security suite — all 4 modules", color: "#a855f7", popular: true },
+                            { name: "Starter", price: "Free", desc: "Endpoint + Shadow IT · 10/mo", color: "#22d3ee", popular: false },
+                            { name: "Professional", price: "$50", period: "/mo", desc: "All 4 modules · usage limits", color: "#a855f7", popular: true },
+                            { name: "Enterprise", price: "$200", period: "/mo", desc: "Unlimited everything", color: "#fbbf24", popular: false },
                         ].map((p) => (
                             <div key={p.name} className="glass-card" style={{
-                                padding: 32, textAlign: "center",
+                                padding: 28, textAlign: "center",
                                 border: p.popular ? "1px solid rgba(168,85,247,0.2)" : undefined,
                             }}>
                                 {p.popular && (
@@ -415,14 +416,14 @@ export default function Landing() {
                                         color: "#a855f7", background: "rgba(168,85,247,0.1)",
                                         padding: "4px 12px", borderRadius: 6, marginBottom: 12,
                                     }}>
-                                        Recommended
+                                        Most Popular
                                     </span>
                                 )}
                                 <p style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 8 }}>{p.name}</p>
-                                <p style={{ fontSize: 36, fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 4 }}>
-                                    {p.price}<span style={{ fontSize: 14, color: "#475569", fontWeight: 400 }}>/forever</span>
+                                <p style={{ fontSize: 32, fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: 4 }}>
+                                    {p.price}{p.period && <span style={{ fontSize: 14, color: "#475569", fontWeight: 400 }}>{p.period}</span>}
                                 </p>
-                                <p style={{ fontSize: 13, color: "#64748b" }}>{p.desc}</p>
+                                <p style={{ fontSize: 12, color: "#64748b" }}>{p.desc}</p>
                             </div>
                         ))}
                     </div>

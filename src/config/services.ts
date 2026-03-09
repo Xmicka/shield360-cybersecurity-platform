@@ -9,7 +9,7 @@ export interface ModuleConfig {
     description: string;
     deployedUrl: string;
     repoUrl: string;
-    tier: "free" | "premium";
+    tier: "free" | "professional";
     icon: string; // SVG path
     color: string;
     gradient: string;
@@ -56,7 +56,7 @@ export const MODULES: ModuleConfig[] = [
             "AI-powered compliance monitoring across ISO 27001, GDPR, SOC 2, and NIST frameworks with automated policy enforcement and audit trails.",
         deployedUrl: "https://compliance-assistant-two.vercel.app",
         repoUrl: "https://github.com/Shanukiliyanage/Compliance-assistant.git",
-        tier: "premium",
+        tier: "professional",
         icon: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
         color: "#34d399",
         gradient: "from-emerald-400 to-teal-500",
@@ -71,7 +71,7 @@ export const MODULES: ModuleConfig[] = [
             "AI-driven adaptive phishing campaigns with real-time click detection, behavioral analysis, and automated micro-training enforcement.",
         deployedUrl: "https://spear-phishing-dashboard.onrender.com/",
         repoUrl: "https://github.com/Xmicka/behaviour-adaptive-spear-phishing.git",
-        tier: "premium",
+        tier: "professional",
         icon: "M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75",
         color: "#22d3ee",
         gradient: "from-cyan-400 to-blue-500",
@@ -81,8 +81,117 @@ export const MODULES: ModuleConfig[] = [
 ];
 
 export const FREE_MODULES = MODULES.filter((m) => m.tier === "free");
-export const PREMIUM_MODULES = MODULES.filter((m) => m.tier === "premium");
+export const PREMIUM_MODULES = MODULES.filter((m) => m.tier === "professional");
 
 export function getModuleBySlug(slug: string): ModuleConfig | undefined {
     return MODULES.find((m) => m.slug === slug);
+}
+
+// ─── Plan & Pricing Configuration ───
+
+export type PlanType = "free" | "professional" | "enterprise";
+
+export interface PlanConfig {
+    id: PlanType;
+    name: string;
+    price: number;
+    period: string;
+    description: string;
+    tagline: string;
+    color: string;
+    gradient: string;
+    popular?: boolean;
+    moduleLimits: Record<string, number>; // -1 = unlimited
+    features: string[];
+}
+
+export const PLANS: PlanConfig[] = [
+    {
+        id: "free",
+        name: "Starter",
+        price: 0,
+        period: "forever",
+        description: "Essential security tools to get started",
+        tagline: "For individuals & small teams",
+        color: "#22d3ee",
+        gradient: "from-cyan-400 to-blue-500",
+        moduleLimits: {
+            "endpoint-scanner": 10,
+            "shadow-it": 10,
+        },
+        features: [
+            "Endpoint Risk Scanner — 10 scans/mo",
+            "Shadow IT Dashboard — 10 scans/mo",
+            "Basic security metrics",
+            "Community support",
+        ],
+    },
+    {
+        id: "professional",
+        name: "Professional",
+        price: 50,
+        period: "month",
+        description: "Full security suite for growing teams",
+        tagline: "Most popular for businesses",
+        color: "#a855f7",
+        gradient: "from-purple-400 to-pink-500",
+        popular: true,
+        moduleLimits: {
+            "endpoint-scanner": 20,
+            "shadow-it": 20,
+            "compliance-assistant": 10,
+            "spear-phishing": 10,
+        },
+        features: [
+            "Everything in Starter, plus:",
+            "Endpoint Scanner — 20 scans/mo",
+            "Shadow IT — 20 scans/mo",
+            "Compliance Assistant — 10 audits/mo",
+            "Spear Phishing Sim — 10 campaigns/mo",
+            "Admin control panel",
+            "Priority email support",
+        ],
+    },
+    {
+        id: "enterprise",
+        name: "Enterprise",
+        price: 200,
+        period: "month",
+        description: "Unlimited access for large organizations",
+        tagline: "For security-first enterprises",
+        color: "#fbbf24",
+        gradient: "from-amber-400 to-orange-500",
+        moduleLimits: {
+            "endpoint-scanner": -1,
+            "shadow-it": -1,
+            "compliance-assistant": -1,
+            "spear-phishing": -1,
+        },
+        features: [
+            "Everything in Professional, plus:",
+            "Unlimited access to all 4 modules",
+            "Advanced AI-driven analytics",
+            "Custom compliance frameworks",
+            "Dedicated account manager",
+            "SLA guarantee & 24/7 support",
+            "SSO & advanced team management",
+        ],
+    },
+];
+
+export function getPlanById(planId: PlanType): PlanConfig | undefined {
+    return PLANS.find((p) => p.id === planId);
+}
+
+export function getUsageLimitForModule(planId: PlanType, moduleSlug: string): number {
+    const plan = getPlanById(planId);
+    if (!plan) return 0;
+    return plan.moduleLimits[moduleSlug] ?? 0;
+}
+
+/** Return the next tier up (for demo instant-upgrade). Already at max → returns same. */
+export function getNextPlan(current: PlanType): PlanType {
+    if (current === "free") return "professional";
+    if (current === "professional") return "enterprise";
+    return "enterprise";
 }
