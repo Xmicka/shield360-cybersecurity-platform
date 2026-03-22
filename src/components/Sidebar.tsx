@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useSubscription } from "../context/subscriptionContext";
@@ -7,6 +7,7 @@ import UpgradeModal from "./UpgradeModal";
 
 export default function Sidebar() {
     const location = useLocation();
+    const navigate = useNavigate();
     const { plan, setPlan, hasAccess, canUse, role, getRemainingUses, getModuleLimit } = useSubscription();
     const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string; isUsageLimited?: boolean; usageInfo?: { used: number; limit: number } }>({
         open: false,
@@ -14,9 +15,9 @@ export default function Sidebar() {
         deployedUrl: "",
     });
 
-    const handleModuleClick = (slug: string, name: string, deployedUrl: string) => {
+    const handleModuleClick = (slug: string, name: string, deployedUrl: string, internalRoute: string) => {
         if (canUse(slug)) {
-            window.open(deployedUrl, "_blank", "noopener,noreferrer");
+            navigate(internalRoute);
         } else if (hasAccess(slug)) {
             const limit = getModuleLimit(slug);
             const remaining = getRemainingUses(slug);
@@ -31,7 +32,8 @@ export default function Sidebar() {
         const nextPlan = getNextPlan(plan);
         setPlan(nextPlan);
         if (upgradeModal.deployedUrl) {
-            window.open(upgradeModal.deployedUrl, "_blank", "noopener,noreferrer");
+            const mod = MODULES.find(m => m.deployedUrl === upgradeModal.deployedUrl);
+            if (mod) navigate(mod.internalRoute);
         }
         setUpgradeModal((prev) => ({ ...prev, open: false }));
     };
@@ -201,55 +203,65 @@ export default function Sidebar() {
                             Free Modules
                         </p>
                         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            {MODULES.filter((m) => m.tier === "free").map((mod) => (
-                                <button
-                                    key={mod.slug}
-                                    onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl)}
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 12,
-                                        padding: "10px 14px",
-                                        borderRadius: 12,
-                                        fontSize: 13,
-                                        fontWeight: 500,
-                                        color: "#64748b",
-                                        background: "transparent",
-                                        border: "1px solid transparent",
-                                        transition: "all 0.2s ease",
-                                        cursor: "pointer",
-                                        width: "100%",
-                                        textAlign: "left",
-                                    }}
-                                    className="hover:text-slate-300 hover:bg-white/[0.02]"
-                                >
-                                    <div
+                            {MODULES.filter((m) => m.tier === "free").map((mod) => {
+                                const isActive = location.pathname === mod.internalRoute;
+                                return (
+                                    <button
+                                        key={mod.slug}
+                                        onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl, mod.internalRoute)}
                                         style={{
-                                            width: 32,
-                                            height: 32,
-                                            borderRadius: 8,
-                                            background: `${mod.color}10`,
-                                            border: `1px solid ${mod.color}18`,
                                             display: "flex",
                                             alignItems: "center",
-                                            justifyContent: "center",
-                                            flexShrink: 0,
+                                            gap: 12,
+                                            padding: "10px 14px",
+                                            borderRadius: 12,
+                                            fontSize: 13,
+                                            fontWeight: 500,
+                                            color: isActive ? "#fff" : "#64748b",
+                                            background: isActive ? "rgba(255,255,255,0.04)" : "transparent",
+                                            border: isActive ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
+                                            transition: "all 0.2s ease",
+                                            cursor: "pointer",
+                                            width: "100%",
+                                            textAlign: "left",
+                                            position: "relative",
                                         }}
+                                        className="hover:text-slate-300 hover:bg-white/[0.02]"
                                     >
-                                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: mod.color }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+                                        {isActive && (
+                                            <div style={{
+                                                position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)",
+                                                width: 3, height: 20, borderRadius: "0 4px 4px 0", background: mod.color,
+                                            }} />
+                                        )}
+                                        <div
+                                            style={{
+                                                width: 32,
+                                                height: 32,
+                                                borderRadius: 8,
+                                                background: `${mod.color}10`,
+                                                border: `1px solid ${mod.color}18`,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                flexShrink: 0,
+                                            }}
+                                        >
+                                            <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: mod.color }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+                                            </svg>
+                                        </div>
+                                        <span style={{ flex: 1 }}>{mod.shortName}</span>
+                                        <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: isActive ? mod.color : "#475569" }} fill="none" stroke="currentColor" strokeWidth={2}>
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                                            />
                                         </svg>
-                                    </div>
-                                    <span style={{ flex: 1 }}>{mod.shortName}</span>
-                                    <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: "#475569" }} fill="none" stroke="currentColor" strokeWidth={2}>
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                                        />
-                                    </svg>
-                                </button>
-                            ))}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -271,10 +283,11 @@ export default function Sidebar() {
                         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             {MODULES.filter((m) => m.tier === "professional").map((mod) => {
                                 const locked = !hasAccess(mod.slug);
+                                const isActive = location.pathname === mod.internalRoute;
                                 return (
                                     <button
                                         key={mod.slug}
-                                        onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl)}
+                                        onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl, mod.internalRoute)}
                                         style={{
                                             display: "flex",
                                             alignItems: "center",
@@ -283,16 +296,23 @@ export default function Sidebar() {
                                             borderRadius: 12,
                                             fontSize: 13,
                                             fontWeight: 500,
-                                            color: locked ? "#334155" : "#64748b",
-                                            background: "transparent",
-                                            border: "1px solid transparent",
+                                            color: locked ? "#334155" : isActive ? "#fff" : "#64748b",
+                                            background: isActive ? "rgba(255,255,255,0.04)" : "transparent",
+                                            border: isActive ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
                                             transition: "all 0.2s ease",
                                             cursor: "pointer",
                                             width: "100%",
                                             textAlign: "left",
+                                            position: "relative",
                                         }}
                                         className="hover:text-slate-300 hover:bg-white/[0.02]"
                                     >
+                                        {isActive && (
+                                            <div style={{
+                                                position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)",
+                                                width: 3, height: 20, borderRadius: "0 4px 4px 0", background: mod.color,
+                                            }} />
+                                        )}
                                         <div
                                             style={{
                                                 width: 32,
@@ -326,11 +346,11 @@ export default function Sidebar() {
                                                 />
                                             </svg>
                                         ) : (
-                                            <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: "#475569" }} fill="none" stroke="currentColor" strokeWidth={2}>
+                                            <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: isActive ? mod.color : "#475569" }} fill="none" stroke="currentColor" strokeWidth={2}>
                                                 <path
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
-                                                    d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                                                    d="M8.25 4.5l7.5 7.5-7.5 7.5"
                                                 />
                                             </svg>
                                         )}

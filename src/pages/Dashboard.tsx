@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import MetricsPanel from "../components/MetricsPanel";
 import { MODULES, getNextPlan } from "../config/services";
@@ -49,16 +50,18 @@ const fadeIn = {
 export default function Dashboard() {
     const { plan, setPlan, hasAccess, canUse, recordUsage, getRemainingUses, getModuleLimit, getModuleUsage } = useSubscription();
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string; isUsageLimited?: boolean; usageInfo?: { used: number; limit: number } }>({
         open: false,
         moduleName: "",
         deployedUrl: "",
     });
 
-    const handleModuleClick = async (slug: string, name: string, deployedUrl: string) => {
+    const handleModuleClick = async (slug: string, name: string, deployedUrl: string, internalRoute: string) => {
         if (canUse(slug)) {
             await recordUsage(slug);
-            window.open(deployedUrl, "_blank", "noopener,noreferrer");
+            // Navigate to internal module route instead of external URL
+            navigate(internalRoute);
             // Log the launch to Firestore
             if (user) {
                 logModuleLaunch({
@@ -90,7 +93,9 @@ export default function Dashboard() {
         const nextPlan = getNextPlan(plan);
         setPlan(nextPlan);
         if (upgradeModal.deployedUrl) {
-            window.open(upgradeModal.deployedUrl, "_blank", "noopener,noreferrer");
+            // Navigate to internal route after upgrade
+            const mod = MODULES.find(m => m.deployedUrl === upgradeModal.deployedUrl);
+            if (mod) navigate(mod.internalRoute);
         }
         setUpgradeModal((prev) => ({ ...prev, open: false }));
     };
@@ -175,7 +180,7 @@ export default function Dashboard() {
                         return (
                             <motion.div key={i} whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
                                 <button
-                                    onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl)}
+                                    onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl, mod.internalRoute)}
                                     style={{
                                         display: "block",
                                         width: "100%",
