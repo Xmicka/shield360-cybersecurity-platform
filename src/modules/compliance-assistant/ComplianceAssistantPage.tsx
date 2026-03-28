@@ -5,31 +5,43 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import ModuleGate from "../../components/ModuleGate";
+import { MODULES } from "../../config/services";
 
 function ComplianceAssistantContent() {
   const navigate = useNavigate();
+  const mod = MODULES.find(m => m.slug === "compliance-assistant");
 
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-            </svg>
+        <div className="flex md:flex-row flex-col items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-extrabold text-slate-100 tracking-tight">Compliance Assistant</h1>
+              <p className="text-xs text-slate-500">AI-powered ISO 27001 compliance assessment & recommendations</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-extrabold text-slate-100 tracking-tight">Compliance Assistant</h1>
-            <p className="text-xs text-slate-500">AI-powered ISO 27001 compliance assessment & recommendations</p>
-          </div>
+          {mod?.deployedUrl && (
+            <a href={mod.deployedUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-slate-800/80 px-4 py-2 text-sm font-semibold text-slate-200 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all shadow-lg hover:shadow-cyan-500/20 group">
+              Open Original App
+              <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          )}
         </div>
       </motion.div>
 
       {/* Assessment Intro */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
           <div className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm p-6">
             <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -64,14 +76,17 @@ function ComplianceAssistantContent() {
           <h3 className="text-lg font-bold text-slate-100 mb-4">Assessment Stages</h3>
           <div className="space-y-3">
             {[
-              { num: 1, title: "Mandatory Clauses (4-10)", desc: "Core ISMS requirements", color: "emerald" },
-              { num: 2, title: "Organizational Controls", desc: "Policies, roles, asset management", color: "cyan" },
-              { num: 3, title: "People Controls", desc: "Screening, awareness, training", color: "blue" },
-              { num: 4, title: "Physical Controls", desc: "Security perimeters, equipment protection", color: "purple" },
-              { num: 5, title: "Technological Controls", desc: "Access control, cryptography, monitoring", color: "amber" },
+              { num: 1, title: "Mandatory Clauses (4-10)", desc: "Core ISMS requirements", color: "#34d399" },
+              { num: 2, title: "Organizational Controls", desc: "Policies, roles, asset management", color: "#22d3ee" },
+              { num: 3, title: "People Controls", desc: "Screening, awareness, training", color: "#3b82f6" },
+              { num: 4, title: "Physical Controls", desc: "Security perimeters, equipment protection", color: "#a855f7" },
+              { num: 5, title: "Technological Controls", desc: "Access control, cryptography, monitoring", color: "#fbbf24" },
             ].map((stage) => (
-              <div key={stage.num} className="flex items-center gap-4 rounded-lg border border-slate-700/40 bg-slate-900/30 px-4 py-3">
-                <div className={`w-8 h-8 rounded-lg bg-${stage.color}-500/10 flex items-center justify-center text-sm font-bold text-${stage.color}-400`}>
+              <div key={stage.num} className="flex items-center gap-4 rounded-lg border border-slate-700/40 bg-slate-900/30 px-4 py-3 hover:bg-slate-800/50 transition-colors">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold"
+                  style={{ background: `${stage.color}15`, color: stage.color }}
+                >
                   {stage.num}
                 </div>
                 <div className="flex-1">

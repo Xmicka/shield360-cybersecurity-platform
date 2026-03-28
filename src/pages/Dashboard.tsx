@@ -113,7 +113,7 @@ export default function Dashboard() {
             </motion.div>
 
             {/* Key Metrics */}
-            <motion.div {...fadeIn} style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 16 }}>
+            <motion.div {...fadeIn} className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
                 <MetricsPanel label="Endpoints Scanned" value={312} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" /></svg>} trend="up" trendValue="+18" color="cyan" />
                 <MetricsPanel label="Shadow IT Apps" value={47} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" /></svg>} trend="down" trendValue="-5" color="purple" />
                 <MetricsPanel label="Active Threats" value={7} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>} trend="down" trendValue="-2" color="amber" />
@@ -122,7 +122,7 @@ export default function Dashboard() {
             </motion.div>
 
             {/* Charts */}
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20 }}>
+            <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5">
                 <motion.div {...fadeIn} className="glass-card" style={{ padding: 28 }}>
                     <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 2 }}>Threat Activity</h3>
                     <p style={{ fontSize: 12, color: "#64748b", marginBottom: 20 }}>Threats detected vs blocked, last 6 months</p>
@@ -167,7 +167,7 @@ export default function Dashboard() {
             {/* Connected Modules */}
             <motion.div {...fadeIn}>
                 <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 16 }}>Connected Modules</h3>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                     {MODULES.map((mod, i) => {
                         const accessible = hasAccess(mod.slug);
                         const usable = canUse(mod.slug);

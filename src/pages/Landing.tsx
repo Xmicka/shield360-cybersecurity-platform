@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
-import AnimatedBackground from "../components/AnimatedBackground";
+import Aurora from "../components/backgrounds/Aurora";
 import { MODULES } from "../config/services";
 
 const moduleCards = MODULES.map((mod) => ({
@@ -47,7 +47,7 @@ export default function Landing() {
 
     return (
         <div className="relative">
-            <AnimatedBackground />
+
 
             {/* ─── Navbar ─── */}
             <motion.nav
@@ -71,20 +71,11 @@ export default function Landing() {
                     justifyContent: "space-between",
                     boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
                 }}>
-                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                        <div style={{
-                            width: 36, height: 36, borderRadius: 10,
-                            background: "linear-gradient(135deg, #00f0ff, #7c3aed)",
-                            padding: 2, display: "flex",
-                        }}>
-                            <div style={{
-                                flex: 1, borderRadius: 8, background: "#070b16",
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                            }}>
-                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#00f0ff" }} fill="currentColor">
-                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                                </svg>
-                            </div>
+                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }} className="group">
+                        <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center transition-transform duration-300 group-hover:scale-105 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                            <svg viewBox="0 0 24 24" className="w-5 h-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" fill="currentColor">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                            </svg>
                         </div>
                         <span style={{ fontSize: 16, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>Shield360</span>
                     </Link>
@@ -102,10 +93,11 @@ export default function Landing() {
 
             {/* ─── Hero ─── */}
             <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ padding: "0 32px" }}>
-                <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-400/5 rounded-full blur-[120px] animate-blob" />
-                <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px] animate-blob" style={{ animationDelay: "2s" }} />
+                {/* React Bits Aurora Background */}
+                <Aurora colorStops={["#10b981", "#7c3aed", "#3b82f6"]} speed={0.6} blend="mix-blend-screen" />
 
-                <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 text-center" >
+                <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 text-center w-full max-w-4xl" >
+                    {/* Unboxed hero text directly on the Aurora */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -113,48 +105,58 @@ export default function Landing() {
                         style={{
                             display: "inline-flex", alignItems: "center", gap: 10,
                             padding: "10px 20px", borderRadius: 100,
-                            background: "rgba(10,15,30,0.5)", border: "1px solid rgba(255,255,255,0.06)",
+                            background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255, 255, 255, 0.1)",
+                            backdropFilter: "blur(12px)",
                             marginBottom: 40,
                         }}
                     >
-                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#34d399" }} className="animate-pulse" />
-                        <span style={{ fontSize: 13, fontWeight: 500, color: "#94a3b8" }}>AI-Driven Cybersecurity Platform for SMEs</span>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 10px #4ade80" }} className="animate-pulse" />
+                        <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", letterSpacing: "1px" }}>AI-Driven Cybersecurity Platform for SMEs</span>
                     </motion.div>
 
                     <motion.h1
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-                        style={{ fontSize: "clamp(40px, 6vw, 76px)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: 24 }}
+                        style={{ fontSize: "clamp(48px, 6vw, 90px)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: 24 }}
                     >
                         <span style={{ color: "#fff" }}>Unified Security.</span>
                         <br />
-                        <span className="gradient-text">Complete Visibility.</span>
+                        <span className="gradient-text drop-shadow-2xl">Complete Visibility.</span>
                     </motion.h1>
 
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6, duration: 0.6 }}
-                        style={{ fontSize: 18, color: "#94a3b8", maxWidth: 560, margin: "0 auto 40px", lineHeight: 1.7 }}
+                        style={{ fontSize: 20, color: "#cbd5e1", maxWidth: 700, margin: "0 auto 40px", lineHeight: 1.7, backdropFilter: "blur(2px)" }}
                     >
                         Shield360 aggregates threat intelligence, behaviour analytics, phishing simulation, and compliance enforcement into one{" "}
-                        <span style={{ color: "#fff", fontWeight: 500 }}>intelligent platform</span>.
+                        <span style={{ color: "#fff", fontWeight: 600 }}>intelligent platform</span>.
                     </motion.p>
 
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.8, duration: 0.5 }}
-                        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, flexWrap: "wrap", position: "relative", zIndex: 10 }}
                     >
-                        <Link to="/signup" className="btn-primary" style={{ fontSize: 15, padding: "16px 32px", display: "flex", alignItems: "center", gap: 8 }}>
+                        <Link to="/signup" className="btn-primary" style={{ fontSize: 16, padding: "18px 40px", display: "flex", alignItems: "center", gap: 10, boxShadow: "0 0 30px rgba(124, 58, 237, 0.5)", borderRadius: "100px" }}>
                             Start Free Trial
-                            <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
+                            <div className="w-6 h-6 rounded-full bg-white/20 backdrop-blur flex items-center justify-center p-1">
+                                <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={3}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </div>
                         </Link>
-                        <Link to="/login" className="btn-ghost" style={{ fontSize: 15, padding: "16px 32px" }}>Sign In →</Link>
+                        <Link to="/login" className="btn-ghost" style={{ fontSize: 16, padding: "18px 40px", background: "rgba(255,255,255,0.03)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "100px", display: "flex", alignItems: "center", gap: 10 }}>
+                            <div className="w-6 h-6 rounded-full bg-white/5 border border-white/10 backdrop-blur flex items-center justify-center p-1">
+                                <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                            </div>
+                            Sign In
+                        </Link>
                     </motion.div>
 
                     <motion.div
@@ -167,11 +169,12 @@ export default function Landing() {
                             animate={{ y: [0, 8, 0] }}
                             transition={{ duration: 2, repeat: Infinity }}
                             style={{
-                                width: 28, height: 44, border: "2px solid #334155", borderRadius: 100,
+                                width: 30, height: 48, border: "2px solid rgba(255,255,255,0.3)", borderRadius: 100,
                                 margin: "0 auto", display: "flex", justifyContent: "center", paddingTop: 10,
+                                background: "rgba(255,255,255,0.05)", backdropFilter: "blur(4px)"
                             }}
                         >
-                            <div style={{ width: 3, height: 8, background: "#00f0ff", borderRadius: 100 }} />
+                            <div style={{ width: 4, height: 10, background: "#4ade80", borderRadius: 100, boxShadow: "0 0 10px #4ade80" }} />
                         </motion.div>
                     </motion.div>
                 </motion.div>

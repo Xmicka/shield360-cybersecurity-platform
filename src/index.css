@@ -80,3 +80,15 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+/* Custom layout padding fix to avoid Tailwind V4 arbitrary value bugs */
+.content-area-padding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 1024px) {
+  .content-area-padding {
+    padding-left: 272px; /* 248px sidebar + 24px gap */
+    padding-right: 24px;
+  }
+}

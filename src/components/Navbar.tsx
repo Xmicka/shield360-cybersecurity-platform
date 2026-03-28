@@ -40,13 +40,10 @@ export default function AppNavbar() {
             <div className="h-full px-6 flex items-center justify-between">
                 {/* Logo */}
                 <Link to="/dashboard" className="flex items-center gap-3 group shrink-0">
-                    <div className="relative w-9 h-9">
-                        <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-500 opacity-80" />
-                        <div className="absolute inset-[2px] rounded-[6px] bg-navy-900 flex items-center justify-center">
-                            <svg viewBox="0 0 24 24" className="w-4.5 h-4.5 text-cyan-400" fill="currentColor">
-                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                            </svg>
-                        </div>
+                    <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center transition-transform duration-300 group-hover:scale-105 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                        <svg viewBox="0 0 24 24" className="w-4.5 h-4.5 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" fill="currentColor">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                        </svg>
                     </div>
                     <span className="text-base font-bold text-white tracking-tight hidden sm:block">Shield360</span>
                 </Link>

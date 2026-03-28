@@ -454,7 +454,18 @@ function WidgetWrapper({ widget, children, onChangeViz, onChangeSize }: {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className={`${cols} relative rounded-xl border border-slate-700/50 bg-slate-800/50 backdrop-blur-sm overflow-hidden group`}
+      className={`${cols} relative rounded-xl border border-slate-700/50 bg-slate-800/50 backdrop-blur-sm overflow-hidden group transition-all duration-300`}
+      style={{
+        "--widget-color": color,
+      } as React.CSSProperties}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = color;
+        e.currentTarget.style.boxShadow = `0 0 20px -5px ${color}40, inset 0 0 10px -5px ${color}20`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "rgba(51, 65, 85, 0.5)";
+        e.currentTarget.style.boxShadow = "none";
+      }}
     >
       {/* Top accent line */}
       <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(90deg, ${color}, transparent)` }} />

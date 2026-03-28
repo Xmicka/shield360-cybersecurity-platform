@@ -48,8 +48,21 @@ function AppLayout() {
     <div className="min-h-screen bg-navy-950">
       <AppNavbar />
       <Sidebar />
-      <main className="relative z-10" style={{ paddingTop: 80, paddingBottom: 48, paddingLeft: 288, paddingRight: 32 }}>
-        <div className="max-w-[1100px] mx-auto">
+      <style>{`
+        .shield-main-content {
+          padding-top: 80px;
+          padding-bottom: 48px;
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        @media (min-width: 1024px) {
+          .shield-main-content {
+            padding-left: 272px; /* 248px sidebar + 24px gap */
+          }
+        }
+      `}</style>
+      <main className="relative z-10 min-h-screen transition-all duration-300 shield-main-content">
+        <div className="max-w-[1400px] mx-auto">
           <AnimatePresence mode="wait">
             <Outlet key={location.pathname} />
           </AnimatePresence>

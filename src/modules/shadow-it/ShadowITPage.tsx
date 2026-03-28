@@ -5,6 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
 } from "recharts";
 import ModuleGate from "../../components/ModuleGate";
+import { MODULES } from "../../config/services";
 import {
   fetchStats, fetchLogs, clearLogs,
   fetchAllowlist, addAllowlist, removeAllowlist,
@@ -165,6 +166,7 @@ function ShadowITContent() {
   const [serverDown, setServerDown] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+  const mod = MODULES.find(m => m.slug === "shadow-it");
 
   const refresh = useCallback(async () => {
     try {
@@ -204,10 +206,10 @@ function ShadowITContent() {
     : 0;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="max-w-[1240px] mx-auto w-full px-2 flex flex-col gap-6">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
               <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={1.5}>
@@ -220,6 +222,14 @@ function ShadowITContent() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            {mod?.deployedUrl && (
+              <a href={mod.deployedUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-slate-800/80 px-4 py-2 text-sm font-semibold text-slate-200 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all shadow-lg hover:shadow-cyan-500/20 group">
+                Open Original App
+                <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            )}
             {serverDown ? (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-400 ring-1 ring-inset ring-red-500/20">
                 ⚠️ Server Offline
@@ -264,7 +274,7 @@ function ShadowITContent() {
       {tab === "dashboard" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-6">
           {/* Stat cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 2xl:grid-cols-6 gap-4">
             <StatCard label="Total Scanned" value={stats?.total ?? "—"} color="#38bdf8" />
             <StatCard label="Threats Found" value={threats || "—"} color="#ef4444" />
             <StatCard label="Phishing" value={stats?.breakdown?.phishing ?? 0} color="#ef4444" />
@@ -274,7 +284,7 @@ function ShadowITContent() {
           </div>
 
           {/* Charts */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
             <div className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm p-5">
               <h3 className="text-sm font-semibold text-slate-200 mb-3">Threat Breakdown</h3>
               <ResponsiveContainer width="100%" height={220}>

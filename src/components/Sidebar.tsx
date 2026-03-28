@@ -44,7 +44,7 @@ export default function Sidebar() {
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
-                className="hidden lg:flex fixed left-0 top-16 bottom-0 w-64 flex-col z-40"
+                className="hidden lg:flex fixed left-0 top-16 bottom-0 w-[248px] flex-col z-40"
                 style={{
                     background: "linear-gradient(180deg, rgba(5,8,16,0.97) 0%, rgba(10,14,26,0.99) 100%)",
                     borderRight: "1px solid rgba(148,163,184,0.08)",
@@ -81,8 +81,8 @@ export default function Sidebar() {
                                     fontSize: 13,
                                     fontWeight: 500,
                                     color: location.pathname === "/dashboard" ? "#fff" : "#64748b",
-                                    background: location.pathname === "/dashboard" ? "rgba(255,255,255,0.04)" : "transparent",
-                                    border: location.pathname === "/dashboard" ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
+                                    background: location.pathname === "/dashboard" ? "rgba(255,255,255,0.05)" : "transparent",
+                                    border: location.pathname === "/dashboard" ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
                                     transition: "all 0.2s ease",
                                     position: "relative",
                                 }}
@@ -204,7 +204,7 @@ export default function Sidebar() {
                         </p>
                         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             {MODULES.filter((m) => m.tier === "free").map((mod) => {
-                                const isActive = location.pathname === mod.internalRoute;
+                                const isActive = location.pathname === mod.internalRoute || location.pathname.startsWith(mod.internalRoute + "/");
                                 return (
                                     <button
                                         key={mod.slug}
