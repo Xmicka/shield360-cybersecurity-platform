@@ -43,92 +43,98 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex relative overflow-hidden">
-            {/* Background */}
-            <div className="absolute inset-0 bg-navy-950" />
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-400/3 rounded-full blur-[150px]" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/3 rounded-full blur-[120px]" />
+        <div style={{ minHeight: "100vh", background: "var(--color-bg-base)", display: "flex", position: "relative", overflow: "hidden" }}>
+            {/* Soft pastel background blobs */}
+            <div style={{ position: "absolute", top: -120, right: -120, width: 480, height: 480, background: "rgba(168,200,219,0.35)", borderRadius: "50%", filter: "blur(120px)" }} />
+            <div style={{ position: "absolute", bottom: -120, left: -120, width: 360, height: 360, background: "rgba(184,169,201,0.30)", borderRadius: "50%", filter: "blur(120px)" }} />
 
-            {/* Left Panel - Branding */}
-            <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center p-12">
-                <div className="absolute inset-0 bg-gradient-to-br from-navy-800/50 to-transparent" />
+            {/* Left Panel */}
+            <div className="hidden lg:flex" style={{ width: "50%", position: "relative", alignItems: "center", justifyContent: "center", padding: 48 }}>
                 <motion.div
-                    initial={{ opacity: 0, x: -30 }}
+                    initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative z-10 max-w-md"
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ position: "relative", zIndex: 10, maxWidth: 440 }}
                 >
-                    {/* Shield icon */}
-                    <div className="mb-10">
-                        <Link to="/" className="flex items-center gap-3 group">
-                            <div className="relative w-12 h-12">
-                                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 animate-pulse-glow" />
-                                <div className="absolute inset-[2px] rounded-[10px] bg-navy-900 flex items-center justify-center">
-                                    <svg viewBox="0 0 24 24" className="w-6 h-6 text-cyan-400" fill="currentColor">
-                                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                                    </svg>
-                                </div>
+                    <div style={{ marginBottom: 36 }}>
+                        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
+                            <div style={{
+                                width: 44, height: 44, borderRadius: 12,
+                                background: "linear-gradient(135deg, #6ba3be 0%, #8aab96 100%)",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                boxShadow: "0 4px 12px rgba(107,163,190,0.25)",
+                            }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 22, height: 22, color: "#fff" }} fill="currentColor">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                                </svg>
                             </div>
-                            <span className="text-xl font-bold text-white tracking-tight">Shield360</span>
+                            <span style={{ fontSize: 18, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Shield360</span>
                         </Link>
                     </div>
 
-                    <h2 className="text-3xl font-bold text-white mb-4 leading-tight">
-                        Protect your organization with{" "}
-                        <span className="gradient-text">unified intelligence</span>
+                    <h2 style={{ fontSize: 32, fontWeight: 700, color: "var(--color-text-primary)", lineHeight: 1.15, letterSpacing: "-0.025em", marginBottom: 16 }}>
+                        Protect your organisation with{" "}
+                        <span className="gradient-text" style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontWeight: 400 }}>
+                            unified intelligence
+                        </span>
                     </h2>
-                    <p className="text-slate-400 leading-relaxed mb-10">
+                    <p style={{ color: "var(--color-text-secondary)", lineHeight: 1.65, marginBottom: 32, fontSize: 15 }}>
                         Access your cybersecurity dashboard to monitor threats, track compliance, and manage your security posture in real-time.
                     </p>
 
-                    {/* Trust indicators */}
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                            <span className="text-xs text-slate-500">256-bit encrypted</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-status-ok)" }} />
+                            <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>256-bit encrypted</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                            <span className="text-xs text-slate-500">SOC 2 Compliant</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-status-ok)" }} />
+                            <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>SOC 2 Compliant</span>
                         </div>
                     </div>
                 </motion.div>
             </div>
 
-            {/* Right Panel - Form */}
-            <div className="flex-1 flex items-center justify-center p-6 sm:p-12 relative z-10">
+            {/* Right Panel */}
+            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, position: "relative", zIndex: 10 }}>
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="w-full max-w-md"
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    className="glass-card"
+                    style={{ width: "100%", maxWidth: 440, padding: "40px 36px" }}
                 >
-                    {/* Mobile logo */}
-                    <div className="lg:hidden mb-10 text-center">
-                        <Link to="/" className="inline-flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 p-[2px]">
-                                <div className="w-full h-full rounded-[10px] bg-navy-900 flex items-center justify-center">
-                                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-cyan-400" fill="currentColor">
-                                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                                    </svg>
-                                </div>
+                    <div className="lg:hidden" style={{ marginBottom: 24, textAlign: "center" }}>
+                        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                            <div style={{
+                                width: 36, height: 36, borderRadius: 10,
+                                background: "linear-gradient(135deg, #6ba3be, #8aab96)",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                            }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#fff" }} fill="currentColor">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                                </svg>
                             </div>
-                            <span className="text-lg font-bold text-white">Shield360</span>
+                            <span style={{ fontSize: 16, fontWeight: 700, color: "var(--color-text-primary)" }}>Shield360</span>
                         </Link>
                     </div>
 
-                    <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
-                    <p className="text-sm text-slate-500 mb-8">Sign in to access your security dashboard</p>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 6, letterSpacing: "-0.02em" }}>Welcome back</h1>
+                    <p style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 28 }}>Sign in to access your security dashboard</p>
 
                     {error && (
-                        <div className="mb-5 px-4 py-3 rounded-xl text-sm font-medium text-rose-400" style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.15)" }}>
+                        <div style={{
+                            marginBottom: 18, padding: "10px 14px", borderRadius: 12,
+                            fontSize: 13, fontWeight: 500, color: "var(--color-status-error)",
+                            background: "rgba(201,112,112,0.10)", border: "1px solid rgba(201,112,112,0.25)",
+                        }}>
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                         <div>
-                            <label className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2 block">Email</label>
+                            <label style={{ fontSize: 11, fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6, display: "block" }}>Email</label>
                             <input
                                 type="email"
                                 className="input-premium"
@@ -138,7 +144,7 @@ export default function Login() {
                             />
                         </div>
                         <div>
-                            <label className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2 block">Password</label>
+                            <label style={{ fontSize: 11, fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6, display: "block" }}>Password</label>
                             <input
                                 type="password"
                                 className="input-premium"
@@ -148,21 +154,21 @@ export default function Login() {
                             />
                         </div>
 
-                        <div className="flex items-center justify-between">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" className="w-4 h-4 rounded border-slate-700 bg-navy-800 text-cyan-400 focus:ring-cyan-400/30" />
-                                <span className="text-xs text-slate-500">Remember me</span>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
+                                <input type="checkbox" style={{ width: 14, height: 14, accentColor: "var(--color-brand-blue)" }} />
+                                <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>Remember me</span>
                             </label>
-                            <button type="button" className="text-xs text-cyan-400 hover:text-cyan-300">Forgot password?</button>
+                            <button type="button" style={{ fontSize: 12, color: "var(--color-brand-blue)", background: "none", border: "none", cursor: "pointer", fontWeight: 500 }}>Forgot password?</button>
                         </div>
 
-                        <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
+                        <button type="submit" disabled={loading} className="btn-primary" style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6 }}>
                             {loading ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                <div style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%" }} className="animate-spin" />
                             ) : (
                                 <>
                                     Sign In
-                                    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                    <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                     </svg>
                                 </>
@@ -170,20 +176,18 @@ export default function Login() {
                         </button>
                     </form>
 
-                    {/* Divider */}
-                    <div className="flex items-center gap-4 my-6">
-                        <div className="flex-1 h-px bg-slate-800" />
-                        <span className="text-xs text-slate-600">or</span>
-                        <div className="flex-1 h-px bg-slate-800" />
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
+                        <div style={{ flex: 1, height: 1, background: "var(--color-border)" }} />
+                        <span style={{ fontSize: 11, color: "var(--color-text-muted)" }}>or</span>
+                        <div style={{ flex: 1, height: 1, background: "var(--color-border)" }} />
                     </div>
 
-                    {/* Google Sign-In */}
                     <button
                         onClick={handleGoogle}
-                        className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 transition-all hover:text-white"
-                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+                        className="btn-ghost"
+                        style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
                     >
-                        <svg viewBox="0 0 24 24" className="w-4 h-4">
+                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }}>
                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
                             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
                             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
@@ -192,9 +196,9 @@ export default function Login() {
                         Continue with Google
                     </button>
 
-                    <p className="text-sm text-slate-500 text-center mt-8">
+                    <p style={{ fontSize: 13, color: "var(--color-text-muted)", textAlign: "center", marginTop: 24 }}>
                         Don{"'"}t have an account?{" "}
-                        <Link to="/signup" className="text-cyan-400 hover:text-cyan-300 font-medium">Create one</Link>
+                        <Link to="/signup" style={{ color: "var(--color-brand-blue)", fontWeight: 600 }}>Create one</Link>
                     </p>
                 </motion.div>
             </div>

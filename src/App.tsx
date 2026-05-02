@@ -45,7 +45,7 @@ function PageWrap({ children }: { children: React.ReactNode }) {
 function AppLayout() {
   const location = useLocation();
   return (
-    <div className="min-h-screen bg-navy-950">
+    <div className="min-h-screen" style={{ background: "var(--color-bg-base)" }}>
       <AppNavbar />
       <Sidebar />
       <style>{`

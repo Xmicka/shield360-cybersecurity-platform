@@ -49,120 +49,131 @@ export default function Signup() {
         }
     };
 
-    return (
-        <div className="min-h-screen flex relative overflow-hidden">
-            {/* Background */}
-            <div className="absolute inset-0 bg-navy-950" />
-            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-500/3 rounded-full blur-[150px]" />
-            <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-cyan-400/3 rounded-full blur-[120px]" />
+    const labelStyle: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6, display: "block" };
 
-            {/* Left Panel - Branding */}
-            <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center p-12">
-                <div className="absolute inset-0 bg-gradient-to-br from-navy-800/50 to-transparent" />
+    return (
+        <div style={{ minHeight: "100vh", background: "var(--color-bg-base)", display: "flex", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: -120, left: -120, width: 480, height: 480, background: "rgba(184,169,201,0.30)", borderRadius: "50%", filter: "blur(120px)" }} />
+            <div style={{ position: "absolute", bottom: -120, right: -120, width: 360, height: 360, background: "rgba(168,200,219,0.35)", borderRadius: "50%", filter: "blur(120px)" }} />
+
+            <div className="hidden lg:flex" style={{ width: "50%", position: "relative", alignItems: "center", justifyContent: "center", padding: 48 }}>
                 <motion.div
-                    initial={{ opacity: 0, x: -30 }}
+                    initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative z-10 max-w-md"
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ position: "relative", zIndex: 10, maxWidth: 440 }}
                 >
-                    <div className="mb-10">
-                        <Link to="/" className="flex items-center gap-3 group">
-                            <div className="relative w-12 h-12">
-                                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 animate-pulse-glow" />
-                                <div className="absolute inset-[2px] rounded-[10px] bg-navy-900 flex items-center justify-center">
-                                    <svg viewBox="0 0 24 24" className="w-6 h-6 text-cyan-400" fill="currentColor">
-                                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                                    </svg>
-                                </div>
+                    <div style={{ marginBottom: 36 }}>
+                        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
+                            <div style={{
+                                width: 44, height: 44, borderRadius: 12,
+                                background: "linear-gradient(135deg, #6ba3be 0%, #8aab96 100%)",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                boxShadow: "0 4px 12px rgba(107,163,190,0.25)",
+                            }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 22, height: 22, color: "#fff" }} fill="currentColor">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                                </svg>
                             </div>
-                            <span className="text-xl font-bold text-white tracking-tight">Shield360</span>
+                            <span style={{ fontSize: 18, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Shield360</span>
                         </Link>
                     </div>
 
-                    <h2 className="text-3xl font-bold text-white mb-4 leading-tight">
+                    <h2 style={{ fontSize: 32, fontWeight: 700, color: "var(--color-text-primary)", lineHeight: 1.15, letterSpacing: "-0.025em", marginBottom: 16 }}>
                         Start building your{" "}
-                        <span className="gradient-text">security posture</span>
+                        <span className="gradient-text" style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontWeight: 400 }}>
+                            security posture
+                        </span>
                     </h2>
-                    <p className="text-slate-400 leading-relaxed mb-10">
-                        Create your account to connect your security components and get unified visibility across your entire organization.
+                    <p style={{ color: "var(--color-text-secondary)", lineHeight: 1.65, marginBottom: 28, fontSize: 15 }}>
+                        Create your account to connect your security components and get unified visibility across your entire organisation.
                     </p>
 
-                    {/* Feature list */}
-                    <div className="space-y-4">
+                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                         {[
                             "Connect up to 4 independent security modules",
                             "Real-time aggregated metrics dashboard",
                             "AI-powered threat intelligence",
                             "Automated compliance reporting",
                         ].map((feat, i) => (
-                            <div key={i} className="flex items-center gap-3">
-                                <div className="w-5 h-5 rounded-full bg-cyan-400/10 flex items-center justify-center shrink-0">
-                                    <svg viewBox="0 0 24 24" className="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={3}>
+                            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                <div style={{
+                                    width: 22, height: 22, borderRadius: "50%",
+                                    background: "rgba(107,163,190,0.15)", border: "1px solid rgba(107,163,190,0.30)",
+                                    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                                }}>
+                                    <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: "var(--color-brand-blue)" }} fill="none" stroke="currentColor" strokeWidth={3}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                     </svg>
                                 </div>
-                                <span className="text-sm text-slate-400">{feat}</span>
+                                <span style={{ fontSize: 14, color: "var(--color-text-secondary)" }}>{feat}</span>
                             </div>
                         ))}
                     </div>
                 </motion.div>
             </div>
 
-            {/* Right Panel - Form */}
-            <div className="flex-1 flex items-center justify-center p-6 sm:p-12 relative z-10">
+            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, position: "relative", zIndex: 10 }}>
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="w-full max-w-md"
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    className="glass-card"
+                    style={{ width: "100%", maxWidth: 440, padding: "36px 32px" }}
                 >
-                    <div className="lg:hidden mb-10 text-center">
-                        <Link to="/" className="inline-flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 p-[2px]">
-                                <div className="w-full h-full rounded-[10px] bg-navy-900 flex items-center justify-center">
-                                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-cyan-400" fill="currentColor">
-                                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                                    </svg>
-                                </div>
+                    <div className="lg:hidden" style={{ marginBottom: 24, textAlign: "center" }}>
+                        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                            <div style={{
+                                width: 36, height: 36, borderRadius: 10,
+                                background: "linear-gradient(135deg, #6ba3be, #8aab96)",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                            }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#fff" }} fill="currentColor">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                                </svg>
                             </div>
-                            <span className="text-lg font-bold text-white">Shield360</span>
+                            <span style={{ fontSize: 16, fontWeight: 700, color: "var(--color-text-primary)" }}>Shield360</span>
                         </Link>
                     </div>
 
-                    <h1 className="text-2xl font-bold text-white mb-2">Create your account</h1>
-                    <p className="text-sm text-slate-500 mb-8">Get started with Shield360 in under a minute</p>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 6, letterSpacing: "-0.02em" }}>Create your account</h1>
+                    <p style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 24 }}>Get started with Shield360 in under a minute</p>
 
                     {error && (
-                        <div className="mb-5 px-4 py-3 rounded-xl text-sm font-medium text-rose-400" style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.15)" }}>
+                        <div style={{
+                            marginBottom: 16, padding: "10px 14px", borderRadius: 12,
+                            fontSize: 13, fontWeight: 500, color: "var(--color-status-error)",
+                            background: "rgba(201,112,112,0.10)", border: "1px solid rgba(201,112,112,0.25)",
+                        }}>
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                         <div>
-                            <label className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2 block">Full Name</label>
+                            <label style={labelStyle}>Full Name</label>
                             <input type="text" className="input-premium" placeholder="John Doe" value={form.name} onChange={(e) => update("name", e.target.value)} />
                         </div>
                         <div>
-                            <label className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2 block">Email</label>
+                            <label style={labelStyle}>Email</label>
                             <input type="email" className="input-premium" placeholder="you@company.com" value={form.email} onChange={(e) => update("email", e.target.value)} />
                         </div>
                         <div>
-                            <label className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2 block">Organization</label>
+                            <label style={labelStyle}>Organisation</label>
                             <input type="text" className="input-premium" placeholder="Your Company" value={form.org} onChange={(e) => update("org", e.target.value)} />
                         </div>
                         <div>
-                            <label className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2 block">Password</label>
+                            <label style={labelStyle}>Password</label>
                             <input type="password" className="input-premium" placeholder="••••••••••" value={form.password} onChange={(e) => update("password", e.target.value)} />
                         </div>
 
-                        <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 !mt-6">
+                        <button type="submit" disabled={loading} className="btn-primary" style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8 }}>
                             {loading ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                <div style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%" }} className="animate-spin" />
                             ) : (
                                 <>
                                     Create Account
-                                    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                    <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                     </svg>
                                 </>
@@ -170,20 +181,14 @@ export default function Signup() {
                         </button>
                     </form>
 
-                    {/* Divider */}
-                    <div className="flex items-center gap-4 my-6">
-                        <div className="flex-1 h-px bg-slate-800" />
-                        <span className="text-xs text-slate-600">or</span>
-                        <div className="flex-1 h-px bg-slate-800" />
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "20px 0" }}>
+                        <div style={{ flex: 1, height: 1, background: "var(--color-border)" }} />
+                        <span style={{ fontSize: 11, color: "var(--color-text-muted)" }}>or</span>
+                        <div style={{ flex: 1, height: 1, background: "var(--color-border)" }} />
                     </div>
 
-                    {/* Google Sign-In */}
-                    <button
-                        onClick={handleGoogle}
-                        className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 transition-all hover:text-white"
-                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    >
-                        <svg viewBox="0 0 24 24" className="w-4 h-4">
+                    <button onClick={handleGoogle} className="btn-ghost" style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }}>
                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
                             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
                             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
@@ -192,9 +197,9 @@ export default function Signup() {
                         Continue with Google
                     </button>
 
-                    <p className="text-sm text-slate-500 text-center mt-8">
+                    <p style={{ fontSize: 13, color: "var(--color-text-muted)", textAlign: "center", marginTop: 20 }}>
                         Already have an account?{" "}
-                        <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium">Sign in</Link>
+                        <Link to="/login" style={{ color: "var(--color-brand-blue)", fontWeight: 600 }}>Sign in</Link>
                     </p>
                 </motion.div>
             </div>

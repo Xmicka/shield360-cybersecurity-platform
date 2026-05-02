@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth } from "firebase/auth";
+import { supabase } from "../../../config/supabase";
 import techData from "../data/technological.json";
 import { analyzeAssessment } from "../services/backendApi";
 
@@ -144,9 +144,9 @@ function Stage5Technological() {
 
       const allAnswers = { stage1, stage2, stage3, stage4, stage5 };
 
-      // Get current user
-      const auth = getAuth();
-      const user = auth.currentUser;
+      // Get current user via Supabase
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
 
       if (!user) {
         alert("You must be logged in to submit.");
@@ -157,7 +157,7 @@ function Stage5Technological() {
       const profile = JSON.parse(localStorage.getItem("profile") || "{}");
 
       const result = await analyzeAssessment({
-        userId: user.uid,
+        userId: user.id,
         answers: allAnswers,
         smeProfile: profile,
       });

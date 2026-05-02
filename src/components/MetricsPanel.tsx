@@ -13,11 +13,11 @@ interface MetricsPanelProps {
 }
 
 const colorMap: Record<string, { accent: string; bg: string; border: string }> = {
-    cyan: { accent: "#00f0ff", bg: "rgba(0,240,255,0.06)", border: "rgba(0,240,255,0.12)" },
-    purple: { accent: "#a78bfa", bg: "rgba(167,139,250,0.06)", border: "rgba(167,139,250,0.12)" },
-    emerald: { accent: "#34d399", bg: "rgba(52,211,153,0.06)", border: "rgba(52,211,153,0.12)" },
-    rose: { accent: "#f43f5e", bg: "rgba(244,63,94,0.06)", border: "rgba(244,63,94,0.12)" },
-    amber: { accent: "#fbbf24", bg: "rgba(251,191,36,0.06)", border: "rgba(251,191,36,0.12)" },
+    cyan: { accent: "#6ba3be", bg: "rgba(107,163,190,0.10)", border: "rgba(107,163,190,0.25)" },
+    purple: { accent: "#b8a9c9", bg: "rgba(184,169,201,0.12)", border: "rgba(184,169,201,0.30)" },
+    emerald: { accent: "#7dba9c", bg: "rgba(125,186,156,0.12)", border: "rgba(125,186,156,0.30)" },
+    rose: { accent: "#c97070", bg: "rgba(201,112,112,0.10)", border: "rgba(201,112,112,0.25)" },
+    amber: { accent: "#d4a56a", bg: "rgba(212,165,106,0.12)", border: "rgba(212,165,106,0.30)" },
 };
 
 function useCountUp(end: number, duration: number = 2000) {
@@ -96,17 +96,17 @@ export default function MetricsPanel({
                         <div style={{
                             display: "flex", alignItems: "center", gap: 4,
                             fontSize: 12, fontWeight: 600,
-                            color: trend === "up" ? "#34d399" : trend === "down" ? "#f43f5e" : "#94a3b8",
+                            color: trend === "up" ? "var(--color-status-ok)" : trend === "down" ? "var(--color-status-error)" : "var(--color-text-muted)",
                         }}>
                             {trend === "up" ? "↑" : trend === "down" ? "↓" : "→"} {trendValue}
                         </div>
                     )}
                 </div>
 
-                <p style={{ fontSize: 11, color: "#475569", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: 4 }}>
+                <p style={{ fontSize: 11, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: 4 }}>
                     {label}
                 </p>
-                <p style={{ fontSize: 24, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>
+                <p style={{ fontSize: 24, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>
                     {prefix}
                     {isNumeric ? (
                         <>

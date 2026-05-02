@@ -22,7 +22,7 @@ const complianceData = [
     { name: "Compliant", value: 87 },
     { name: "Non-Compliant", value: 13 },
 ];
-const COLORS = ["#22d3ee", "#0f1629"];
+const COLORS = ["#7dba9c", "#e9e6e1"];
 
 const activity = [
     { time: "2m", event: "Phishing email clicked by user@corp.com", module: "Spear Phishing", severity: "high" },
@@ -34,21 +34,21 @@ const activity = [
 ];
 
 const sevColors: Record<string, { text: string; bg: string }> = {
-    critical: { text: "#f43f5e", bg: "rgba(244,63,94,0.1)" },
-    high: { text: "#fbbf24", bg: "rgba(251,191,36,0.1)" },
-    medium: { text: "#a855f7", bg: "rgba(168,85,247,0.1)" },
-    info: { text: "#22d3ee", bg: "rgba(34,211,238,0.1)" },
+    critical: { text: "#c97070", bg: "rgba(201,112,112,0.12)" },
+    high: { text: "#d4a56a", bg: "rgba(212,165,106,0.14)" },
+    medium: { text: "#b8a9c9", bg: "rgba(184,169,201,0.14)" },
+    info: { text: "#6ba3be", bg: "rgba(107,163,190,0.12)" },
 };
 
 const fadeIn = {
-    initial: { opacity: 0, y: 20 },
+    initial: { opacity: 0, y: 16 },
     whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { duration: 0.5 },
+    viewport: { once: true, margin: "-40px" },
+    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 };
 
 export default function Dashboard() {
-    const { plan, setPlan, hasAccess, canUse, recordUsage, getRemainingUses, getModuleLimit, getModuleUsage } = useSubscription();
+    const { plan, setPlan, hasAccess, canUse, recordUsage, getModuleLimit, getModuleUsage } = useSubscription();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; moduleName: string; deployedUrl: string; isUsageLimited?: boolean; usageInfo?: { used: number; limit: number } }>({
@@ -60,26 +60,23 @@ export default function Dashboard() {
     const handleModuleClick = async (slug: string, name: string, deployedUrl: string, internalRoute: string) => {
         if (canUse(slug)) {
             await recordUsage(slug);
-            // Navigate to internal module route instead of external URL
             navigate(internalRoute);
-            // Log the launch to Firestore
             if (user) {
                 logModuleLaunch({
                     userId: user.uid,
                     userEmail: user.email || "",
                     moduleSlug: slug,
                     moduleName: name,
-                }).catch(() => {});
+                }).catch(() => { });
                 logActivity({
                     userId: user.uid,
                     userEmail: user.email || "",
                     event: `Launched ${name}`,
                     module: name,
                     severity: "info",
-                }).catch(() => {});
+                }).catch(() => { });
             }
         } else if (hasAccess(slug)) {
-            // Has access but usage limit reached
             const limit = getModuleLimit(slug);
             const used = getModuleUsage(slug);
             setUpgradeModal({ open: true, moduleName: name, deployedUrl, isUsageLimited: true, usageInfo: { used, limit } });
@@ -89,11 +86,9 @@ export default function Dashboard() {
     };
 
     const handleUpgrade = () => {
-        // Demo: instantly upgrade to the next tier and open the module
         const nextPlan = getNextPlan(plan);
         setPlan(nextPlan);
         if (upgradeModal.deployedUrl) {
-            // Navigate to internal route after upgrade
             const mod = MODULES.find(m => m.deployedUrl === upgradeModal.deployedUrl);
             if (mod) navigate(mod.internalRoute);
         }
@@ -101,50 +96,50 @@ export default function Dashboard() {
     };
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 28, paddingTop: 8 }}>
             {/* Header */}
-            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-                <h1 style={{ fontSize: 26, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em", marginBottom: 4 }}>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+                <h1 style={{ fontSize: 28, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.025em", marginBottom: 6 }}>
                     Security Dashboard
                 </h1>
-                <p style={{ fontSize: 14, color: "#64748b" }}>
+                <p style={{ fontSize: 14, color: "var(--color-text-secondary)" }}>
                     Aggregated security metrics across all connected modules
                 </p>
             </motion.div>
 
             {/* Key Metrics */}
             <motion.div {...fadeIn} className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
-                <MetricsPanel label="Endpoints Scanned" value={312} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" /></svg>} trend="up" trendValue="+18" color="cyan" />
-                <MetricsPanel label="Shadow IT Apps" value={47} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" /></svg>} trend="down" trendValue="-5" color="purple" />
-                <MetricsPanel label="Active Threats" value={7} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>} trend="down" trendValue="-2" color="amber" />
-                <MetricsPanel label="Compliance" value={87} suffix="%" icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>} trend="up" trendValue="+4.2%" color="emerald" />
-                <MetricsPanel label="System Health" value="Online" icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} color="emerald" />
+                <MetricsPanel label="Endpoints Scanned" value={312} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" /></svg>} trend="up" trendValue="+18" color="cyan" />
+                <MetricsPanel label="Shadow IT Apps" value={47} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" /></svg>} trend="down" trendValue="-5" color="purple" />
+                <MetricsPanel label="Active Threats" value={7} icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>} trend="down" trendValue="-2" color="amber" />
+                <MetricsPanel label="Compliance" value={87} suffix="%" icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>} trend="up" trendValue="+4.2%" color="emerald" />
+                <MetricsPanel label="System Health" value="Online" icon={<svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} color="emerald" />
             </motion.div>
 
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5">
                 <motion.div {...fadeIn} className="glass-card" style={{ padding: 28 }}>
-                    <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 2 }}>Threat Activity</h3>
-                    <p style={{ fontSize: 12, color: "#64748b", marginBottom: 20 }}>Threats detected vs blocked, last 6 months</p>
+                    <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 2 }}>Threat Activity</h3>
+                    <p style={{ fontSize: 12, color: "var(--color-text-secondary)", marginBottom: 20 }}>Threats detected vs blocked, last 6 months</p>
                     <ResponsiveContainer width="100%" height={240}>
                         <AreaChart data={threatTrend}>
                             <defs>
-                                <linearGradient id="dbThreat" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#f43f5e" stopOpacity={0.25} /><stop offset="95%" stopColor="#f43f5e" stopOpacity={0} /></linearGradient>
-                                <linearGradient id="dbBlocked" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#22d3ee" stopOpacity={0.25} /><stop offset="95%" stopColor="#22d3ee" stopOpacity={0} /></linearGradient>
+                                <linearGradient id="dbThreat" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#c97070" stopOpacity={0.35} /><stop offset="95%" stopColor="#c97070" stopOpacity={0} /></linearGradient>
+                                <linearGradient id="dbBlocked" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#6ba3be" stopOpacity={0.35} /><stop offset="95%" stopColor="#6ba3be" stopOpacity={0} /></linearGradient>
                             </defs>
-                            <XAxis dataKey="name" stroke="rgba(148,163,184,0.08)" tick={{ fill: "#64748b", fontSize: 11 }} />
-                            <YAxis stroke="rgba(148,163,184,0.08)" tick={{ fill: "#64748b", fontSize: 11 }} />
-                            <Tooltip contentStyle={{ background: "#0f1629", border: "1px solid rgba(148,163,184,0.08)", borderRadius: 14, color: "#f1f5f9", fontSize: 12 }} />
-                            <Area type="monotone" dataKey="blocked" stroke="#22d3ee" fill="url(#dbBlocked)" strokeWidth={2} />
-                            <Area type="monotone" dataKey="threats" stroke="#f43f5e" fill="url(#dbThreat)" strokeWidth={2} />
+                            <XAxis dataKey="name" stroke="rgba(0,0,0,0.06)" tick={{ fill: "#9b9b9b", fontSize: 11 }} />
+                            <YAxis stroke="rgba(0,0,0,0.06)" tick={{ fill: "#9b9b9b", fontSize: 11 }} />
+                            <Tooltip contentStyle={{ background: "#fff", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 12, color: "#2c2c2c", fontSize: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }} />
+                            <Area type="monotone" dataKey="blocked" stroke="#6ba3be" fill="url(#dbBlocked)" strokeWidth={2} />
+                            <Area type="monotone" dataKey="threats" stroke="#c97070" fill="url(#dbThreat)" strokeWidth={2} />
                         </AreaChart>
                     </ResponsiveContainer>
                 </motion.div>
 
-                <motion.div {...fadeIn} className="glass-card" style={{ padding: 28, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <motion.div {...fadeIn} className="glass-card" style={{ padding: 28, display: "flex", flexDirection: "column" }}>
                     <div style={{ width: "100%", marginBottom: 12 }}>
-                        <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 2 }}>Compliance</h3>
-                        <p style={{ fontSize: 12, color: "#64748b" }}>Overall posture</p>
+                        <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 2 }}>Compliance</h3>
+                        <p style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Overall posture</p>
                     </div>
                     <div style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
                         <ResponsiveContainer width={180} height={180}>
@@ -156,8 +151,8 @@ export default function Dashboard() {
                         </ResponsiveContainer>
                         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <div style={{ textAlign: "center" }}>
-                                <p style={{ fontSize: 28, fontWeight: 800, color: "#22d3ee" }}>87%</p>
-                                <p style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#64748b" }}>Score</p>
+                                <p style={{ fontSize: 28, fontWeight: 700, color: "var(--color-status-ok)" }}>87%</p>
+                                <p style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--color-text-muted)" }}>Score</p>
                             </div>
                         </div>
                     </div>
@@ -166,19 +161,24 @@ export default function Dashboard() {
 
             {/* Connected Modules */}
             <motion.div {...fadeIn}>
-                <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 16 }}>Connected Modules</h3>
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 16 }}>Connected Modules</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                     {MODULES.map((mod, i) => {
                         const accessible = hasAccess(mod.slug);
                         const usable = canUse(mod.slug);
                         const locked = !accessible;
-                        const remaining = getRemainingUses(mod.slug);
                         const limit = getModuleLimit(mod.slug);
                         const isUnlimited = limit === -1;
                         const usageLimited = accessible && !usable;
+                        const used = getModuleUsage(mod.slug);
 
                         return (
-                            <motion.div key={i} whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
+                            <motion.div key={i}
+                                initial={{ opacity: 0, y: 12 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: i * 0.04 }}
+                            >
                                 <button
                                     onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl, mod.internalRoute)}
                                     style={{
@@ -191,41 +191,97 @@ export default function Dashboard() {
                                         padding: 0,
                                     }}
                                 >
-                                    <div className="glass-card" style={{ padding: 20, position: "relative", overflow: "hidden" }}>
-                                        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: mod.color, opacity: accessible ? 0.4 : 0.15 }} />
-                                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                                            <span style={{ fontSize: 13, fontWeight: 700, color: accessible ? "#f1f5f9" : "#475569" }}>{mod.shortName}</span>
+                                    <div className="glass-card" style={{ padding: 24, position: "relative", overflow: "hidden", minHeight: 200 }}>
+                                        {/* Top accent */}
+                                        <div style={{
+                                            position: "absolute", top: 0, left: 0, right: 0, height: 3,
+                                            background: mod.color,
+                                            opacity: accessible ? 0.7 : 0.2,
+                                            borderRadius: "20px 20px 0 0",
+                                        }} />
+
+                                        {/* Icon + status */}
+                                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                                            <div style={{
+                                                width: 44, height: 44, borderRadius: 12,
+                                                background: `${mod.color}15`,
+                                                border: `1px solid ${mod.color}30`,
+                                                display: "flex", alignItems: "center", justifyContent: "center",
+                                                color: mod.color,
+                                            }}>
+                                                <svg viewBox="0 0 24 24" style={{ width: 22, height: 22 }} fill="none" stroke="currentColor" strokeWidth={1.6}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+                                                </svg>
+                                            </div>
                                             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                                                 {locked ? (
-                                                    <>
-                                                        <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: "#a855f7" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                                    <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "3px 8px", borderRadius: 100, background: "rgba(184,169,201,0.14)" }}>
+                                                        <svg viewBox="0 0 24 24" style={{ width: 11, height: 11, color: "var(--color-brand-lavender)" }} fill="none" stroke="currentColor" strokeWidth={1.8}>
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                                         </svg>
-                                                        <span style={{ fontSize: 10, color: "#a855f7" }}>Upgrade</span>
-                                                    </>
+                                                        <span style={{ fontSize: 10, fontWeight: 600, color: "var(--color-brand-lavender)" }}>Upgrade</span>
+                                                    </div>
                                                 ) : usageLimited ? (
-                                                    <>
-                                                        <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: "#fbbf24" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                        </svg>
-                                                        <span style={{ fontSize: 10, color: "#fbbf24" }}>Limit reached</span>
-                                                    </>
+                                                    <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "3px 8px", borderRadius: 100, background: "rgba(212,165,106,0.14)" }}>
+                                                        <span style={{ fontSize: 10, fontWeight: 600, color: "var(--color-status-warn)" }}>Limit reached</span>
+                                                    </div>
                                                 ) : (
-                                                    <>
-                                                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399" }} className="animate-pulse" />
-                                                        <span style={{ fontSize: 10, color: "#34d399" }}>Connected</span>
-                                                    </>
+                                                    <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "3px 8px", borderRadius: 100, background: "rgba(125,186,156,0.14)" }}>
+                                                        <div style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--color-status-ok)" }} />
+                                                        <span style={{ fontSize: 10, fontWeight: 600, color: "var(--color-status-ok)" }}>Active</span>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
-                                        <p style={{ fontSize: 12, color: "#64748b" }}>
-                                            {locked
-                                                ? "Upgrade to access"
-                                                : isUnlimited
-                                                    ? mod.tag
-                                                    : `${remaining}/${limit} uses left this month`
-                                            }
+
+                                        <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 6, letterSpacing: "-0.01em" }}>
+                                            {mod.shortName}
+                                        </h3>
+                                        <p style={{ fontSize: 12, color: "var(--color-text-secondary)", lineHeight: 1.6, marginBottom: 14 }}>
+                                            {mod.description.length > 90 ? mod.description.slice(0, 88) + "…" : mod.description}
                                         </p>
+
+                                        {/* Usage bar */}
+                                        {accessible && !isUnlimited && (
+                                            <div style={{ marginBottom: 12 }}>
+                                                <div style={{ height: 4, background: "rgba(0,0,0,0.06)", borderRadius: 100, overflow: "hidden" }}>
+                                                    <div style={{
+                                                        height: "100%",
+                                                        width: `${Math.min(100, (used / limit) * 100)}%`,
+                                                        background: usageLimited ? "var(--color-status-warn)" : mod.color,
+                                                        borderRadius: 100,
+                                                        transition: "width 0.4s ease",
+                                                    }} />
+                                                </div>
+                                                <p style={{ fontSize: 11, color: "var(--color-text-muted)", marginTop: 4 }}>
+                                                    {used}/{limit} uses this month
+                                                </p>
+                                            </div>
+                                        )}
+                                        {accessible && isUnlimited && (
+                                            <p style={{ fontSize: 11, color: "var(--color-text-muted)", marginBottom: 12 }}>
+                                                Unlimited usage
+                                            </p>
+                                        )}
+
+                                        {/* CTA */}
+                                        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, color: locked ? "var(--color-text-muted)" : mod.color }}>
+                                            <span>{locked ? "Upgrade to unlock" : usageLimited ? "Upgrade for more" : `Open ${mod.shortName}`}</span>
+                                            <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                            </svg>
+                                        </div>
+
+                                        {/* tier pill in corner */}
+                                        <span style={{
+                                            position: "absolute", bottom: 16, right: 20,
+                                            fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em",
+                                            color: mod.tier === "free" ? "var(--color-brand-sage)" : "var(--color-brand-lavender)",
+                                            background: mod.tier === "free" ? "rgba(138,171,150,0.12)" : "rgba(184,169,201,0.14)",
+                                            padding: "2px 8px", borderRadius: 6,
+                                        }}>
+                                            {mod.tier === "free" ? "Free" : "Pro"}
+                                        </span>
                                     </div>
                                 </button>
                             </motion.div>
@@ -236,8 +292,8 @@ export default function Dashboard() {
 
             {/* Activity Feed */}
             <motion.div {...fadeIn} className="glass-card" style={{ padding: 28 }}>
-                <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 2 }}>Recent Activity</h3>
-                <p style={{ fontSize: 12, color: "#64748b", marginBottom: 20 }}>Cross-module event stream</p>
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 2 }}>Recent Activity</h3>
+                <p style={{ fontSize: 12, color: "var(--color-text-secondary)", marginBottom: 20 }}>Cross-module event stream</p>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     {activity.map((item, i) => {
                         const sev = sevColors[item.severity];
@@ -245,18 +301,19 @@ export default function Dashboard() {
                             <div key={i} style={{
                                 display: "flex", alignItems: "center", gap: 16,
                                 padding: "12px 8px",
-                                borderBottom: i < activity.length - 1 ? "1px solid rgba(148,163,184,0.04)" : "none",
+                                borderBottom: i < activity.length - 1 ? "1px solid var(--color-border)" : "none",
                                 transition: "background 0.15s",
-                            }} className="hover:bg-white/[0.01]">
-                                <span style={{ fontSize: 11, color: "#64748b", fontFamily: "monospace", width: 32, textAlign: "right", flexShrink: 0 }}>{item.time}</span>
+                                borderRadius: 6,
+                            }} className="hover:bg-black/[0.02]">
+                                <span style={{ fontSize: 11, color: "var(--color-text-muted)", fontFamily: "monospace", width: 32, textAlign: "right", flexShrink: 0 }}>{item.time}</span>
                                 <div style={{ flex: 1, minWidth: 0 }}>
-                                    <p style={{ fontSize: 13, color: "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.event}</p>
-                                    <p style={{ fontSize: 11, color: "#64748b" }}>{item.module}</p>
+                                    <p style={{ fontSize: 13, color: "var(--color-text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.event}</p>
+                                    <p style={{ fontSize: 11, color: "var(--color-text-muted)" }}>{item.module}</p>
                                 </div>
                                 <span style={{
-                                    fontSize: 9, fontWeight: 800, textTransform: "uppercase",
+                                    fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
                                     color: sev.text, background: sev.bg,
-                                    padding: "3px 8px", borderRadius: 6, flexShrink: 0,
+                                    padding: "3px 8px", borderRadius: 100, flexShrink: 0,
                                 }}>
                                     {item.severity}
                                 </span>
@@ -266,7 +323,6 @@ export default function Dashboard() {
                 </div>
             </motion.div>
 
-            {/* Upgrade Modal */}
             <UpgradeModal
                 isOpen={upgradeModal.open}
                 onClose={() => setUpgradeModal((prev) => ({ ...prev, open: false }))}

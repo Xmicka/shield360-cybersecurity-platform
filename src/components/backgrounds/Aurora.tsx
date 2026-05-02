@@ -8,8 +8,8 @@ interface AuroraProps {
 }
 
 export default function Aurora({
-  colorStops = ["#10b981", "#7c3aed", "#3b82f6"],
-  blend = "mix-blend-screen",
+  colorStops = ["#d4e8f0", "#e8d4f0", "#d4eee0"],
+  blend = "mix-blend-multiply",
   speed = 0.5,
   children
 }: AuroraProps) {
@@ -27,7 +27,7 @@ export default function Aurora({
           filter: blur(80px);
           border-radius: 50%;
           animation: aurora-float 20s infinite alternate ease-in-out;
-          opacity: 0.7;
+          opacity: 0.55;
         }
         @keyframes aurora-float {
           0% { transform: translate(0, 0) scale(1) rotate(0deg); }

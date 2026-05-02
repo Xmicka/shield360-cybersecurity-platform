@@ -5,6 +5,18 @@ import { useSubscription } from "../context/subscriptionContext";
 import { MODULES, getNextPlan } from "../config/services";
 import UpgradeModal from "./UpgradeModal";
 
+interface NavItem {
+    slug: string;
+    name: string;
+    shortName: string;
+    icon: string;
+    color: string;
+    internalRoute: string;
+    deployedUrl: string;
+    locked?: boolean;
+    isActive?: boolean;
+}
+
 export default function Sidebar() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -28,7 +40,6 @@ export default function Sidebar() {
     };
 
     const handleUpgrade = () => {
-        // Demo: instantly upgrade to the next tier and open the module
         const nextPlan = getNextPlan(plan);
         setPlan(nextPlan);
         if (upgradeModal.deployedUrl) {
@@ -38,38 +49,127 @@ export default function Sidebar() {
         setUpgradeModal((prev) => ({ ...prev, open: false }));
     };
 
+    const renderItem = (mod: NavItem, isLink: boolean) => {
+        const isActive = mod.isActive ?? location.pathname === mod.internalRoute;
+        const locked = mod.locked ?? false;
+        const baseStyle: React.CSSProperties = {
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "10px 14px",
+            borderRadius: 12,
+            fontSize: 13,
+            fontWeight: 500,
+            color: locked ? "var(--color-text-muted)" : isActive ? "var(--color-brand-blue)" : "var(--color-text-secondary)",
+            background: isActive ? "rgba(107,163,190,0.10)" : "transparent",
+            border: "1px solid transparent",
+            transition: "background 0.2s ease, color 0.2s ease",
+            cursor: "pointer",
+            width: "100%",
+            textAlign: "left",
+            position: "relative",
+        };
+        const inner = (
+            <>
+                {isActive && (
+                    <div
+                        style={{
+                            position: "absolute",
+                            left: 0,
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            width: 3,
+                            height: 20,
+                            borderRadius: "0 4px 4px 0",
+                            background: mod.color,
+                        }}
+                    />
+                )}
+                <div
+                    style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 8,
+                        background: locked ? "rgba(0,0,0,0.04)" : `${mod.color}18`,
+                        border: `1px solid ${locked ? "var(--color-border)" : mod.color + "30"}`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                    }}
+                >
+                    <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: locked ? "var(--color-text-muted)" : mod.color }} fill="none" stroke="currentColor" strokeWidth={1.6}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+                    </svg>
+                </div>
+                <span style={{ flex: 1 }}>{mod.shortName}</span>
+                {locked ? (
+                    <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, color: "var(--color-text-muted)" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                ) : (
+                    <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: isActive ? mod.color : "var(--color-text-muted)" }} fill="none" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                )}
+            </>
+        );
+
+        if (isLink) {
+            return (
+                <Link key={mod.slug} to={mod.internalRoute} style={baseStyle} className="hover:bg-black/[0.03]">
+                    {inner}
+                </Link>
+            );
+        }
+        return (
+            <button
+                key={mod.slug}
+                onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl, mod.internalRoute)}
+                style={baseStyle}
+                className="hover:bg-black/[0.03]"
+            >
+                {inner}
+            </button>
+        );
+    };
+
+    const sectionLabel: React.CSSProperties = {
+        fontSize: 10,
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.2em",
+        color: "var(--color-text-muted)",
+        padding: "0 14px",
+        marginBottom: 10,
+    };
+
     return (
         <>
             <motion.aside
-                initial={{ x: -20, opacity: 0 }}
+                initial={{ x: -16, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="hidden lg:flex fixed left-0 top-16 bottom-0 w-[248px] flex-col z-40"
+                transition={{ duration: 0.4, delay: 0.05 }}
+                className="hidden lg:flex"
                 style={{
-                    background: "linear-gradient(180deg, rgba(5,8,16,0.97) 0%, rgba(10,14,26,0.99) 100%)",
-                    borderRight: "1px solid rgba(148,163,184,0.08)",
-                    backdropFilter: "blur(24px)",
-                    WebkitBackdropFilter: "blur(24px)",
+                    position: "fixed",
+                    left: 0,
+                    top: "var(--navbar-height, 64px)",
+                    bottom: 0,
+                    width: "var(--sidebar-width, 248px)",
+                    flexDirection: "column",
+                    zIndex: 40,
+                    background: "rgba(250,249,247,0.95)",
+                    backdropFilter: "blur(20px)",
+                    WebkitBackdropFilter: "blur(20px)",
+                    borderRight: "1px solid var(--color-border)",
                 }}
             >
                 <div style={{ flex: 1, padding: "24px 12px", overflowY: "auto" }}>
-                    {/* Overview Section */}
+                    {/* Overview */}
                     <div style={{ marginBottom: 28 }}>
-                        <p
-                            style={{
-                                fontSize: 10,
-                                fontWeight: 700,
-                                textTransform: "uppercase",
-                                letterSpacing: "0.2em",
-                                color: "#334155",
-                                padding: "0 14px",
-                                marginBottom: 10,
-                            }}
-                        >
-                            Overview
-                        </p>
+                        <p style={sectionLabel}>Overview</p>
                         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            {/* Dashboard */}
                             <Link
                                 to="/dashboard"
                                 style={{
@@ -80,53 +180,23 @@ export default function Sidebar() {
                                     borderRadius: 12,
                                     fontSize: 13,
                                     fontWeight: 500,
-                                    color: location.pathname === "/dashboard" ? "#fff" : "#64748b",
-                                    background: location.pathname === "/dashboard" ? "rgba(255,255,255,0.05)" : "transparent",
-                                    border: location.pathname === "/dashboard" ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
-                                    transition: "all 0.2s ease",
+                                    color: location.pathname === "/dashboard" ? "var(--color-brand-blue)" : "var(--color-text-secondary)",
+                                    background: location.pathname === "/dashboard" ? "rgba(107,163,190,0.10)" : "transparent",
                                     position: "relative",
                                 }}
-                                className="hover:text-slate-300"
+                                className="hover:bg-black/[0.03]"
                             >
                                 {location.pathname === "/dashboard" && (
-                                    <div
-                                        style={{
-                                            position: "absolute",
-                                            left: 0,
-                                            top: "50%",
-                                            transform: "translateY(-50%)",
-                                            width: 3,
-                                            height: 20,
-                                            borderRadius: "0 4px 4px 0",
-                                            background: "#94a3b8",
-                                        }}
-                                    />
+                                    <div style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", width: 3, height: 20, borderRadius: "0 4px 4px 0", background: "var(--color-brand-blue)" }} />
                                 )}
-                                <div
-                                    style={{
-                                        width: 32,
-                                        height: 32,
-                                        borderRadius: 8,
-                                        background: "rgba(148,163,184,0.08)",
-                                        border: "1px solid rgba(148,163,184,0.12)",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        flexShrink: 0,
-                                    }}
-                                >
-                                    <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#94a3b8" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
-                                        />
+                                <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(107,163,190,0.10)", border: "1px solid rgba(107,163,190,0.20)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "var(--color-brand-blue)" }} fill="none" stroke="currentColor" strokeWidth={1.6}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
                                     </svg>
                                 </div>
                                 <span style={{ flex: 1 }}>Dashboard</span>
                             </Link>
 
-                            {/* Admin Panel (only for admins) */}
                             {role === "admin" && (
                                 <Link
                                     to="/admin"
@@ -138,47 +208,18 @@ export default function Sidebar() {
                                         borderRadius: 12,
                                         fontSize: 13,
                                         fontWeight: 500,
-                                        color: location.pathname === "/admin" ? "#fff" : "#64748b",
-                                        background: location.pathname === "/admin" ? "rgba(255,255,255,0.04)" : "transparent",
-                                        border: location.pathname === "/admin" ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
-                                        transition: "all 0.2s ease",
+                                        color: location.pathname === "/admin" ? "var(--color-brand-lavender)" : "var(--color-text-secondary)",
+                                        background: location.pathname === "/admin" ? "rgba(184,169,201,0.12)" : "transparent",
                                         position: "relative",
                                     }}
-                                    className="hover:text-slate-300"
+                                    className="hover:bg-black/[0.03]"
                                 >
                                     {location.pathname === "/admin" && (
-                                        <div
-                                            style={{
-                                                position: "absolute",
-                                                left: 0,
-                                                top: "50%",
-                                                transform: "translateY(-50%)",
-                                                width: 3,
-                                                height: 20,
-                                                borderRadius: "0 4px 4px 0",
-                                                background: "#a855f7",
-                                            }}
-                                        />
+                                        <div style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", width: 3, height: 20, borderRadius: "0 4px 4px 0", background: "var(--color-brand-lavender)" }} />
                                     )}
-                                    <div
-                                        style={{
-                                            width: 32,
-                                            height: 32,
-                                            borderRadius: 8,
-                                            background: "rgba(168,85,247,0.08)",
-                                            border: "1px solid rgba(168,85,247,0.12)",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            flexShrink: 0,
-                                        }}
-                                    >
-                                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#a855f7" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
-                                            />
+                                    <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(184,169,201,0.12)", border: "1px solid rgba(184,169,201,0.25)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "var(--color-brand-lavender)" }} fill="none" stroke="currentColor" strokeWidth={1.6}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                                         </svg>
                                     </div>
                                     <span style={{ flex: 1 }}>Admin Panel</span>
@@ -187,195 +228,66 @@ export default function Sidebar() {
                         </div>
                     </div>
 
-                    {/* Free Modules */}
+                    {/* Free */}
                     <div style={{ marginBottom: 28 }}>
-                        <p
-                            style={{
-                                fontSize: 10,
-                                fontWeight: 700,
-                                textTransform: "uppercase",
-                                letterSpacing: "0.2em",
-                                color: "#334155",
-                                padding: "0 14px",
-                                marginBottom: 10,
-                            }}
-                        >
-                            Free Modules
-                        </p>
+                        <p style={sectionLabel}>Free Modules</p>
                         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            {MODULES.filter((m) => m.tier === "free").map((mod) => {
-                                const isActive = location.pathname === mod.internalRoute || location.pathname.startsWith(mod.internalRoute + "/");
-                                return (
-                                    <button
-                                        key={mod.slug}
-                                        onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl, mod.internalRoute)}
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 12,
-                                            padding: "10px 14px",
-                                            borderRadius: 12,
-                                            fontSize: 13,
-                                            fontWeight: 500,
-                                            color: isActive ? "#fff" : "#64748b",
-                                            background: isActive ? "rgba(255,255,255,0.04)" : "transparent",
-                                            border: isActive ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
-                                            transition: "all 0.2s ease",
-                                            cursor: "pointer",
-                                            width: "100%",
-                                            textAlign: "left",
-                                            position: "relative",
-                                        }}
-                                        className="hover:text-slate-300 hover:bg-white/[0.02]"
-                                    >
-                                        {isActive && (
-                                            <div style={{
-                                                position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)",
-                                                width: 3, height: 20, borderRadius: "0 4px 4px 0", background: mod.color,
-                                            }} />
-                                        )}
-                                        <div
-                                            style={{
-                                                width: 32,
-                                                height: 32,
-                                                borderRadius: 8,
-                                                background: `${mod.color}10`,
-                                                border: `1px solid ${mod.color}18`,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                flexShrink: 0,
-                                            }}
-                                        >
-                                            <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: mod.color }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
-                                            </svg>
-                                        </div>
-                                        <span style={{ flex: 1 }}>{mod.shortName}</span>
-                                        <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: isActive ? mod.color : "#475569" }} fill="none" stroke="currentColor" strokeWidth={2}>
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                                            />
-                                        </svg>
-                                    </button>
-                                );
-                            })}
+                            {MODULES.filter((m) => m.tier === "free").map((mod) =>
+                                renderItem(
+                                    {
+                                        slug: mod.slug,
+                                        name: mod.name,
+                                        shortName: mod.shortName,
+                                        icon: mod.icon,
+                                        color: mod.color,
+                                        internalRoute: mod.internalRoute,
+                                        deployedUrl: mod.deployedUrl,
+                                        isActive: location.pathname === mod.internalRoute || location.pathname.startsWith(mod.internalRoute + "/"),
+                                    },
+                                    false
+                                )
+                            )}
                         </div>
                     </div>
 
-                    {/* Premium Modules */}
+                    {/* Premium */}
                     <div style={{ marginBottom: 28 }}>
-                        <p
-                            style={{
-                                fontSize: 10,
-                                fontWeight: 700,
-                                textTransform: "uppercase",
-                                letterSpacing: "0.2em",
-                                color: "#334155",
-                                padding: "0 14px",
-                                marginBottom: 10,
-                            }}
-                        >
-                            Premium Modules
-                        </p>
+                        <p style={sectionLabel}>Premium Modules</p>
                         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            {MODULES.filter((m) => m.tier === "professional").map((mod) => {
-                                const locked = !hasAccess(mod.slug);
-                                const isActive = location.pathname === mod.internalRoute;
-                                return (
-                                    <button
-                                        key={mod.slug}
-                                        onClick={() => handleModuleClick(mod.slug, mod.name, mod.deployedUrl, mod.internalRoute)}
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 12,
-                                            padding: "10px 14px",
-                                            borderRadius: 12,
-                                            fontSize: 13,
-                                            fontWeight: 500,
-                                            color: locked ? "#334155" : isActive ? "#fff" : "#64748b",
-                                            background: isActive ? "rgba(255,255,255,0.04)" : "transparent",
-                                            border: isActive ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
-                                            transition: "all 0.2s ease",
-                                            cursor: "pointer",
-                                            width: "100%",
-                                            textAlign: "left",
-                                            position: "relative",
-                                        }}
-                                        className="hover:text-slate-300 hover:bg-white/[0.02]"
-                                    >
-                                        {isActive && (
-                                            <div style={{
-                                                position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)",
-                                                width: 3, height: 20, borderRadius: "0 4px 4px 0", background: mod.color,
-                                            }} />
-                                        )}
-                                        <div
-                                            style={{
-                                                width: 32,
-                                                height: 32,
-                                                borderRadius: 8,
-                                                background: locked ? "rgba(51,65,85,0.08)" : `${mod.color}10`,
-                                                border: `1px solid ${locked ? "rgba(51,65,85,0.12)" : mod.color + "18"}`,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                flexShrink: 0,
-                                            }}
-                                        >
-                                            <svg
-                                                viewBox="0 0 24 24"
-                                                style={{ width: 16, height: 16, color: locked ? "#334155" : mod.color }}
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth={1.5}
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
-                                            </svg>
-                                        </div>
-                                        <span style={{ flex: 1 }}>{mod.shortName}</span>
-                                        {locked ? (
-                                            <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, color: "#334155" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                                                />
-                                            </svg>
-                                        ) : (
-                                            <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, color: isActive ? mod.color : "#475569" }} fill="none" stroke="currentColor" strokeWidth={2}>
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                                                />
-                                            </svg>
-                                        )}
-                                    </button>
-                                );
-                            })}
+                            {MODULES.filter((m) => m.tier === "professional").map((mod) =>
+                                renderItem(
+                                    {
+                                        slug: mod.slug,
+                                        name: mod.name,
+                                        shortName: mod.shortName,
+                                        icon: mod.icon,
+                                        color: mod.color,
+                                        internalRoute: mod.internalRoute,
+                                        deployedUrl: mod.deployedUrl,
+                                        locked: !hasAccess(mod.slug),
+                                        isActive: location.pathname === mod.internalRoute,
+                                    },
+                                    false
+                                )
+                            )}
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom section */}
-                <div style={{ padding: 12, borderTop: "1px solid rgba(148,163,184,0.08)", display: "flex", flexDirection: "column", gap: 8 }}>
+                {/* Bottom */}
+                <div style={{ padding: 12, borderTop: "1px solid var(--color-border)", display: "flex", flexDirection: "column", gap: 8 }}>
                     {plan !== "free" ? (
                         <div
                             style={{
-                                display: "block",
                                 padding: 14,
                                 borderRadius: 14,
                                 textAlign: "center",
-                                background: "rgba(10,15,30,0.6)",
-                                border: "1px solid rgba(34,211,238,0.12)",
+                                background: "rgba(107,163,190,0.06)",
+                                border: "1px solid rgba(107,163,190,0.18)",
                             }}
                         >
-                            <p style={{ fontSize: 10, color: "#475569", marginBottom: 2 }}>Current Plan</p>
-                            <p style={{ fontSize: 13, fontWeight: 700, color: plan === "enterprise" ? "#fbbf24" : "#a855f7", textTransform: "capitalize" }}>{plan}</p>
+                            <p style={{ fontSize: 10, color: "var(--color-text-muted)", marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.15em" }}>Current Plan</p>
+                            <p style={{ fontSize: 14, fontWeight: 700, color: plan === "enterprise" ? "var(--color-brand-lavender)" : "var(--color-brand-blue)", textTransform: "capitalize" }}>{plan}</p>
                         </div>
                     ) : (
                         <Link
@@ -385,34 +297,31 @@ export default function Sidebar() {
                                 padding: 14,
                                 borderRadius: 14,
                                 textAlign: "center",
-                                background: "linear-gradient(135deg, rgba(34,211,238,0.06), rgba(168,85,247,0.06))",
-                                border: "1px solid rgba(34,211,238,0.1)",
-                                transition: "border-color 0.2s",
+                                background: "linear-gradient(135deg, rgba(107,163,190,0.10), rgba(184,169,201,0.10))",
+                                border: "1px solid rgba(107,163,190,0.20)",
                                 cursor: "pointer",
-                                width: "100%",
                             }}
-                            className="hover:border-cyan-400/20"
+                            className="hover:shadow-md"
                         >
-                            <p style={{ fontSize: 13, fontWeight: 700, color: "#22d3ee" }}>Upgrade Plan</p>
-                            <p style={{ fontSize: 11, color: "#475569" }}>From $50/mo</p>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: "var(--color-brand-blue)" }}>Upgrade Plan</p>
+                            <p style={{ fontSize: 11, color: "var(--color-text-muted)", marginTop: 2 }}>From $50/mo</p>
                         </Link>
                     )}
                     <div
                         style={{
-                            padding: "10px 14px",
-                            borderRadius: 12,
+                            padding: "8px 14px",
+                            borderRadius: 10,
                             textAlign: "center",
-                            background: "rgba(10,15,30,0.4)",
-                            border: "1px solid rgba(148,163,184,0.04)",
+                            background: "rgba(0,0,0,0.02)",
+                            border: "1px solid var(--color-border)",
                         }}
                     >
-                        <span style={{ fontSize: 10, color: "#334155" }}>Shield360 </span>
-                        <span style={{ fontSize: 10, fontWeight: 700, color: "#22d3ee" }}>v1.0.0-beta</span>
+                        <span style={{ fontSize: 10, color: "var(--color-text-muted)" }}>Shield360 </span>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: "var(--color-brand-blue)" }}>v1.0</span>
                     </div>
                 </div>
             </motion.aside>
 
-            {/* Upgrade Modal */}
             <UpgradeModal
                 isOpen={upgradeModal.open}
                 onClose={() => setUpgradeModal((prev) => ({ ...prev, open: false }))}

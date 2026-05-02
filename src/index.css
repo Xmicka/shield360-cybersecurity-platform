@@ -1,33 +1,71 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
 
 @import "tailwindcss";
 @import "./styles/animations.css";
 
 @theme {
-  --color-navy-950: #020617;
-  --color-navy-900: #070b16;
-  --color-navy-800: #0c1222;
-  --color-navy-700: #131c33;
-  --color-navy-600: #1e2d4a;
-  --color-navy-500: #2a3f61;
-  --color-slate-700: #334155;
-  --color-slate-600: #475569;
-  --color-slate-500: #64748b;
-  --color-slate-400: #94a3b8;
-  --color-slate-300: #cbd5e1;
-  --color-cyan-400: #00f0ff;
-  --color-cyan-500: #00d4e0;
-  --color-cyan-600: #00b8c4;
-  --color-purple-400: #a78bfa;
-  --color-purple-500: #7c3aed;
-  --color-purple-600: #6d28d9;
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-  --color-rose-400: #fb7185;
-  --color-rose-500: #f43f5e;
-  --color-amber-400: #fbbf24;
-  --color-amber-500: #f59e0b;
+  /* ─── Surfaces ─── */
+  --color-bg-base: #faf9f7;
+  --color-bg-surface: #f4f2ef;
+  --color-bg-card: #ffffff;
+  --color-bg-overlay: rgba(250, 249, 247, 0.85);
+
+  /* ─── Brand (pastel) ─── */
+  --color-brand-blue: #6ba3be;
+  --color-brand-blue-light: #a8c8db;
+  --color-brand-blue-dark: #5a90aa;
+  --color-brand-sage: #8aab96;
+  --color-brand-lavender: #b8a9c9;
+  --color-brand-peach: #e8b4a0;
+
+  /* ─── Text ─── */
+  --color-text-primary: #2c2c2c;
+  --color-text-secondary: #6b6b6b;
+  --color-text-muted: #9b9b9b;
+  --color-text-inverse: #ffffff;
+
+  /* ─── Borders ─── */
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-strong: rgba(0, 0, 0, 0.15);
+
+  /* ─── Status ─── */
+  --color-status-ok: #7dba9c;
+  --color-status-warn: #d4a56a;
+  --color-status-error: #c97070;
+  --color-status-info: #6ba3be;
+
+  /* ─── Legacy aliases (kept so unscanned class names still resolve) ─── */
+  --color-navy-950: #faf9f7;
+  --color-navy-900: #f4f2ef;
+  --color-navy-800: #ffffff;
+  --color-navy-700: #f4f2ef;
+  --color-navy-600: #e9e6e1;
+  --color-navy-500: #d4d0ca;
+  --color-slate-700: #6b6b6b;
+  --color-slate-600: #6b6b6b;
+  --color-slate-500: #9b9b9b;
+  --color-slate-400: #9b9b9b;
+  --color-slate-300: #2c2c2c;
+  --color-cyan-400: #6ba3be;
+  --color-cyan-500: #6ba3be;
+  --color-cyan-600: #5a90aa;
+  --color-purple-400: #b8a9c9;
+  --color-purple-500: #b8a9c9;
+  --color-purple-600: #a18fbb;
+  --color-emerald-400: #7dba9c;
+  --color-emerald-500: #7dba9c;
+  --color-rose-400: #c97070;
+  --color-rose-500: #c97070;
+  --color-amber-400: #d4a56a;
+  --color-amber-500: #d4a56a;
+
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+}
+
+:root {
+  --navbar-height: 64px;
+  --sidebar-width: 248px;
 }
 
 *,
@@ -46,8 +84,8 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: #020617;
-  color: #e2e8f0;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.6;
@@ -56,6 +94,7 @@ body {
 
 #root {
   min-height: 100vh;
+  background: var(--color-bg-base);
 }
 
 a {
@@ -64,11 +103,10 @@ a {
 }
 
 ::selection {
-  background: rgba(0, 240, 255, 0.25);
-  color: white;
+  background: rgba(107, 163, 190, 0.25);
+  color: var(--color-text-primary);
 }
 
-/* Smooth transitions for all interactive elements */
 button,
 a,
 input,
@@ -81,14 +119,13 @@ img {
   height: auto;
 }
 
-/* Custom layout padding fix to avoid Tailwind V4 arbitrary value bugs */
 .content-area-padding {
   padding-left: 1rem;
   padding-right: 1rem;
 }
 @media (min-width: 1024px) {
   .content-area-padding {
-    padding-left: 272px; /* 248px sidebar + 24px gap */
+    padding-left: 272px;
     padding-right: 24px;
   }
 }
