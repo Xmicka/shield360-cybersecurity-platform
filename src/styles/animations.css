@@ -1,6 +1,63 @@
-/* Shield360 — Subtle Light-Mode Animations */
+/* Shield360 — Wisprflow.ai Aesthetic Animations */
 
-/* ─── Entry ─── */
+/* ─── SCROLL REVEAL ─── */
+@keyframes scroll-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.scroll-reveal.visible {
+  animation: scroll-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── FLOATING ELEMENTS ─── */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-delayed {
+  animation: float 7s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.floating-delayed-lg {
+  animation: float 8s ease-in-out infinite;
+  animation-delay: 4s;
+}
+
+/* ─── GRADIENT ANIMATION ─── */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* ─── FADE UP ─── */
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -12,6 +69,7 @@
   }
 }
 
+/* ─── SCALE IN ─── */
 @keyframes scale-in {
   from {
     opacity: 0;
@@ -23,6 +81,7 @@
   }
 }
 
+/* ─── FADE IN ─── */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -32,7 +91,51 @@
   }
 }
 
-/* ─── Mesh gradient blob (used by Aurora) ─── */
+/* ─── SLIDE IN FROM LEFT ─── */
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ─── SLIDE IN FROM RIGHT ─── */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ─── SPIN ─── */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── PULSE ─── */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ─── BLOB (for background elements) ─── */
 @keyframes blob {
   0%, 100% { transform: translate(0, 0) scale(1); }
   25% { transform: translate(20px, -30px) scale(1.05); }
@@ -45,7 +148,7 @@
   100% { background-position: 200% 0; }
 }
 
-/* ─── Utilities ─── */
+/* ─── UTILITY CLASSES ─── */
 .animate-fade-up {
   animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }

@@ -1,38 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @import "tailwindcss";
 @import "./styles/animations.css";
 
 @theme {
-  /* ─── Surfaces ─── */
-  --color-bg-base: #faf9f7;
-  --color-bg-surface: #f4f2ef;
-  --color-bg-card: #ffffff;
-  --color-bg-overlay: rgba(250, 249, 247, 0.85);
+  /* ─── WISPRFLOW AESTHETIC: Warm Cream + Sage + Lavender ─── */
+  
+  /* ─── Surfaces (Warm Foundation) ─── */
+  --color-bg-base: #F5F0E8;
+  --color-bg-surface: #FAF8F3;
+  --color-bg-card: #FAFAF5;
+  --color-bg-overlay: rgba(245, 240, 232, 0.85);
 
-  /* ─── Brand (pastel) ─── */
-  --color-brand-blue: #6ba3be;
-  --color-brand-blue-light: #a8c8db;
-  --color-brand-blue-dark: #5a90aa;
-  --color-brand-sage: #8aab96;
-  --color-brand-lavender: #b8a9c9;
-  --color-brand-peach: #e8b4a0;
+  /* ─── Dark Sections ─── */
+  --color-bg-dark: #1A1A2E;
+  --color-bg-sage: #3D5A47;
+  --color-bg-teal-dark: #2D6A5D;
 
-  /* ─── Text ─── */
-  --color-text-primary: #2c2c2c;
-  --color-text-secondary: #6b6b6b;
-  --color-text-muted: #9b9b9b;
-  --color-text-inverse: #ffffff;
+  /* ─── Accent Colors (Vibrant Pastels) ─── */
+  --color-accent-lavender: #D4C5F0;
+  --color-accent-lavender-light: #E8D5F5;
+  --color-accent-sage-light: #B8D4B8;
+  --color-accent-coral: #E8917A;
+  --color-accent-gold: #D4A853;
 
-  /* ─── Borders ─── */
-  --color-border: rgba(0, 0, 0, 0.08);
+  /* ─── Text (Warm Tones) ─── */
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #4A4A4A;
+  --color-text-muted: #8A8A8A;
+  --color-text-inverse: #F5F0E8;
+
+  /* ─── Borders & Shadows ─── */
+  --color-border: rgba(0, 0, 0, 0.06);
   --color-border-strong: rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.15);
 
   /* ─── Status ─── */
   --color-status-ok: #7dba9c;
   --color-status-warn: #d4a56a;
   --color-status-error: #c97070;
-  --color-status-info: #6ba3be;
+  --color-status-info: #D4C5F0;
 
   /* ─── Legacy aliases (kept so unscanned class names still resolve) ─── */
   --color-navy-950: #faf9f7;

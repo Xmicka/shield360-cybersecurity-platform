@@ -114,7 +114,7 @@ export async function logActivity(data: Omit<ActivityLog, "timestamp">): Promise
 export async function getRecentActivity(count: number = 20): Promise<ActivityLog[]> {
     const { data, error } = await supabase.from(ACTIVITY).select("*").order("created_at", { ascending: false }).limit(count);
     if (error) throw error;
-    return (data ?? []).map((d) => ({
+    return (data ?? []).map((d: any) => ({
         userId: d.user_id,
         userEmail: d.user_email,
         event: d.event,
@@ -151,7 +151,7 @@ export async function getModuleLaunchStats(): Promise<Record<string, number>> {
 export async function getRecentLaunches(count: number = 10): Promise<ModuleLaunch[]> {
     const { data, error } = await supabase.from(LAUNCHES).select("*").order("created_at", { ascending: false }).limit(count);
     if (error) throw error;
-    return (data ?? []).map((d) => ({
+    return (data ?? []).map((d: any) => ({
         userId: d.user_id,
         userEmail: d.user_email,
         moduleSlug: d.module_slug,
