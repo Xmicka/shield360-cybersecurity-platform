@@ -1,71 +1,91 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @import "tailwindcss";
 @import "./styles/animations.css";
 
 @theme {
-  /* ─── Surfaces ─── */
-  --color-bg-base: #faf9f7;
-  --color-bg-surface: #f4f2ef;
-  --color-bg-card: #ffffff;
-  --color-bg-overlay: rgba(250, 249, 247, 0.85);
+  /* ─── Surfaces (warm cream, NOT white, NOT blue-gray) ─── */
+  --color-bg-base: #F5F0E8;
+  --color-bg-cream: #F5F0E8;
+  --color-bg-cream-light: #FAF8F3;
+  --color-bg-surface: #FAF8F3;
+  --color-bg-card: #FAFAF5;
+  --color-bg-overlay: rgba(245, 240, 232, 0.85);
 
-  /* ─── Brand (pastel) ─── */
-  --color-brand-blue: #6ba3be;
-  --color-brand-blue-light: #a8c8db;
-  --color-brand-blue-dark: #5a90aa;
-  --color-brand-sage: #8aab96;
-  --color-brand-lavender: #b8a9c9;
-  --color-brand-peach: #e8b4a0;
+  /* ─── Dark sections ─── */
+  --color-bg-dark: #1A1A2E;
+  --color-bg-sage: #3D5A47;
+  --color-bg-teal-dark: #2D6A5D;
+
+  /* ─── Brand (warm pastel) ─── */
+  --color-brand-lavender: #D4C5F0;
+  --color-brand-lavender-light: #E8D5F5;
+  --color-brand-lavender-dark: #B8A1E6;
+  --color-brand-sage: #B8D4B8;
+  --color-brand-sage-deep: #3D5A47;
+  --color-brand-coral: #E8917A;
+  --color-brand-gold: #D4A853;
+  --color-brand-blue: #D4C5F0;
+  --color-brand-blue-light: #E8D5F5;
+  --color-brand-blue-dark: #B8A1E6;
+  --color-brand-peach: #E8917A;
 
   /* ─── Text ─── */
-  --color-text-primary: #2c2c2c;
-  --color-text-secondary: #6b6b6b;
-  --color-text-muted: #9b9b9b;
-  --color-text-inverse: #ffffff;
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #4A4A4A;
+  --color-text-muted: #8A8A8A;
+  --color-text-inverse: #F5F0E8;
+  --color-text-on-dark: #F5F0E8;
 
   /* ─── Borders ─── */
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-strong: rgba(0, 0, 0, 0.15);
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-strong: rgba(0, 0, 0, 0.12);
 
   /* ─── Status ─── */
-  --color-status-ok: #7dba9c;
-  --color-status-warn: #d4a56a;
-  --color-status-error: #c97070;
-  --color-status-info: #6ba3be;
+  --color-status-ok: #7DBA9C;
+  --color-status-warn: #D4A853;
+  --color-status-error: #E8917A;
+  --color-status-info: #D4C5F0;
 
-  /* ─── Legacy aliases (kept so unscanned class names still resolve) ─── */
-  --color-navy-950: #faf9f7;
-  --color-navy-900: #f4f2ef;
-  --color-navy-800: #ffffff;
-  --color-navy-700: #f4f2ef;
-  --color-navy-600: #e9e6e1;
-  --color-navy-500: #d4d0ca;
-  --color-slate-700: #6b6b6b;
-  --color-slate-600: #6b6b6b;
-  --color-slate-500: #9b9b9b;
-  --color-slate-400: #9b9b9b;
-  --color-slate-300: #2c2c2c;
-  --color-cyan-400: #6ba3be;
-  --color-cyan-500: #6ba3be;
-  --color-cyan-600: #5a90aa;
-  --color-purple-400: #b8a9c9;
-  --color-purple-500: #b8a9c9;
-  --color-purple-600: #a18fbb;
-  --color-emerald-400: #7dba9c;
-  --color-emerald-500: #7dba9c;
-  --color-rose-400: #c97070;
-  --color-rose-500: #c97070;
-  --color-amber-400: #d4a56a;
-  --color-amber-500: #d4a56a;
+  /* ─── Legacy aliases (mapped to warm pastel) ─── */
+  --color-navy-950: #F5F0E8;
+  --color-navy-900: #FAF8F3;
+  --color-navy-800: #FAFAF5;
+  --color-navy-700: #FAF8F3;
+  --color-navy-600: #EFE9DE;
+  --color-navy-500: #D4C5F0;
+  --color-slate-700: #4A4A4A;
+  --color-slate-600: #4A4A4A;
+  --color-slate-500: #8A8A8A;
+  --color-slate-400: #8A8A8A;
+  --color-slate-300: #1A1A2E;
+  --color-cyan-400: #D4C5F0;
+  --color-cyan-500: #B8A1E6;
+  --color-cyan-600: #B8A1E6;
+  --color-purple-400: #D4C5F0;
+  --color-purple-500: #B8A1E6;
+  --color-purple-600: #B8A1E6;
+  --color-emerald-400: #B8D4B8;
+  --color-emerald-500: #7DBA9C;
+  --color-rose-400: #E8917A;
+  --color-rose-500: #E8917A;
+  --color-amber-400: #D4A853;
+  --color-amber-500: #D4A853;
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
 }
 
 :root {
-  --navbar-height: 64px;
+  --navbar-height: 72px;
   --sidebar-width: 248px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 *,
@@ -84,7 +104,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-bg-base);
+  background-color: var(--color-bg-cream);
   color: var(--color-text-primary);
   min-height: 100vh;
   overflow-x: hidden;
@@ -94,7 +114,7 @@ body {
 
 #root {
   min-height: 100vh;
-  background: var(--color-bg-base);
+  background: var(--color-bg-cream);
 }
 
 a {
@@ -103,7 +123,7 @@ a {
 }
 
 ::selection {
-  background: rgba(107, 163, 190, 0.25);
+  background: rgba(212, 197, 240, 0.4);
   color: var(--color-text-primary);
 }
 
@@ -117,6 +137,17 @@ textarea {
 img {
   max-width: 100%;
   height: auto;
+}
+
+/* Display fonts */
+.font-display, .font-serif {
+  font-family: var(--font-display);
+}
+
+/* Italic accent for hero text */
+.italic-accent {
+  font-style: italic;
+  color: var(--color-brand-lavender-dark);
 }
 
 .content-area-padding {

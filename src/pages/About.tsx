@@ -57,10 +57,10 @@ export default function About() {
                 <div style={{
                     maxWidth: 1200,
                     margin: "0 auto",
-                    background: "rgba(7, 11, 22, 0.7)",
+                    background: "rgba(245,240,232,0.80)",
                     backdropFilter: "blur(20px) saturate(1.5)",
                     WebkitBackdropFilter: "blur(20px) saturate(1.5)",
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    border: "1px solid var(--color-border)",
                     borderRadius: 16,
                     padding: "12px 24px",
                     display: "flex",
@@ -71,27 +71,27 @@ export default function About() {
                     <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
                         <div style={{
                             width: 36, height: 36, borderRadius: 10,
-                            background: "linear-gradient(135deg, #00f0ff, #7c3aed)",
+                            background: "linear-gradient(135deg, #B8A1E6, #3D5A47)",
                             padding: 2, display: "flex",
                         }}>
                             <div style={{
-                                flex: 1, borderRadius: 8, background: "#070b16",
+                                flex: 1, borderRadius: 8, background: "var(--color-bg-cream)",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
-                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#00f0ff" }} fill="currentColor">
+                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#B8A1E6" }} fill="currentColor">
                                     <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
                                 </svg>
                             </div>
                         </div>
-                        <span style={{ fontSize: 16, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>Shield360</span>
+                        <span style={{ fontSize: 16, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Shield360</span>
                     </Link>
-                    <div style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13, color: "#94a3b8" }}>
-                        <Link to="/about" style={{ transition: "color 0.2s" }} className="hover:text-white">About</Link>
-                        <Link to="/pricing" style={{ transition: "color 0.2s" }} className="hover:text-white">Pricing</Link>
-                        <Link to="/contact" style={{ transition: "color 0.2s" }} className="hover:text-white">Contact</Link>
+                    <div style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13, color: "var(--color-text-secondary)" }}>
+                        <Link to="/about" style={{ transition: "color 0.2s" }} className="hover:text-black">About</Link>
+                        <Link to="/pricing" style={{ transition: "color 0.2s" }} className="hover:text-black">Pricing</Link>
+                        <Link to="/contact" style={{ transition: "color 0.2s" }} className="hover:text-black">Contact</Link>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                        <Link to="/login" style={{ fontSize: 13, color: "#94a3b8", padding: "8px 16px" }} className="hover:text-white">Sign In</Link>
+                        <Link to="/login" style={{ fontSize: 13, color: "var(--color-text-secondary)", padding: "8px 16px" }} className="hover:text-black">Sign In</Link>
                         <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>Get Started</Link>
                     </div>
                 </div>
@@ -103,13 +103,13 @@ export default function About() {
                     {/* ─── Hero / Mission ─── */}
                     <motion.div {...fadeIn} className="text-center mb-28">
                         <p style={{ fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: "#22d3ee", fontWeight: 700, marginBottom: 16 }}>About Us</p>
-                        <h1 style={{ fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800, color: "#f1f5f9", lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 24 }}>
+                        <h1 style={{ fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800, color: "var(--color-text-primary)", lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 24 }}>
                             Democratising <span className="gradient-text">cybersecurity</span> for SMEs
                         </h1>
-                        <p style={{ fontSize: 18, color: "#94a3b8", maxWidth: 640, margin: "0 auto", lineHeight: 1.7, marginBottom: 16 }}>
+                        <p style={{ fontSize: 18, color: "var(--color-text-secondary)", maxWidth: 640, margin: "0 auto", lineHeight: 1.7, marginBottom: 16 }}>
                             Small and medium enterprises face the same cyber threats as large corporations, but without the budget or expertise to combat them. Shield360 was built to change that.
                         </p>
-                        <p style={{ fontSize: 15, color: "#64748b", maxWidth: 640, margin: "0 auto", lineHeight: 1.7 }}>
+                        <p style={{ fontSize: 15, color: "var(--color-text-muted)", maxWidth: 640, margin: "0 auto", lineHeight: 1.7 }}>
                             We combine AI-driven threat simulation, behavioural analytics, device monitoring, and compliance automation into a single, affordable platform. Our mission is to make enterprise-grade security accessible to every business, regardless of size.
                         </p>
                     </motion.div>
@@ -126,9 +126,9 @@ export default function About() {
                                 style={{
                                     padding: 36,
                                     borderRadius: 20,
-                                    background: "rgba(10,14,26,0.6)",
+                                    background: "var(--color-bg-card)",
                                     backdropFilter: "blur(20px)",
-                                    border: "1px solid rgba(148,163,184,0.06)",
+                                    border: "1px solid var(--color-border)",
                                     textAlign: "center",
                                     position: "relative",
                                     overflow: "hidden",
@@ -148,8 +148,8 @@ export default function About() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d={v.icon} />
                                     </svg>
                                 </div>
-                                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>{v.title}</h3>
-                                <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.7 }}>{v.desc}</p>
+                                <h3 style={{ fontSize: 17, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 8 }}>{v.title}</h3>
+                                <p style={{ fontSize: 13, color: "var(--color-text-muted)", lineHeight: 1.7 }}>{v.desc}</p>
                             </motion.div>
                         ))}
                     </motion.div>
@@ -158,7 +158,7 @@ export default function About() {
                     <motion.div {...fadeIn} style={{ marginBottom: 112 }}>
                         <div style={{ textAlign: "center", marginBottom: 48 }}>
                             <p style={{ fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: "#22d3ee", fontWeight: 700, marginBottom: 12 }}>The Team</p>
-                            <h2 style={{ fontSize: 32, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>Built by security researchers</h2>
+                            <h2 style={{ fontSize: 32, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Built by security researchers</h2>
                         </div>
 
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
@@ -173,9 +173,9 @@ export default function About() {
                                     style={{
                                         padding: 32,
                                         borderRadius: 20,
-                                        background: "rgba(10,14,26,0.6)",
+                                        background: "var(--color-bg-card)",
                                         backdropFilter: "blur(20px)",
-                                        border: "1px solid rgba(148,163,184,0.06)",
+                                        border: "1px solid var(--color-border)",
                                         textAlign: "center",
                                         position: "relative",
                                         overflow: "hidden",
@@ -202,8 +202,8 @@ export default function About() {
                                     </div>
 
                                     {/* Name & Role */}
-                                    <h3 style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>{m.name}</h3>
-                                    <p style={{ fontSize: 12, color: "#64748b", marginBottom: 16 }}>{m.role}</p>
+                                    <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 4 }}>{m.name}</h3>
+                                    <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 16 }}>{m.role}</p>
 
                                     {/* Component badge */}
                                     <div style={{
@@ -228,7 +228,7 @@ export default function About() {
                     <motion.div {...fadeIn}>
                         <div style={{ textAlign: "center", marginBottom: 48 }}>
                             <p style={{ fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: "#22d3ee", fontWeight: 700, marginBottom: 12 }}>Technology</p>
-                            <h2 style={{ fontSize: 32, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>Built with cutting-edge tools</h2>
+                            <h2 style={{ fontSize: 32, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Built with cutting-edge tools</h2>
                         </div>
 
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16 }}>
@@ -243,9 +243,9 @@ export default function About() {
                                     style={{
                                         padding: "28px 16px",
                                         borderRadius: 16,
-                                        background: "rgba(10,14,26,0.5)",
+                                        background: "var(--color-bg-cream-light)",
                                         backdropFilter: "blur(12px)",
-                                        border: "1px solid rgba(148,163,184,0.06)",
+                                        border: "1px solid var(--color-border)",
                                         textAlign: "center",
                                         cursor: "default",
                                         transition: "border-color 0.3s",
@@ -263,8 +263,8 @@ export default function About() {
                                             <path strokeLinecap="round" strokeLinejoin="round" d={t.icon} />
                                         </svg>
                                     </div>
-                                    <p style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>{t.name}</p>
-                                    <p style={{ fontSize: 10, color: "#475569" }}>{t.desc}</p>
+                                    <p style={{ fontSize: 13, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 4 }}>{t.name}</p>
+                                    <p style={{ fontSize: 10, color: "var(--color-text-muted)" }}>{t.desc}</p>
                                 </motion.div>
                             ))}
                         </div>

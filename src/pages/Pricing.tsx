@@ -4,155 +4,170 @@ import { useSubscription } from "../context/subscriptionContext";
 import { PLANS, MODULES } from "../config/services";
 import AnimatedBackground from "../components/AnimatedBackground";
 
-const fadeIn = { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true as const }, transition: { duration: 0.5 } };
+const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true as const, margin: "-60px" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+};
 
 export default function Pricing() {
     const { plan: currentPlan } = useSubscription();
 
     return (
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen" style={{ background: "var(--color-bg-cream)" }}>
             <AnimatedBackground />
-            {/* Navbar */}
+
+            {/* Glass Navbar */}
             <motion.nav
-                initial={{ y: -20, opacity: 0 }}
+                initial={{ y: -16, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.4 }}
                 className="fixed top-0 left-0 right-0 z-50"
                 style={{ padding: "16px 24px" }}
             >
-                <div style={{
-                    maxWidth: 1200,
-                    margin: "0 auto",
-                    background: "rgba(7, 11, 22, 0.7)",
-                    backdropFilter: "blur(20px) saturate(1.5)",
-                    WebkitBackdropFilter: "blur(20px) saturate(1.5)",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                    borderRadius: 16,
-                    padding: "12px 24px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                <div className="glass-nav" style={{
+                    maxWidth: 1200, margin: "0 auto",
+                    borderRadius: 100, padding: "10px 20px",
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    boxShadow: "var(--shadow-sm)",
                 }}>
-                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         <div style={{
                             width: 36, height: 36, borderRadius: 10,
-                            background: "linear-gradient(135deg, #00f0ff, #7c3aed)",
-                            padding: 2, display: "flex",
+                            background: "linear-gradient(135deg, #B8A1E6 0%, #3D5A47 100%)",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            boxShadow: "0 2px 8px rgba(184,161,230,0.35)",
                         }}>
-                            <div style={{
-                                flex: 1, borderRadius: 8, background: "#070b16",
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                            }}>
-                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#00f0ff" }} fill="currentColor">
-                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                                </svg>
-                            </div>
+                            <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#fff" }} fill="currentColor">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                            </svg>
                         </div>
-                        <span style={{ fontSize: 16, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>Shield360</span>
+                        <span style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Shield360</span>
                     </Link>
-                    <div style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13, color: "#94a3b8" }}>
-                        <Link to="/about" style={{ transition: "color 0.2s" }} className="hover:text-white">About</Link>
-                        <Link to="/pricing" style={{ transition: "color 0.2s" }} className="hover:text-white">Pricing</Link>
-                        <Link to="/contact" style={{ transition: "color 0.2s" }} className="hover:text-white">Contact</Link>
+                    <div className="hidden md:flex" style={{ alignItems: "center", gap: 28, fontSize: 13, color: "var(--color-text-secondary)" }}>
+                        <Link to="/about" className="hover:text-black">About</Link>
+                        <Link to="/pricing" className="hover:text-black">Pricing</Link>
+                        <Link to="/contact" className="hover:text-black">Contact</Link>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                        <Link to="/login" style={{ fontSize: 13, color: "#94a3b8", padding: "8px 16px" }} className="hover:text-white">Sign In</Link>
-                        <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>Get Started</Link>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <Link to="/login" style={{ fontSize: 13, color: "var(--color-text-secondary)", padding: "8px 14px" }} className="hover:text-black">Sign In</Link>
+                        <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "9px 18px" }}>Get Started</Link>
                     </div>
                 </div>
             </motion.nav>
 
-            <div className="relative z-10" style={{ padding: "128px 32px 96px" }}>
+            <div className="relative z-10" style={{ padding: "140px 24px 96px" }}>
                 <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                     {/* Header */}
-                    <motion.div {...fadeIn} className="text-center mb-16">
-                        <p className="text-xs uppercase tracking-[0.3em] text-cyan-400 font-semibold mb-4">Pricing</p>
-                        <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">
-                            Security that <span className="gradient-text">scales with you</span>
+                    <motion.div {...fadeIn} className="text-center" style={{ marginBottom: 64 }}>
+                        <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.25em", color: "var(--color-brand-lavender-dark)", marginBottom: 14 }}>Pricing</p>
+                        <h1 className="headline-section" style={{ marginBottom: 16 }}>
+                            Security that <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>scales with you</span>
                         </h1>
-                        <p className="text-lg text-slate-400 max-w-xl mx-auto">
+                        <p style={{ fontSize: 17, color: "var(--color-text-secondary)", maxWidth: 600, margin: "0 auto", lineHeight: 1.65 }}>
                             Start free with essential tools. Upgrade for full coverage and unlimited access to enterprise-grade cybersecurity.
                         </p>
                     </motion.div>
 
-                    {/* Plans */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                    {/* Plan Cards */}
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, maxWidth: 1000, margin: "0 auto" }}>
                         {PLANS.map((tier, i) => {
                             const isCurrent = currentPlan === tier.id;
                             const isPopular = tier.popular;
+                            const isEnterprise = tier.id === "enterprise";
+
+                            const cardBg = isEnterprise
+                                ? "var(--color-bg-dark)"
+                                : isPopular
+                                ? "var(--color-bg-card)"
+                                : "var(--color-bg-cream-light)";
+                            const cardText = isEnterprise ? "var(--color-text-on-dark)" : "var(--color-text-primary)";
+                            const subText = isEnterprise ? "rgba(245,240,232,0.7)" : "var(--color-text-secondary)";
+                            const mutedText = isEnterprise ? "rgba(245,240,232,0.55)" : "var(--color-text-muted)";
 
                             return (
                                 <motion.div
                                     key={tier.id}
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: i * 0.12, duration: 0.5 }}
-                                    className="relative"
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                                    className="card-hover"
                                     style={{
-                                        background: "rgba(10,14,26,0.6)",
-                                        backdropFilter: "blur(20px)",
-                                        border: `1px solid ${isPopular ? "rgba(168,85,247,0.3)" : "rgba(148,163,184,0.06)"}`,
+                                        background: cardBg,
+                                        border: isPopular
+                                            ? "2px solid var(--color-brand-lavender-dark)"
+                                            : "1px solid var(--color-border)",
                                         borderRadius: 24,
-                                        padding: "36px 28px",
+                                        padding: "40px 28px 32px",
+                                        position: "relative",
                                         display: "flex",
                                         flexDirection: "column",
-                                        ...(isPopular ? { transform: "scale(1.03)", boxShadow: "0 0 60px rgba(168,85,247,0.08)" } : {}),
+                                        boxShadow: isPopular ? "var(--shadow-lg)" : "var(--shadow-sm)",
+                                        transform: isPopular ? "translateY(-8px)" : undefined,
                                     }}
                                 >
                                     {isPopular && (
-                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full">
-                                            <span className="text-[10px] font-bold text-white uppercase tracking-wider">Most Popular</span>
+                                        <div style={{
+                                            position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)",
+                                            background: "var(--color-brand-lavender-dark)", color: "#fff",
+                                            padding: "6px 16px", borderRadius: 100,
+                                            fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase",
+                                            boxShadow: "0 4px 12px rgba(184,161,230,0.4)",
+                                        }}>
+                                            Most Popular
                                         </div>
                                     )}
 
                                     <div style={{ marginBottom: 24 }}>
-                                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                                            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#f1f5f9" }}>{tier.name}</h3>
-                                        </div>
-                                        <p style={{ fontSize: 12, color: "#64748b", marginBottom: 16 }}>{tier.tagline}</p>
+                                        <h3 style={{ fontSize: 20, fontWeight: 700, color: cardText, marginBottom: 4 }}>{tier.name}</h3>
+                                        <p style={{ fontSize: 13, color: subText, marginBottom: 20 }}>{tier.tagline}</p>
                                         <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-                                            <span style={{ fontSize: 44, fontWeight: 800, color: "#f1f5f9" }}>
+                                            <span style={{ fontFamily: "var(--font-display)", fontSize: 56, fontWeight: 400, color: cardText, letterSpacing: "-0.02em" }}>
                                                 {tier.price === 0 ? "Free" : `$${tier.price}`}
                                             </span>
                                             {tier.price > 0 && (
-                                                <span style={{ fontSize: 14, color: "#64748b" }}>/{tier.period}</span>
+                                                <span style={{ fontSize: 16, color: subText }}>/{tier.period}</span>
                                             )}
                                         </div>
-                                        <p style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>{tier.description}</p>
+                                        <p style={{ fontSize: 13, color: mutedText, marginTop: 6 }}>{tier.description}</p>
                                     </div>
 
-                                    {/* Included modules */}
-                                    <div style={{ marginBottom: 20 }}>
-                                        <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569", marginBottom: 10 }}>
+                                    <div style={{ marginBottom: 24 }}>
+                                        <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: mutedText, marginBottom: 12 }}>
                                             Modules & Limits
                                         </p>
-                                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                                             {MODULES.map((mod) => {
                                                 const limit = tier.moduleLimits[mod.slug];
                                                 const included = limit !== undefined;
                                                 return (
                                                     <div key={mod.slug} style={{
-                                                        display: "flex", alignItems: "center", gap: 8,
-                                                        padding: "8px 10px", borderRadius: 10,
-                                                        background: included ? "rgba(148,163,184,0.03)" : "transparent",
-                                                        border: included ? "1px solid rgba(148,163,184,0.06)" : "1px solid transparent",
-                                                        opacity: included ? 1 : 0.35,
+                                                        display: "flex", alignItems: "center", gap: 10,
+                                                        padding: "8px 12px", borderRadius: 10,
+                                                        background: included
+                                                            ? (isEnterprise ? "rgba(245,240,232,0.06)" : "rgba(0,0,0,0.03)")
+                                                            : "transparent",
+                                                        opacity: included ? 1 : 0.4,
                                                     }}>
-                                                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: included ? mod.color : "#334155", flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
-                                                        <span style={{ fontSize: 12, fontWeight: 500, color: included ? "#e2e8f0" : "#475569", flex: 1 }}>{mod.shortName}</span>
-                                                        {included && (
+                                                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: included ? mod.color : mutedText, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+                                                        </svg>
+                                                        <span style={{ fontSize: 13, fontWeight: 500, color: cardText, flex: 1 }}>{mod.shortName}</span>
+                                                        {included ? (
                                                             <span style={{
-                                                                fontSize: 10, fontWeight: 700, color: limit === -1 ? "#34d399" : tier.color,
-                                                                background: limit === -1 ? "rgba(52,211,153,0.1)" : `${tier.color}15`,
-                                                                padding: "2px 8px", borderRadius: 6,
+                                                                fontSize: 10, fontWeight: 700,
+                                                                color: limit === -1 ? "var(--color-status-ok)" : cardText,
+                                                                background: limit === -1
+                                                                    ? "rgba(125,186,156,0.2)"
+                                                                    : (isEnterprise ? "rgba(245,240,232,0.12)" : "rgba(0,0,0,0.06)"),
+                                                                padding: "3px 10px", borderRadius: 100,
                                                             }}>
                                                                 {limit === -1 ? "Unlimited" : `${limit}/mo`}
                                                             </span>
-                                                        )}
-                                                        {!included && (
-                                                            <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, color: "#334155" }} fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                                                        ) : (
+                                                            <span style={{ fontSize: 11, color: mutedText }}>—</span>
                                                         )}
                                                     </div>
                                                 );
@@ -160,48 +175,41 @@ export default function Pricing() {
                                         </div>
                                     </div>
 
-                                    {/* Features */}
                                     <ul style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28, flex: 1 }}>
                                         {tier.features.map((f) => (
-                                            <li key={f} style={{ display: "flex", alignItems: "start", gap: 10, fontSize: 13 }}>
-                                                <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, color: tier.color, marginTop: 2, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                                                <span style={{ color: "#94a3b8" }}>{f}</span>
+                                            <li key={f} style={{ display: "flex", alignItems: "start", gap: 10, fontSize: 13, color: subText }}>
+                                                <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, color: "var(--color-brand-lavender-dark)", marginTop: 3, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                </svg>
+                                                <span>{f}</span>
                                             </li>
                                         ))}
                                     </ul>
 
-                                    {/* CTA */}
                                     {isCurrent ? (
                                         <div style={{
-                                            textAlign: "center", padding: "12px 0", borderRadius: 14,
-                                            background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)",
-                                            color: "#34d399", fontSize: 13, fontWeight: 600,
+                                            textAlign: "center", padding: "14px 0", borderRadius: 100,
+                                            background: "rgba(125,186,156,0.15)", border: "1px solid rgba(125,186,156,0.4)",
+                                            color: "var(--color-status-ok)", fontSize: 14, fontWeight: 600,
                                         }}>
                                             ✓ Current Plan
                                         </div>
                                     ) : tier.id === "free" ? (
-                                        <Link
-                                            to="/signup"
-                                            style={{
-                                                display: "block", textAlign: "center", padding: "12px 0", borderRadius: 14,
-                                                border: "1px solid rgba(148,163,184,0.1)",
-                                                color: "#f1f5f9", fontSize: 13, fontWeight: 600,
-                                                transition: "all 0.2s",
-                                            }}
-                                            className="hover:border-cyan-400/30 hover:bg-cyan-400/5"
-                                        >
+                                        <Link to="/signup" className="btn-ghost" style={{ width: "100%", padding: "13px 0" }}>
                                             Get Started Free
                                         </Link>
+                                    ) : isEnterprise ? (
+                                        <Link to="/contact" style={{
+                                            width: "100%", textAlign: "center", padding: "14px 0", borderRadius: 100,
+                                            background: "var(--color-brand-lavender)", color: "var(--color-text-primary)",
+                                            fontSize: 15, fontWeight: 600, display: "block",
+                                            boxShadow: "0 4px 12px rgba(212,197,240,0.3)",
+                                        }} className="btn-primary">
+                                            Contact Sales
+                                        </Link>
                                     ) : (
-                                        <Link
-                                            to={`/checkout?plan=${tier.id}`}
-                                            className="btn-primary"
-                                            style={{
-                                                width: "100%", textAlign: "center", padding: "12px 0", borderRadius: 14,
-                                                fontSize: 13, fontWeight: 600, display: "block",
-                                            }}
-                                        >
-                                            {tier.id === "enterprise" ? "Contact Sales" : `Upgrade to ${tier.name}`}
+                                        <Link to={`/checkout?plan=${tier.id}`} className="btn-primary" style={{ width: "100%", padding: "13px 0" }}>
+                                            Upgrade to {tier.name}
                                         </Link>
                                     )}
                                 </motion.div>
@@ -209,28 +217,27 @@ export default function Pricing() {
                         })}
                     </div>
 
-                    {/* Module comparison table */}
-                    <motion.div {...fadeIn} style={{ marginTop: 80 }}>
-                        <h3 style={{ fontSize: 20, fontWeight: 700, color: "#f1f5f9", textAlign: "center", marginBottom: 32 }}>
+                    {/* Comparison table */}
+                    <motion.div {...fadeIn} style={{ marginTop: 96 }}>
+                        <h3 className="headline-section" style={{ fontSize: 32, textAlign: "center", marginBottom: 36 }}>
                             Module Access Comparison
                         </h3>
                         <div style={{
-                            background: "rgba(10,14,26,0.6)",
-                            backdropFilter: "blur(20px)",
-                            border: "1px solid rgba(148,163,184,0.06)",
-                            borderRadius: 20,
+                            background: "var(--color-bg-card)",
+                            border: "1px solid var(--color-border)",
+                            borderRadius: 24,
                             overflow: "hidden",
+                            boxShadow: "var(--shadow-md)",
                         }}>
-                            {/* Header row */}
                             <div style={{
                                 display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
-                                padding: "16px 24px",
-                                borderBottom: "1px solid rgba(148,163,184,0.06)",
-                                background: "rgba(148,163,184,0.02)",
+                                padding: "20px 28px",
+                                borderBottom: "1px solid var(--color-border)",
+                                background: "var(--color-bg-cream)",
                             }}>
-                                <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em" }}>Module</span>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.15em" }}>Module</span>
                                 {PLANS.map((p) => (
-                                    <span key={p.id} style={{ fontSize: 12, fontWeight: 700, color: p.color, textTransform: "uppercase", letterSpacing: "0.1em", textAlign: "center" }}>
+                                    <span key={p.id} style={{ fontSize: 11, fontWeight: 700, color: "var(--color-text-primary)", textTransform: "uppercase", letterSpacing: "0.15em", textAlign: "center" }}>
                                         {p.name}
                                     </span>
                                 ))}
@@ -238,29 +245,32 @@ export default function Pricing() {
                             {MODULES.map((mod, i) => (
                                 <div key={mod.slug} style={{
                                     display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
-                                    padding: "16px 24px",
-                                    borderBottom: i < MODULES.length - 1 ? "1px solid rgba(148,163,184,0.04)" : "none",
+                                    padding: "18px 28px",
+                                    borderBottom: i < MODULES.length - 1 ? "1px solid var(--color-border)" : "none",
+                                    alignItems: "center",
                                 }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                                        <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
-                                        <span style={{ fontSize: 14, color: "#f1f5f9", fontWeight: 500 }}>{mod.shortName}</span>
+                                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                        <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+                                        </svg>
+                                        <span style={{ fontSize: 14, color: "var(--color-text-primary)", fontWeight: 500 }}>{mod.shortName}</span>
                                     </div>
                                     {PLANS.map((p) => {
                                         const limit = p.moduleLimits[mod.slug];
                                         const included = limit !== undefined;
                                         return (
-                                            <div key={p.id} style={{ textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                            <div key={p.id} style={{ textAlign: "center" }}>
                                                 {included ? (
                                                     <span style={{
                                                         fontSize: 11, fontWeight: 700,
-                                                        color: limit === -1 ? "#34d399" : p.color,
-                                                        background: limit === -1 ? "rgba(52,211,153,0.1)" : `${p.color}12`,
-                                                        padding: "3px 10px", borderRadius: 6,
+                                                        color: limit === -1 ? "var(--color-status-ok)" : "var(--color-text-primary)",
+                                                        background: limit === -1 ? "rgba(125,186,156,0.18)" : "rgba(212,197,240,0.25)",
+                                                        padding: "5px 12px", borderRadius: 100,
                                                     }}>
                                                         {limit === -1 ? "∞" : `${limit}/mo`}
                                                     </span>
                                                 ) : (
-                                                    <span style={{ fontSize: 16, color: "#334155" }}>-</span>
+                                                    <span style={{ fontSize: 14, color: "var(--color-text-muted)" }}>—</span>
                                                 )}
                                             </div>
                                         );
@@ -271,10 +281,13 @@ export default function Pricing() {
                     </motion.div>
 
                     {/* Trust badges */}
-                    <motion.div {...fadeIn} className="mt-16 text-center">
-                        <div className="inline-flex flex-wrap justify-center gap-8 text-sm text-slate-500">
+                    <motion.div {...fadeIn} style={{ marginTop: 64, textAlign: "center" }}>
+                        <div style={{ display: "inline-flex", flexWrap: "wrap", justifyContent: "center", gap: 32, fontSize: 13, color: "var(--color-text-secondary)" }}>
                             {["No credit card for free tier", "Instant activation", "Cancel anytime", "30-day money-back guarantee"].map((t) => (
-                                <div key={t} className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400" /><span>{t}</span></div>
+                                <div key={t} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-status-ok)" }} />
+                                    <span>{t}</span>
+                                </div>
                             ))}
                         </div>
                     </motion.div>

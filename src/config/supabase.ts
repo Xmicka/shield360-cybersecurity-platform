@@ -5,34 +5,21 @@ import { createClient } from "@supabase/supabase-js";
  *
  * Configuration values can come from two sources:
  *   1. `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` in `.env.local` (preferred)
- *   2. Embedded fallbacks below — XOR-obfuscated and base64-encoded
+ *   2. Embedded fallbacks below
  *
- * Note on the embedded fallbacks: the anon key is designed by Supabase to be
- * shipped with the client, with security enforced via Row-Level Security (RLS)
- * policies on the database. The obfuscation here is purely a deterrent against
- * casual scraping — anything in the bundle is recoverable by a determined user.
- * Real protection lives in your RLS policies.
+ * The Supabase anon key is designed to be shipped with the client. Security is
+ * enforced via Row-Level Security (RLS) policies on the database.
  *
  * The service_role key MUST NEVER appear in client code. It bypasses RLS.
  */
 
-const _x = "Sh1eld360Ke3y9zAa";
-const _u = "OxxFFR9eHBlaOw5cC1oSKgYhEEUWBw1ARlY4Dx0KTAogAzIbVEsPCw==";
-const _k =
-    "NhF7DQ4jUF9/Ii96LEMzcC86IUIsAjYGVXMCU3oSSSIXIhlRHwAVLkNVAwYMfBBzACU5EQBoCCoeaWV5OCxdM1UgKChlIVwVGwUBD0kSV1sLY0kLVTcgfxcNPH1BaiUrQjBQDSgCPlFCPz8tBX9dDRBRSw0TDSIZGGg9PQ18XHV4K0kaCjcrAiomdQIfLV5gBCgmek90EABUHhJ8EiEeegZ/A1UdFw08cBEdK2UjGVcGeWY4A1wJCisADmFaYwQnAARifi8Od00NPSlRYwVWAg==";
-
-function _decode(input: string): string {
-    const decoded = atob(input);
-    let out = "";
-    for (let i = 0; i < decoded.length; i++) {
-        out += String.fromCharCode(decoded.charCodeAt(i) ^ _x.charCodeAt(i % _x.length));
-    }
-    return out;
-}
+const FALLBACK_URL = "https://jpkorchkgrxtskispfsj.supabase.co";
+const FALLBACK_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwa29yY2hrZ3J4dHNraXNwZnNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjcyNDgsImV4cCI6MjA5MzMwMzI0OH0.n4F1pNCTFu35OVsfop3QAo22RaKd7TNdkD44Gh00mgg";
 
 const env = (import.meta as unknown as { env: Record<string, string | undefined> }).env;
-const supabaseUrl = env.VITE_SUPABASE_URL || _decode(_u);
-const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || _decode(_k);
+const supabaseUrl = env.VITE_SUPABASE_URL || FALLBACK_URL;
+const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || FALLBACK_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {

@@ -45,8 +45,9 @@ export default function Login() {
     return (
         <div style={{ minHeight: "100vh", background: "var(--color-bg-base)", display: "flex", position: "relative", overflow: "hidden" }}>
             {/* Soft pastel background blobs */}
-            <div style={{ position: "absolute", top: -120, right: -120, width: 480, height: 480, background: "rgba(168,200,219,0.35)", borderRadius: "50%", filter: "blur(120px)" }} />
-            <div style={{ position: "absolute", bottom: -120, left: -120, width: 360, height: 360, background: "rgba(184,169,201,0.30)", borderRadius: "50%", filter: "blur(120px)" }} />
+            <div style={{ position: "absolute", top: -120, right: -120, width: 480, height: 480, background: "rgba(212,197,240,0.45)", borderRadius: "50%", filter: "blur(120px)" }} className="animate-float" />
+            <div style={{ position: "absolute", bottom: -120, left: -120, width: 360, height: 360, background: "rgba(184,212,184,0.40)", borderRadius: "50%", filter: "blur(120px)" }} className="animate-float-slow" />
+            <div style={{ position: "absolute", top: "40%", left: "40%", width: 280, height: 280, background: "rgba(232,145,122,0.18)", borderRadius: "50%", filter: "blur(100px)" }} className="animate-float-delayed" />
 
             {/* Left Panel */}
             <div className="hidden lg:flex" style={{ width: "50%", position: "relative", alignItems: "center", justifyContent: "center", padding: 48 }}>
@@ -60,7 +61,7 @@ export default function Login() {
                         <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
                             <div style={{
                                 width: 44, height: 44, borderRadius: 12,
-                                background: "linear-gradient(135deg, #6ba3be 0%, #8aab96 100%)",
+                                background: "linear-gradient(135deg, #B8A1E6 0%, #3D5A47 100%)",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 boxShadow: "0 4px 12px rgba(107,163,190,0.25)",
                             }}>
@@ -72,9 +73,9 @@ export default function Login() {
                         </Link>
                     </div>
 
-                    <h2 style={{ fontSize: 32, fontWeight: 700, color: "var(--color-text-primary)", lineHeight: 1.15, letterSpacing: "-0.025em", marginBottom: 16 }}>
+                    <h2 style={{ fontFamily: "var(--font-display)", fontSize: 44, fontWeight: 400, color: "var(--color-text-primary)", lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: 18 }}>
                         Protect your organisation with{" "}
-                        <span className="gradient-text" style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontWeight: 400 }}>
+                        <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>
                             unified intelligence
                         </span>
                     </h2>
