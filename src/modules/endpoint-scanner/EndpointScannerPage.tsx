@@ -12,11 +12,16 @@ import {
   ShieldCheck,
   AlertTriangle,
   ChevronRight as Chevron,
+  Sparkles,
 } from "lucide-react";
 import ModuleGate from "../../components/ModuleGate";
 import { api } from "./services/api";
 import type { EndpointListItem } from "./types";
 import { Badge } from "./components/Badge";
+
+/** Original Endpoint Risk Scanner app — clicks here send the user there. */
+const ORIGINAL_APP_URL = "https://jolly-ground-07ccef300.1.azurestaticapps.net/";
+const openOriginalApp = () => window.open(ORIGINAL_APP_URL, "_blank", "noopener,noreferrer");
 
 /* ── helpers ── */
 function formatWhen(iso?: string | null) {
@@ -27,7 +32,7 @@ function formatWhen(iso?: string | null) {
 }
 
 /* ── Dashboard (device list) ── */
-function EndpointDashboard({ onSelectEndpoint }: { onSelectEndpoint: (id: string) => void }) {
+function EndpointDashboard({ onSelectEndpoint: _onSelectEndpoint }: { onSelectEndpoint: (id: string) => void }) {
   const [items, setItems] = useState<EndpointListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,22 +69,10 @@ function EndpointDashboard({ onSelectEndpoint }: { onSelectEndpoint: (id: string
     return () => window.clearInterval(t);
   }, []);
 
-  async function onScan(endpointId: string) {
-    setScanError(null);
-    setItems((prev) => prev.map((it) => (it.endpoint_id === endpointId ? { ...it, scan_status: "scanning" as const } : it)));
-    try {
-      await api.startScan(endpointId);
-      void load();
-    } catch (e: any) {
-      setScanError(e?.message || "Failed to start scan");
-      setItems((prev) => prev.map((it) => (it.endpoint_id === endpointId ? { ...it, scan_status: "failed" as const } : it)));
-    }
-  }
-
-  async function onCancel(endpointId: string) {
-    setScanError(null);
-    try { await api.cancelScan(endpointId); await load(); } catch (e: any) { setScanError(e?.message || "Failed to cancel scan"); }
-  }
+  // Scan / cancel actions now redirect to the original app — local handlers
+  // intentionally removed. setScanError remains for future use if we add
+  // local dashboard actions back.
+  void setScanError;
 
   const onlineCount = items.filter((i) => i.is_online === true).length;
   const offlineCount = items.filter((i) => i.is_online !== true).length;
@@ -202,13 +195,15 @@ function EndpointDashboard({ onSelectEndpoint }: { onSelectEndpoint: (id: string
                         <Monitor size={18} strokeWidth={1.5} style={{ color: "var(--color-text-muted)" }} />
                         <div>
                           <button
-                            onClick={() => onSelectEndpoint(it.endpoint_id)}
-                            className="font-semibold transition"
+                            onClick={openOriginalApp}
+                            className="font-semibold transition inline-flex items-center gap-1"
                             style={{ color: "var(--color-text-primary)" }}
-                            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-cyan-400)")}
+                            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-brand-blue-dark)")}
                             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-primary)")}
+                            title="Open in original app"
                           >
                             {it.endpoint_name || it.endpoint_id}
+                            <ExternalLink size={11} strokeWidth={1.5} style={{ opacity: 0.4 }} />
                           </button>
                           <div className="mt-0.5 font-mono text-[11px]" style={{ color: "var(--color-text-muted)" }}>{it.endpoint_id}</div>
                         </div>
@@ -222,32 +217,37 @@ function EndpointDashboard({ onSelectEndpoint }: { onSelectEndpoint: (id: string
                     <td className="whitespace-nowrap px-5 py-4 text-right">
                       <div className="inline-flex items-center gap-2">
                         <button
-                          onClick={() => onSelectEndpoint(it.endpoint_id)}
+                          onClick={openOriginalApp}
                           className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
                           style={{ background: "var(--color-bg-card)", color: "var(--color-text-primary)", border: "1px solid var(--color-border)" }}
                           onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.03)")}
                           onMouseLeave={(e) => (e.currentTarget.style.background = "var(--color-bg-card)")}
+                          title="Open in original app"
                         >
                           <Eye size={14} strokeWidth={1.5} />
                           View
+                          <ExternalLink size={11} strokeWidth={1.5} style={{ opacity: 0.5 }} />
                         </button>
                         {isScanning ? (
                           <button
-                            onClick={() => void onCancel(it.endpoint_id)}
+                            onClick={openOriginalApp}
                             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition"
                             style={{ background: "var(--color-status-error)" }}
+                            title="Manage scan in original app"
                           >
                             <X size={14} strokeWidth={2} />
                             Cancel
                           </button>
                         ) : (
                           <button
-                            onClick={() => void onScan(it.endpoint_id)}
+                            onClick={openOriginalApp}
                             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition"
-                            style={{ background: "var(--color-cyan-400)", color: "var(--color-text-inverse)" }}
+                            style={{ background: "var(--color-brand-blue)", color: "#fff" }}
+                            title="Run scan in original app"
                           >
                             <Scan size={14} strokeWidth={1.8} />
                             Scan
+                            <ExternalLink size={11} strokeWidth={1.5} style={{ opacity: 0.6 }} />
                           </button>
                         )}
                       </div>
@@ -339,6 +339,68 @@ function EndpointScannerContent() {
           )}
         </div>
       </motion.div>
+
+      {/* Featured launchpad CTA */}
+      <motion.a
+        href={ORIGINAL_APP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+        whileHover={{ y: -2 }}
+        className="relative overflow-hidden block group"
+        style={{
+          padding: "22px 26px",
+          borderRadius: 22,
+          background: "linear-gradient(135deg, #B8A1E6 0%, #6BA3BE 100%)",
+          color: "#fff",
+          border: "1px solid rgba(255,255,255,0.18)",
+          boxShadow: "0 8px 24px rgba(155,130,204,0.22), 0 18px 50px rgba(107,163,190,0.18)",
+        }}
+      >
+        <span style={{ position: "absolute", top: -40, right: 60, width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.18)", filter: "blur(40px)" }} className="animate-blob" />
+        <span style={{ position: "absolute", bottom: -50, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(232,213,245,0.22)", filter: "blur(50px)" }} />
+        <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-4">
+            <div style={{
+              width: 48, height: 48, borderRadius: 14,
+              background: "rgba(255,255,255,0.18)",
+              border: "1px solid rgba(255,255,255,0.28)",
+              backdropFilter: "blur(8px)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <Sparkles size={22} strokeWidth={1.6} />
+            </div>
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", opacity: 0.85, marginBottom: 4 }}>
+                Full experience
+              </p>
+              <h3 style={{ fontSize: 19, fontWeight: 700, letterSpacing: "-0.015em" }}>
+                Open the Endpoint Risk Scanner app
+              </h3>
+              <p style={{ fontSize: 13, opacity: 0.92, marginTop: 2 }}>
+                Manage scans, drill into device intelligence, and explore CVEs in the standalone interface.
+              </p>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "10px 18px", borderRadius: 100,
+              background: "rgba(255,255,255,0.96)",
+              color: "var(--color-text-primary)",
+              fontSize: 13, fontWeight: 700,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
+            }}
+            className="group-hover:translate-x-0.5 transition-transform"
+          >
+            Launch app
+            <ExternalLink size={14} strokeWidth={2} />
+          </div>
+        </div>
+      </motion.a>
+
       <EndpointDashboard onSelectEndpoint={setSelectedEndpoint} />
     </div>
   );

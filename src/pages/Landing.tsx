@@ -5,6 +5,64 @@ import Aurora from "../components/backgrounds/Aurora";
 import { MODULES } from "../config/services";
 
 /**
+ * Decorative circular orbit text — a thin SVG ring with text laid out
+ * along its circumference, rotating slowly. A soft scroll-mouse indicator
+ * sits in the centre. Pure SVG + framer-motion, no extra deps.
+ */
+function CircularOrbitText({
+    text,
+    size = 140,
+    durationSec = 24,
+}: { text: string; size?: number; durationSec?: number }) {
+    const r = size / 2 - 14;
+    const cx = size / 2;
+    const cy = size / 2;
+    return (
+        <div style={{ position: "relative", width: size, height: size }}>
+            <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: durationSec, repeat: Infinity, ease: "linear" }}
+                style={{ position: "absolute", inset: 0 }}
+            >
+                <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: "visible" }}>
+                    <defs>
+                        <path id="orbit-circle" d={`M ${cx},${cy} m -${r},0 a ${r},${r} 0 1,1 ${r * 2},0 a ${r},${r} 0 1,1 -${r * 2},0`} />
+                    </defs>
+                    <text
+                        style={{
+                            fontFamily: "var(--font-display)",
+                            fontStyle: "italic",
+                            fontSize: 13,
+                            fill: "var(--color-brand-lavender-dark)",
+                            letterSpacing: "0.18em",
+                            textTransform: "lowercase",
+                        }}
+                    >
+                        <textPath href="#orbit-circle" startOffset="0">{text}</textPath>
+                    </text>
+                </svg>
+            </motion.div>
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <motion.div
+                    animate={{ y: [0, 6, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    style={{
+                        width: 22, height: 36,
+                        border: "1.5px solid rgba(0,0,0,0.18)",
+                        borderRadius: 100,
+                        display: "flex", justifyContent: "center", paddingTop: 7,
+                        background: "rgba(255,255,255,0.65)",
+                        backdropFilter: "blur(6px)",
+                    }}
+                >
+                    <div style={{ width: 3, height: 7, background: "var(--color-brand-lavender-dark)", borderRadius: 100 }} />
+                </motion.div>
+            </div>
+        </div>
+    );
+}
+
+/**
  * Rotates through a list of italic-serif headline endings with a soft
  * fade + small vertical slide. Word width is auto so the surrounding
  * line reflows naturally as it cycles.
@@ -227,19 +285,11 @@ export default function Landing() {
                         transition={{ delay: 1.2 }}
                         style={{ marginTop: 64, display: "flex", justifyContent: "center", position: "relative", zIndex: 5 }}
                     >
-                        <motion.div
-                            animate={{ y: [0, 6, 0] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            style={{
-                                width: 26, height: 42,
-                                border: "1.5px solid rgba(0,0,0,0.15)",
-                                borderRadius: 100,
-                                display: "flex", justifyContent: "center", paddingTop: 8,
-                                background: "rgba(255,255,255,0.5)",
-                            }}
-                        >
-                            <div style={{ width: 3, height: 8, background: "var(--color-brand-blue)", borderRadius: 100 }} />
-                        </motion.div>
+                        <CircularOrbitText
+                            text="explore the platform · explore the platform · "
+                            size={132}
+                            durationSec={22}
+                        />
                     </motion.div>
                 </motion.div>
             </section>
