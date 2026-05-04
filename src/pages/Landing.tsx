@@ -1,8 +1,46 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Aurora from "../components/backgrounds/Aurora";
 import { MODULES } from "../config/services";
+
+/**
+ * Rotates through a list of italic-serif headline endings with a soft
+ * fade + small vertical slide. Word width is auto so the surrounding
+ * line reflows naturally as it cycles.
+ */
+function RotatingHeadlineWord({ words, intervalMs = 2400 }: { words: string[]; intervalMs?: number }) {
+    const [i, setI] = useState(0);
+    useEffect(() => {
+        const t = window.setInterval(() => setI((n) => (n + 1) % words.length), intervalMs);
+        return () => window.clearInterval(t);
+    }, [words, intervalMs]);
+    return (
+        <span style={{ position: "relative", display: "inline-block", verticalAlign: "baseline" }}>
+            {/* Invisible widest sibling reserves layout width to avoid jitter. */}
+            <span aria-hidden style={{ visibility: "hidden", whiteSpace: "nowrap", display: "inline-block" }}>
+                {words.reduce((a, b) => (b.length > a.length ? b : a), "")}
+            </span>
+            <AnimatePresence mode="wait">
+                <motion.span
+                    key={words[i]}
+                    initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -16, filter: "blur(6px)" }}
+                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    style={{
+                        position: "absolute", left: 0, top: 0,
+                        fontStyle: "italic",
+                        color: "var(--color-brand-lavender-dark)",
+                        whiteSpace: "nowrap",
+                    }}
+                >
+                    {words[i]}
+                </motion.span>
+            </AnimatePresence>
+        </span>
+    );
+}
 
 const moduleCards = MODULES.map((mod) => ({
     title: mod.name,
@@ -145,9 +183,15 @@ export default function Landing() {
                         }}
                     >
                         Unified security.{" "}
-                        <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>
-                            Complete visibility.
-                        </span>
+                        <RotatingHeadlineWord
+                            words={[
+                                "Complete visibility.",
+                                "Adaptive defense.",
+                                "Calm operations.",
+                                "Real-time intel.",
+                                "Clear answers.",
+                            ]}
+                        />
                     </motion.h1>
 
                     <motion.p
