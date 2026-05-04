@@ -4,6 +4,10 @@ import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
 } from "recharts";
+import {
+  Cloud, ExternalLink, BarChart3, Building2, Plus, Trash2,
+  CheckCircle2, Fish, Skull, EyeOff, AlertTriangle, HelpCircle,
+} from "lucide-react";
 import ModuleGate from "../../components/ModuleGate";
 import { MODULES } from "../../config/services";
 import {
@@ -12,43 +16,100 @@ import {
   type ShadowStats, type ScanLogEntry, type AllowlistEntry,
 } from "./services/api";
 
-/* ── Palette ─────────────────────────────────── */
-const STATUS_COLORS: Record<string, string> = {
-  benign: "#22c55e",
-  phishing: "#ef4444",
-  malware: "#f97316",
-  defacement: "#a855f7",
-  company_allowed: "#38bdf8",
+/* ── Pastel palette (aligned with project tokens) ─── */
+const STATUS_HEX: Record<string, string> = {
+  benign: "#7dba9c",
+  phishing: "#c97070",
+  malware: "#d4a56a",
+  defacement: "#D4C5F0",
+  company_allowed: "#6ba3be",
 };
-const STATUS_ICONS: Record<string, string> = {
-  benign: "✅",
-  phishing: "🎣",
-  malware: "☠️",
-  defacement: "🖤",
-  company_allowed: "🏢",
+
+const STATUS_BG: Record<string, string> = {
+  benign: "rgba(125,186,156,0.14)",
+  phishing: "rgba(201,112,112,0.12)",
+  malware: "rgba(212,165,106,0.14)",
+  defacement: "rgba(184,169,201,0.18)",
+  company_allowed: "rgba(107,163,190,0.14)",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  benign: "Benign",
+  phishing: "Phishing",
+  malware: "Malware",
+  defacement: "Defacement",
+  company_allowed: "Safe – Company Allowed",
+};
+
+const tooltipStyle: React.CSSProperties = {
+  background: "#fff",
+  border: "1px solid rgba(0,0,0,0.08)",
+  borderRadius: 12,
+  fontSize: 12,
+  color: "#1A1A2E",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
 };
 
 /* ── Small components ───────────────────────── */
+function StatusIcon({ status, size = 13 }: { status: string; size?: number }) {
+  const props = { size, strokeWidth: 1.5 };
+  switch (status) {
+    case "benign": return <CheckCircle2 {...props} />;
+    case "phishing": return <Fish {...props} />;
+    case "malware": return <Skull {...props} />;
+    case "defacement": return <EyeOff {...props} />;
+    case "company_allowed": return <Building2 {...props} />;
+    default: return <HelpCircle {...props} />;
+  }
+}
+
 function Badge({ status }: { status: string }) {
-  const label = status === "company_allowed" ? "Safe – Company Allowed" : status;
+  const label = STATUS_LABELS[status] ?? status;
+  const color = STATUS_HEX[status] ?? "#8A8A8A";
+  const bg = STATUS_BG[status] ?? "rgba(0,0,0,0.04)";
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold text-white"
-      style={{ backgroundColor: STATUS_COLORS[status] ?? "#64748b" }}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "4px 10px",
+        borderRadius: 100,
+        fontSize: 11,
+        fontWeight: 600,
+        background: bg,
+        color,
+        border: `1px solid ${bg}`,
+        whiteSpace: "nowrap",
+      }}
     >
-      {STATUS_ICONS[status] ?? "❓"} {label}
+      <StatusIcon status={status} size={12} />
+      {label}
     </span>
   );
 }
 
-function StatCard({ label, value, color }: { label: string; value: string | number; color: string }) {
+function StatCard({ label, value, accent }: { label: string; value: string | number; accent: string }) {
   return (
-    <div
-      className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm p-5"
-      style={{ borderTop: `3px solid ${color}` }}
-    >
-      <div className="text-2xl font-bold" style={{ color }}>{value}</div>
-      <div className="text-xs text-slate-400 mt-1">{label}</div>
+    <div className="glass-card" style={{ padding: 20, position: "relative", overflow: "hidden" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          background: accent,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        }}
+      />
+      <div style={{ fontSize: 28, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>
+        {value}
+      </div>
+      <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 4, fontWeight: 500 }}>
+        {label}
+      </div>
     </div>
   );
 }
@@ -92,66 +153,141 @@ function AllowlistTab() {
   };
 
   return (
-    <section className="space-y-5">
+    <section style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <div>
-        <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">🏢 Company Allowlist</h2>
-        <p className="text-sm text-slate-400 mt-1">
-          Domains added here are always marked as <Badge status="company_allowed" /> regardless of what the AI detects.
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: 8 }}>
+          <Building2 size={18} strokeWidth={1.5} />
+          Company Allowlist
+        </h2>
+        <p style={{ fontSize: 13, color: "var(--color-text-secondary)", marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
+          Domains added here are always marked as
+          <Badge status="company_allowed" />
+          regardless of what the AI detects.
         </p>
       </div>
 
-      <form className="flex flex-wrap gap-3" onSubmit={handleAdd}>
+      <form style={{ display: "flex", flexWrap: "wrap", gap: 12 }} onSubmit={handleAdd}>
         <input
           type="text" placeholder="Domain (e.g. daraz.lk)" value={domain}
           onChange={(e) => setDomain(e.target.value)}
-          className="flex-1 min-w-[180px] rounded-lg border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/30"
+          className="input-premium"
+          style={{ flex: 1, minWidth: 180 }}
         />
         <input
           type="text" placeholder="Note / reason (optional)" value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="flex-1 min-w-[180px] rounded-lg border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/30"
+          className="input-premium"
+          style={{ flex: 1, minWidth: 180 }}
         />
         <button
           type="submit" disabled={loading}
-          className="rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 px-5 py-2.5 text-sm font-semibold text-white transition-colors"
+          className="btn-primary"
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, opacity: loading ? 0.5 : 1 }}
         >
-          {loading ? "Adding…" : "＋ Add to Allowlist"}
+          <Plus size={16} strokeWidth={1.8} />
+          {loading ? "Adding…" : "Add to Allowlist"}
         </button>
       </form>
 
-      {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-300">⚠️ {error}</div>}
-      {success && <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-300">✅ {success}</div>}
+      {error && (
+        <div style={{
+          borderRadius: 12,
+          border: "1px solid rgba(201,112,112,0.25)",
+          background: "rgba(201,112,112,0.08)",
+          padding: "10px 14px",
+          fontSize: 13,
+          color: "var(--color-status-error)",
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <AlertTriangle size={14} strokeWidth={1.5} /> {error}
+        </div>
+      )}
+      {success && (
+        <div style={{
+          borderRadius: 12,
+          border: "1px solid rgba(125,186,156,0.25)",
+          background: "rgba(125,186,156,0.10)",
+          padding: "10px 14px",
+          fontSize: 13,
+          color: "var(--color-status-ok)",
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <CheckCircle2 size={14} strokeWidth={1.5} /> {success}
+        </div>
+      )}
 
-      <div className="overflow-x-auto rounded-xl border border-slate-700/60">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-700 bg-slate-800/80 text-xs uppercase tracking-wider text-slate-400">
-              <th className="px-4 py-3 text-left">#</th>
-              <th className="px-4 py-3 text-left">Domain</th>
-              <th className="px-4 py-3 text-left">Note</th>
-              <th className="px-4 py-3 text-left">Added</th>
-              <th className="px-4 py-3 text-left">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-700/50">
-            {entries.length === 0 ? (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-500">No domains in the allowlist yet.</td></tr>
-            ) : entries.map((e) => (
-              <tr key={e.id} className="hover:bg-slate-800/40 transition-colors">
-                <td className="px-4 py-3 text-slate-400">{e.id}</td>
-                <td className="px-4 py-3 text-cyan-300 font-medium">🏢 {e.domain}</td>
-                <td className="px-4 py-3 text-slate-500">{e.note || "—"}</td>
-                <td className="px-4 py-3 text-slate-400">{new Date(e.added_at).toLocaleDateString()}</td>
-                <td className="px-4 py-3">
-                  <button
-                    className="rounded-md bg-red-500/10 border border-red-500/20 px-3 py-1 text-xs text-red-400 hover:bg-red-500/20 transition-colors"
-                    onClick={() => handleRemove(e.id, e.domain)}
-                  >🗑 Remove</button>
-                </td>
+      <div className="glass-card" style={{ padding: 0, overflow: "hidden" }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{
+                background: "rgba(0,0,0,0.02)",
+                borderBottom: "1px solid var(--color-border)",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                color: "var(--color-text-muted)",
+                fontWeight: 600,
+              }}>
+                <th style={{ padding: "12px 16px", textAlign: "left" }}>#</th>
+                <th style={{ padding: "12px 16px", textAlign: "left" }}>Domain</th>
+                <th style={{ padding: "12px 16px", textAlign: "left" }}>Note</th>
+                <th style={{ padding: "12px 16px", textAlign: "left" }}>Added</th>
+                <th style={{ padding: "12px 16px", textAlign: "left" }}>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {entries.length === 0 ? (
+                <tr><td colSpan={5} style={{ padding: "32px 16px", textAlign: "center", color: "var(--color-text-muted)" }}>No domains in the allowlist yet.</td></tr>
+              ) : entries.map((e) => (
+                <tr key={e.id} style={{ borderBottom: "1px solid var(--color-border)" }}
+                  onMouseEnter={(ev) => (ev.currentTarget.style.background = "rgba(0,0,0,0.02)")}
+                  onMouseLeave={(ev) => (ev.currentTarget.style.background = "transparent")}
+                >
+                  <td style={{ padding: "12px 16px", color: "var(--color-text-muted)" }}>{e.id}</td>
+                  <td style={{ padding: "12px 16px", color: "var(--color-text-primary)", fontWeight: 500 }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <Building2 size={14} strokeWidth={1.5} style={{ color: "var(--color-brand-blue)" }} />
+                      {e.domain}
+                    </span>
+                  </td>
+                  <td style={{ padding: "12px 16px", color: "var(--color-text-secondary)" }}>{e.note || "—"}</td>
+                  <td style={{ padding: "12px 16px", color: "var(--color-text-muted)" }}>{new Date(e.added_at).toLocaleDateString()}</td>
+                  <td style={{ padding: "12px 16px" }}>
+                    <button
+                      onClick={() => handleRemove(e.id, e.domain)}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                        background: "transparent",
+                        border: "1px solid var(--color-border)",
+                        color: "var(--color-text-muted)",
+                        padding: "4px 10px",
+                        borderRadius: 8,
+                        fontSize: 12,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(ev) => {
+                        ev.currentTarget.style.color = "var(--color-status-error)";
+                        ev.currentTarget.style.borderColor = "rgba(201,112,112,0.3)";
+                        ev.currentTarget.style.background = "rgba(201,112,112,0.06)";
+                      }}
+                      onMouseLeave={(ev) => {
+                        ev.currentTarget.style.color = "var(--color-text-muted)";
+                        ev.currentTarget.style.borderColor = "var(--color-border)";
+                        ev.currentTarget.style.background = "transparent";
+                      }}
+                    >
+                      <Trash2 size={12} strokeWidth={1.5} /> Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );
@@ -180,7 +316,6 @@ function ShadowITContent() {
     }
   }, [filter]);
 
-  // Polling
   useEffect(() => {
     refresh();
     const id = setInterval(refresh, 5000);
@@ -211,63 +346,122 @@ function ShadowITContent() {
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <div className="flex flex-col md:flex-row md:items-center items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
-              </svg>
+            <div
+              style={{
+                width: 40, height: 40, borderRadius: 12,
+                background: "linear-gradient(135deg, rgba(107,163,190,0.18), rgba(212,197,240,0.22))",
+                border: "1px solid var(--color-border)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "var(--color-brand-blue)",
+              }}
+            >
+              <Cloud size={20} strokeWidth={1.5} />
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-slate-100 tracking-tight">Shadow IT Dashboard</h1>
-              <p className="text-xs text-slate-500">Discover unauthorized applications & hidden vulnerabilities</p>
+              <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+                Shadow IT Dashboard
+              </h1>
+              <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 2 }}>
+                Discover unauthorized applications & hidden vulnerabilities
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             {mod?.deployedUrl && (
-              <a href={mod.deployedUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-slate-800/80 px-4 py-2 text-sm font-semibold text-slate-200 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all shadow-lg hover:shadow-cyan-500/20 group">
+              <a
+                href={mod.deployedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  padding: "8px 16px",
+                  borderRadius: 100,
+                  background: "var(--color-bg-card)",
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-text-secondary)",
+                  fontSize: 13, fontWeight: 500,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                }}
+              >
                 Open Original App
-                <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
+                <ExternalLink size={14} strokeWidth={1.5} />
               </a>
             )}
             {serverDown ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-400 ring-1 ring-inset ring-red-500/20">
-                ⚠️ Server Offline
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "4px 12px", borderRadius: 100,
+                fontSize: 11, fontWeight: 600,
+                background: "rgba(201,112,112,0.12)",
+                color: "var(--color-status-error)",
+                border: "1px solid rgba(201,112,112,0.25)",
+              }}>
+                <AlertTriangle size={12} strokeWidth={1.5} /> Server Offline
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "4px 12px", borderRadius: 100,
+                fontSize: 11, fontWeight: 600,
+                background: "rgba(125,186,156,0.14)",
+                color: "var(--color-status-ok)",
+                border: "1px solid rgba(125,186,156,0.25)",
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-status-ok)" }} />
                 Live
               </span>
             )}
             {lastRefresh && (
-              <span className="text-xs text-slate-500">Updated {lastRefresh.toLocaleTimeString()}</span>
+              <span style={{ fontSize: 11, color: "var(--color-text-muted)" }}>Updated {lastRefresh.toLocaleTimeString()}</span>
             )}
           </div>
         </div>
       </motion.div>
 
       {serverDown && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <div style={{
+          borderRadius: 12,
+          border: "1px solid rgba(201,112,112,0.25)",
+          background: "rgba(201,112,112,0.08)",
+          padding: "10px 14px",
+          fontSize: 13,
+          color: "var(--color-status-error)",
+        }}>
           Cannot reach Shadow IT API — make sure the backend is running.
         </div>
       )}
 
       {/* Tab Nav */}
-      <div className="flex gap-1 p-1 rounded-xl bg-slate-800/60 border border-slate-700/60 w-fit">
-        {(["dashboard", "allowlist"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`rounded-lg px-5 py-2 text-sm font-medium transition-all ${
-              tab === t
-                ? "bg-slate-700 text-white shadow-sm"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            {t === "dashboard" ? "📊 Dashboard" : "🏢 Company Allowlist"}
-          </button>
-        ))}
+      <div style={{
+        display: "inline-flex", gap: 4, padding: 4, borderRadius: 12,
+        background: "rgba(0,0,0,0.03)",
+        border: "1px solid var(--color-border)",
+        width: "fit-content",
+      }}>
+        {(["dashboard", "allowlist"] as const).map((t) => {
+          const active = tab === t;
+          return (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "8px 18px",
+                borderRadius: 8,
+                fontSize: 13, fontWeight: 500,
+                cursor: "pointer",
+                border: active ? "1px solid var(--color-border)" : "1px solid transparent",
+                background: active ? "var(--color-bg-card)" : "transparent",
+                color: active ? "var(--color-text-primary)" : "var(--color-text-muted)",
+                boxShadow: active ? "0 1px 3px rgba(0,0,0,0.04)" : "none",
+                transition: "all 0.2s",
+              }}
+            >
+              {t === "dashboard" ? <BarChart3 size={14} strokeWidth={1.5} /> : <Building2 size={14} strokeWidth={1.5} />}
+              {t === "dashboard" ? "Dashboard" : "Company Allowlist"}
+            </button>
+          );
+        })}
       </div>
 
       {/* Dashboard Tab */}
@@ -275,59 +469,73 @@ function ShadowITContent() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-6">
           {/* Stat cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 2xl:grid-cols-6 gap-4">
-            <StatCard label="Total Scanned" value={stats?.total ?? "—"} color="#38bdf8" />
-            <StatCard label="Threats Found" value={threats || "—"} color="#ef4444" />
-            <StatCard label="Phishing" value={stats?.breakdown?.phishing ?? 0} color="#ef4444" />
-            <StatCard label="Malware" value={stats?.breakdown?.malware ?? 0} color="#f97316" />
-            <StatCard label="Defacement" value={stats?.breakdown?.defacement ?? 0} color="#a855f7" />
-            <StatCard label="Company Allowed" value={stats?.breakdown?.company_allowed ?? 0} color="#38bdf8" />
+            <StatCard label="Total Scanned" value={stats?.total ?? "—"} accent="var(--color-brand-blue)" />
+            <StatCard label="Threats Found" value={threats || "—"} accent="var(--color-status-error)" />
+            <StatCard label="Phishing" value={stats?.breakdown?.phishing ?? 0} accent="var(--color-accent-coral)" />
+            <StatCard label="Malware" value={stats?.breakdown?.malware ?? 0} accent="var(--color-status-warn)" />
+            <StatCard label="Defacement" value={stats?.breakdown?.defacement ?? 0} accent="var(--color-accent-lavender)" />
+            <StatCard label="Company Allowed" value={stats?.breakdown?.company_allowed ?? 0} accent="var(--color-status-ok)" />
           </div>
 
           {/* Charts */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-            <div className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm p-5">
-              <h3 className="text-sm font-semibold text-slate-200 mb-3">Threat Breakdown</h3>
+            <div className="glass-card" style={{ padding: 20 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)" }}>Threat Breakdown</h3>
+              <p style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 2, marginBottom: 12 }}>
+                Distribution by category
+              </p>
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
-                  <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                  <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={{ fontSize: 11, fill: "#4A4A4A" }}>
                     {pieData.map((entry) => (
-                      <Cell key={entry.name} fill={STATUS_COLORS[entry.name] ?? "#64748b"} />
+                      <Cell key={entry.name} fill={STATUS_HEX[entry.name] ?? "#8A8A8A"} stroke="#fff" strokeWidth={2} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#e2e8f0" }} />
+                  <Tooltip contentStyle={tooltipStyle} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
-            <div className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm p-5">
-              <h3 className="text-sm font-semibold text-slate-200 mb-3">Scans by Category</h3>
+            <div className="glass-card" style={{ padding: 20 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)" }}>Scans by Category</h3>
+              <p style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 2, marginBottom: 12 }}>
+                Volume per status
+              </p>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 11 }} />
-                  <YAxis stroke="#94a3b8" tick={{ fontSize: 11 }} />
-                  <Tooltip contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#e2e8f0" }} />
-                  <Legend />
-                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+                  <XAxis dataKey="name" stroke="#8A8A8A" tick={{ fontSize: 11, fill: "#8A8A8A" }} />
+                  <YAxis stroke="#8A8A8A" tick={{ fontSize: 11, fill: "#8A8A8A" }} />
+                  <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
+                  <Legend wrapperStyle={{ fontSize: 11, color: "#4A4A4A" }} />
+                  <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                     {barData.map((entry) => (
-                      <Cell key={entry.name} fill={STATUS_COLORS[entry.name] ?? "#64748b"} />
+                      <Cell key={entry.name} fill={STATUS_HEX[entry.name] ?? "#8A8A8A"} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
-            <div className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm p-5">
-              <h3 className="text-sm font-semibold text-slate-200 mb-3">Recent Threats</h3>
+            <div className="glass-card" style={{ padding: 20 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)" }}>Recent Threats</h3>
+              <p style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 2, marginBottom: 12 }}>
+                Latest detections
+              </p>
               {(stats?.recent_threats ?? []).length === 0 ? (
-                <p className="text-sm text-slate-500 py-8 text-center">No threats detected yet.</p>
+                <p style={{ fontSize: 13, color: "var(--color-text-muted)", padding: "32px 0", textAlign: "center" }}>
+                  No threats detected yet.
+                </p>
               ) : (
-                <ul className="space-y-2.5 max-h-[200px] overflow-y-auto">
+                <ul style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 200, overflowY: "auto", listStyle: "none" }}>
                   {(stats?.recent_threats ?? []).map((t) => (
-                    <li key={t.id} className="flex items-center gap-2 text-sm">
+                    <li key={t.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
                       <Badge status={t.status} />
-                      <span className="truncate text-slate-300 flex-1" title={t.url}>{t.url}</span>
-                      <span className="text-xs text-slate-500">{(t.confidence * 100).toFixed(0)}%</span>
+                      <span style={{
+                        flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        color: "var(--color-text-secondary)",
+                      }} title={t.url}>{t.url}</span>
+                      <span style={{ fontSize: 11, color: "var(--color-text-muted)" }}>{(t.confidence * 100).toFixed(0)}%</span>
                     </li>
                   ))}
                 </ul>
@@ -336,13 +544,26 @@ function ShadowITContent() {
           </div>
 
           {/* Scan Log */}
-          <div className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-700/60">
-              <h3 className="text-sm font-semibold text-slate-200">Scan Log</h3>
-              <div className="flex items-center gap-3">
+          <div className="glass-card" style={{ padding: 0, overflow: "hidden" }}>
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: "16px 20px",
+              borderBottom: "1px solid var(--color-border)",
+            }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)" }}>Scan Log</h3>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <select
                   value={filter} onChange={(e) => setFilter(e.target.value)}
-                  className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500/30"
+                  style={{
+                    background: "var(--color-bg-card)",
+                    border: "1px solid var(--color-border)",
+                    borderRadius: 8,
+                    padding: "6px 12px",
+                    fontSize: 12,
+                    color: "var(--color-text-secondary)",
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
                 >
                   <option value="">All</option>
                   <option value="benign">Benign</option>
@@ -352,44 +573,74 @@ function ShadowITContent() {
                   <option value="company_allowed">Company Allowed</option>
                 </select>
                 <button
-                  className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-colors disabled:opacity-50"
-                  onClick={handleClear} disabled={clearing}
+                  className="btn-ghost"
+                  onClick={handleClear}
+                  disabled={clearing}
+                  style={{
+                    padding: "6px 14px",
+                    fontSize: 12,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    opacity: clearing ? 0.5 : 1,
+                  }}
+                  onMouseEnter={(ev) => {
+                    if (clearing) return;
+                    ev.currentTarget.style.color = "var(--color-status-error)";
+                    ev.currentTarget.style.borderColor = "rgba(201,112,112,0.35)";
+                  }}
+                  onMouseLeave={(ev) => {
+                    ev.currentTarget.style.color = "";
+                    ev.currentTarget.style.borderColor = "";
+                  }}
                 >
-                  {clearing ? "Clearing…" : "🗑 Clear Logs"}
+                  <Trash2 size={12} strokeWidth={1.5} />
+                  {clearing ? "Clearing…" : "Clear Logs"}
                 </button>
               </div>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse" }}>
                 <thead>
-                  <tr className="border-b border-slate-700 bg-slate-800/80 text-xs uppercase tracking-wider text-slate-400">
-                    <th className="px-4 py-3 text-left">#</th>
-                    <th className="px-4 py-3 text-left">Timestamp</th>
-                    <th className="px-4 py-3 text-left">Status</th>
-                    <th className="px-4 py-3 text-left">Confidence</th>
-                    <th className="px-4 py-3 text-left">URL</th>
+                  <tr style={{
+                    background: "rgba(0,0,0,0.02)",
+                    borderBottom: "1px solid var(--color-border)",
+                    fontSize: 11,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    color: "var(--color-text-muted)",
+                    fontWeight: 600,
+                  }}>
+                    <th style={{ padding: "12px 16px", textAlign: "left" }}>#</th>
+                    <th style={{ padding: "12px 16px", textAlign: "left" }}>Timestamp</th>
+                    <th style={{ padding: "12px 16px", textAlign: "left" }}>Status</th>
+                    <th style={{ padding: "12px 16px", textAlign: "left" }}>Confidence</th>
+                    <th style={{ padding: "12px 16px", textAlign: "left" }}>URL</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-700/50">
+                <tbody>
                   {logs.length === 0 ? (
-                    <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-500">No scans recorded yet.</td></tr>
+                    <tr><td colSpan={5} style={{ padding: "32px 16px", textAlign: "center", color: "var(--color-text-muted)" }}>No scans recorded yet.</td></tr>
                   ) : logs.map((row) => (
                     <tr
                       key={row.id}
-                      className={`transition-colors hover:bg-slate-800/40 ${
-                        row.status === "company_allowed"
-                          ? "bg-cyan-500/5"
-                          : row.status !== "benign"
-                            ? "bg-red-500/5"
-                            : ""
-                      }`}
+                      style={{ borderBottom: "1px solid var(--color-border)", transition: "background 0.2s" }}
+                      onMouseEnter={(ev) => (ev.currentTarget.style.background = "rgba(0,0,0,0.02)")}
+                      onMouseLeave={(ev) => (ev.currentTarget.style.background = "transparent")}
                     >
-                      <td className="px-4 py-3 text-slate-500">{row.id}</td>
-                      <td className="px-4 py-3 text-slate-400">{new Date(row.scanned_at).toLocaleString()}</td>
-                      <td className="px-4 py-3"><Badge status={row.status} /></td>
-                      <td className="px-4 py-3 text-slate-300">{(row.confidence * 100).toFixed(1)}%</td>
-                      <td className="px-4 py-3 text-slate-400 max-w-[300px] truncate" title={row.url}>{row.url}</td>
+                      <td style={{ padding: "12px 16px", color: "var(--color-text-muted)" }}>{row.id}</td>
+                      <td style={{ padding: "12px 16px", color: "var(--color-text-secondary)" }}>{new Date(row.scanned_at).toLocaleString()}</td>
+                      <td style={{ padding: "12px 16px" }}><Badge status={row.status} /></td>
+                      <td style={{ padding: "12px 16px", color: "var(--color-text-primary)", fontWeight: 500 }}>{(row.confidence * 100).toFixed(1)}%</td>
+                      <td style={{
+                        padding: "12px 16px",
+                        color: "var(--color-text-secondary)",
+                        maxWidth: 300,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }} title={row.url}>{row.url}</td>
                     </tr>
                   ))}
                 </tbody>

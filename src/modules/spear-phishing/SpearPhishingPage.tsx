@@ -146,19 +146,23 @@ function SeedDemoDataSection() {
   };
 
   return (
-    <div className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm p-6 mb-6">
-      <div className="flex justify-between items-center">
+    <div className="glass-card" style={{ padding: 24, marginBottom: 24 }}>
+      <div className="flex justify-between items-center" style={{ gap: 16 }}>
         <div>
-          <h3 className="text-lg font-bold text-slate-100">🎯 Demo Data Setup</h3>
-          <p className="text-sm text-slate-400 mt-1">Load sample employee behavioral data for testing.</p>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.01em" }}>Demo Data Setup</h3>
+          <p style={{ fontSize: 13, color: "var(--color-text-secondary)", marginTop: 4 }}>Load sample employee behavioral data for testing.</p>
         </div>
-        <button onClick={handleSeedData} disabled={loading}
-          className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all ${loading ? "bg-blue-600/50 text-blue-200 cursor-wait" : "bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:shadow-lg hover:shadow-blue-500/20"}`}>
-          {loading ? "Loading…" : "📤 Seed Demo Data"}
+        <button onClick={handleSeedData} disabled={loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px", opacity: loading ? 0.6 : 1, cursor: loading ? "wait" : "pointer" }}>
+          {loading ? "Loading…" : "Seed Demo Data"}
         </button>
       </div>
       {status && (
-        <div className={`mt-4 p-3 rounded-lg text-sm ${status.type === "success" ? "bg-green-500/20 text-green-300 border border-green-500/30" : status.type === "info" ? "bg-blue-500/20 text-blue-300 border border-blue-500/30" : "bg-red-500/20 text-red-300 border border-red-500/30"}`}>
+        <div style={{
+          marginTop: 16, padding: "10px 14px", borderRadius: 12, fontSize: 13, fontWeight: 500,
+          color: status.type === "success" ? "var(--color-status-ok)" : status.type === "info" ? "var(--color-brand-blue)" : "var(--color-status-error)",
+          background: status.type === "success" ? "rgba(125,186,156,0.10)" : status.type === "info" ? "rgba(107,163,190,0.10)" : "rgba(201,112,112,0.10)",
+          border: `1px solid ${status.type === "success" ? "rgba(125,186,156,0.25)" : status.type === "info" ? "rgba(107,163,190,0.25)" : "rgba(201,112,112,0.25)"}`,
+        }}>
           {status.msg}
         </div>
       )}
@@ -193,8 +197,7 @@ function SpearPhishingContent() {
             <DataCollection />
             <AdaptivePhishingPipeline />
             <div className="flex justify-center py-4">
-              <button onClick={() => setShowAdvanced(!showAdvanced)}
-                className="px-6 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition-all border border-slate-700">
+              <button onClick={() => setShowAdvanced(!showAdvanced)} className="btn-ghost" style={{ fontSize: 13 }}>
                 {showAdvanced ? "Hide" : "Show"} Advanced System Logs
               </button>
             </div>
@@ -241,14 +244,13 @@ function SpearPhishingContent() {
         return (
           <motion.div key="settings" variants={sectionVariants} initial="hidden" animate="visible" exit="exit" className="space-y-6">
             <SeedDemoDataSection />
-            <div className="rounded-xl border border-slate-700/60 bg-slate-800/60 backdrop-blur-sm p-6 flex justify-between items-center">
+            <div className="glass-card" style={{ padding: 24, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
               <div>
-                <h3 className="text-lg font-bold text-slate-100">Browser Extension Deployment</h3>
-                <p className="text-sm text-slate-400 mt-1">Download the pre-configured V3 manifest extension.</p>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.01em" }}>Browser Extension Deployment</h3>
+                <p style={{ fontSize: 13, color: "var(--color-text-secondary)", marginTop: 4 }}>Download the pre-configured V3 manifest extension.</p>
               </div>
-              <a href={`${BACKEND_URL}/api/extension/download`} target="_blank" rel="noreferrer"
-                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/20 transition-all inline-flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <a href={`${BACKEND_URL}/api/extension/download`} target="_blank" rel="noreferrer" className="btn-primary" style={{ fontSize: 13, padding: "10px 18px", display: "inline-flex", alignItems: "center", gap: 8 }}>
+                <svg style={{ width: 14, height: 14 }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 Download ZIP
@@ -268,20 +270,20 @@ function SpearPhishingContent() {
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <div className="flex md:flex-row flex-col items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={1.5}>
+            <div style={{ width: 44, height: 44, borderRadius: 14, background: "linear-gradient(135deg, #6ba3be 0%, #b8a9c9 100%)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(107,163,190,0.20)" }}>
+              <svg viewBox="0 0 24 24" style={{ width: 22, height: 22, color: "#fff" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-slate-100 tracking-tight">Spear Phishing Simulation</h1>
-              <p className="text-xs text-slate-500">AI-driven adaptive phishing campaigns with behavioral analysis</p>
+              <h1 style={{ fontSize: 26, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.025em" }}>Spear Phishing Simulation</h1>
+              <p style={{ fontSize: 13, color: "var(--color-text-secondary)", marginTop: 2 }}>AI-driven adaptive phishing campaigns with behavioral analysis</p>
             </div>
           </div>
           {mod?.deployedUrl && (
-            <a href={mod.deployedUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-slate-800/80 px-4 py-2 text-sm font-semibold text-slate-200 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all shadow-lg hover:shadow-cyan-500/20 group">
+            <a href={mod.deployedUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost" style={{ fontSize: 13, padding: "9px 16px", display: "inline-flex", alignItems: "center", gap: 8 }}>
               Open Original App
-              <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg style={{ width: 14, height: 14 }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
@@ -290,18 +292,26 @@ function SpearPhishingContent() {
       </motion.div>
 
       {/* Internal Section Tabs */}
-      <div className="flex gap-1.5 rounded-xl border border-slate-700/60 bg-slate-800/40 backdrop-blur-sm p-1.5 overflow-x-auto">
-        {sections.map((s) => (
-          <button key={s.id} onClick={() => setActiveSection(s.id)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-              activeSection === s.id
-                ? "bg-gradient-to-r from-cyan-600/80 to-blue-600/80 text-white shadow-md shadow-cyan-500/10"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
-            }`}>
-            {s.icon}
-            {s.label}
-          </button>
-        ))}
+      <div style={{ display: "flex", gap: 4, padding: 6, borderRadius: 14, background: "var(--color-bg-card)", border: "1px solid var(--color-border)", overflowX: "auto", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+        {sections.map((s) => {
+          const active = activeSection === s.id;
+          return (
+            <button key={s.id} onClick={() => setActiveSection(s.id)}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "8px 14px", borderRadius: 100,
+                fontSize: 12, fontWeight: 600, whiteSpace: "nowrap",
+                border: "none", cursor: "pointer",
+                background: active ? "var(--color-bg-base)" : "transparent",
+                color: active ? "var(--color-text-primary)" : "var(--color-text-muted)",
+                boxShadow: active ? "0 1px 3px rgba(0,0,0,0.06)" : "none",
+                transition: "all 0.18s ease",
+              }}>
+              <span style={{ display: "inline-flex", color: active ? "var(--color-brand-blue)" : "var(--color-text-muted)" }}>{s.icon}</span>
+              {s.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Section Content */}

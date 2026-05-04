@@ -9,11 +9,12 @@ export function riskTone(tier?: string | null): 'neutral' | 'success' | 'warning
 }
 
 export function riskColor(tier?: string | null): string {
+  // Returns inline style color value (used for tabular score numbers).
   const t = (tier || '').toUpperCase()
-  if (t === 'LOW') return 'text-emerald-600 dark:text-emerald-400'
-  if (t === 'MODERATE') return 'text-amber-600 dark:text-amber-400'
-  if (t === 'HIGH' || t === 'SEVERE' || t === 'CRITICAL') return 'text-red-600 dark:text-red-400'
-  return 'text-gray-400 dark:text-slate-400'
+  if (t === 'LOW') return '#5b9a7c'
+  if (t === 'MODERATE') return '#a87f3f'
+  if (t === 'HIGH' || t === 'SEVERE' || t === 'CRITICAL') return '#a85555'
+  return 'var(--color-text-muted)'
 }
 
 export function RiskPill({ tier, size }: { tier?: string | null; size?: 'sm' | 'md' }) {

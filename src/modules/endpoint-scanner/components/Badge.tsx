@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import type { CSSProperties } from 'react'
 
 type Props = {
   label: string
@@ -6,17 +7,44 @@ type Props = {
   size?: 'sm' | 'md'
 }
 
+/**
+ * Soft pastel badge — matches the host site's wisprflow aesthetic.
+ * Tinted background at low alpha + colored text + matching border.
+ */
 export function Badge({ label, tone = 'neutral', size = 'sm' }: Props) {
   const className = clsx(
-    'inline-flex items-center font-medium ring-1 ring-inset',
+    'inline-flex items-center font-semibold',
     size === 'sm' && 'rounded-md px-2 py-0.5 text-[11px] leading-5',
     size === 'md' && 'rounded-lg px-2.5 py-1 text-xs',
-    tone === 'neutral' && 'bg-gray-50 text-gray-600 ring-gray-200 dark:bg-slate-700/40 dark:text-slate-200 dark:ring-slate-600/60',
-    tone === 'success' && 'bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/20',
-    tone === 'warning' && 'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-400/20',
-    tone === 'danger' && 'bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-400/20',
-    tone === 'info' && 'bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-500/10 dark:text-blue-300 dark:ring-blue-400/20'
   )
 
-  return <span className={className}>{label}</span>
+  const styles: Record<string, CSSProperties> = {
+    neutral: {
+      background: 'rgba(0,0,0,0.04)',
+      color: 'var(--color-text-secondary)',
+      border: '1px solid var(--color-border)',
+    },
+    success: {
+      background: 'rgba(125,186,156,0.14)',
+      color: '#5b9a7c',
+      border: '1px solid rgba(125,186,156,0.32)',
+    },
+    warning: {
+      background: 'rgba(212,165,106,0.16)',
+      color: '#a87f3f',
+      border: '1px solid rgba(212,165,106,0.34)',
+    },
+    danger: {
+      background: 'rgba(201,112,112,0.12)',
+      color: '#a85555',
+      border: '1px solid rgba(201,112,112,0.32)',
+    },
+    info: {
+      background: 'rgba(184,169,201,0.18)',
+      color: '#7a6a96',
+      border: '1px solid rgba(184,169,201,0.36)',
+    },
+  }
+
+  return <span className={className} style={styles[tone]}>{label}</span>
 }

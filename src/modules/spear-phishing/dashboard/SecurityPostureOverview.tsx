@@ -1,68 +1,47 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { Shield, AlertTriangle, Users, Activity, GraduationCap, Info, CheckCircle2, PauseCircle } from 'lucide-react'
 import { fetchDashboardData, type DashboardData } from '../api/client'
 
 interface MetricCardProps {
   label: string
   value: string | number
   change?: string
-  isHighlight?: boolean
+  accent?: string
   icon?: React.ReactNode
 }
 
-/**
- * Floating metric card with subtle hover lift.
- * Infinite boxShadow pulse removed for performance.
- */
-const FloatingMetricCard: React.FC<MetricCardProps> = ({
-  label,
-  value,
-  change,
-  isHighlight,
-  icon,
-}) => {
+const MetricCard: React.FC<MetricCardProps> = ({ label, value, change, accent = 'var(--color-brand-blue)', icon }) => {
   return (
     <motion.div
-      className={`relative overflow-hidden rounded-2xl p-6 backdrop-blur-xl transition-all duration-300 group hover:shadow-2xl hover:shadow-cyan-500/20 ${isHighlight
-        ? 'bg-gradient-to-br from-cyan-900/40 via-blue-900/30 to-slate-900/40 border border-cyan-500/30'
-        : 'bg-gradient-to-br from-slate-800/40 via-slate-800/20 to-slate-900/40 border border-slate-700/40'
-        }`}
-      whileHover={{ translateY: -8, scale: 1.02 }}
-      initial={{ opacity: 0, y: 20 }}
+      className="glass-card"
+      style={{ padding: 24, position: 'relative', overflow: 'hidden' }}
+      whileHover={{ translateY: -2 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
-      <motion.div
-        className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isHighlight ? 'bg-gradient-to-br from-cyan-500/10 to-blue-500/5' : ''
-          }`}
-      />
-
-      <div className="relative z-10 space-y-3">
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-medium text-gray-300 uppercase tracking-wide">{label}</p>
-          {icon && <div className="text-2xl opacity-70 group-hover:opacity-100 transition-opacity">{icon}</div>}
-        </div>
-
-        <div
-          className={`text-4xl font-bold ${isHighlight ? 'text-cyan-300' : 'text-white'}`}
-        >
-          {value}
-        </div>
-
-        {change && (
-          <p
-            className={`text-xs font-semibold ${change.startsWith('+') ? 'text-green-400' : change.startsWith('-') ? 'text-red-400' : 'text-gray-400'
-              }`}
-          >
-            {change}
-          </p>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: accent, opacity: 0.55, borderRadius: '20px 20px 0 0' }} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+        <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--color-text-muted)' }}>{label}</p>
+        {icon && (
+          <div style={{
+            width: 32, height: 32, borderRadius: 10,
+            background: `${accent}15`, border: `1px solid ${accent}30`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', color: accent,
+          }}>
+            {icon}
+          </div>
         )}
       </div>
-
-      {/* Highlight border on hover (static, no infinite pulse) */}
-      {isHighlight && (
-        <div className="absolute inset-0 rounded-2xl border border-cyan-400/0 group-hover:border-cyan-400/30 transition-all duration-300" />
+      <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--color-text-primary)', letterSpacing: '-0.025em', lineHeight: 1.1 }}>
+        {value}
+      </div>
+      {change && (
+        <p style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginTop: 8 }}>
+          {change}
+        </p>
       )}
     </motion.div>
   )
@@ -73,23 +52,11 @@ const SecurityPostureOverview: React.FC = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false)
-    }, 5000)
-
+    const timeout = setTimeout(() => setLoading(false), 5000)
     fetchDashboardData()
-      .then(d => {
-        setData(d)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error('Dashboard data fetch error:', err)
-        setLoading(false)
-      })
-      .finally(() => {
-        clearTimeout(timeout)
-      })
-
+      .then(d => { setData(d); setLoading(false) })
+      .catch(err => { console.error('Dashboard data fetch error:', err); setLoading(false) })
+      .finally(() => clearTimeout(timeout))
     return () => clearTimeout(timeout)
   }, [])
 
@@ -99,121 +66,145 @@ const SecurityPostureOverview: React.FC = () => {
   const metrics = [
     {
       label: 'Security Score',
-      value: loading ? '...' : (posture?.security_score ?? 'N/A'),
-      isHighlight: true,
-      change: posture?.security_score ? `Out of 100` : '',
-      icon: '🛡️',
+      value: loading ? '…' : (posture?.security_score ?? 'N/A'),
+      accent: 'var(--color-brand-blue)',
+      change: posture?.security_score ? 'Out of 100' : '',
+      icon: <Shield size={16} strokeWidth={1.5} />,
     },
     {
       label: 'Overall Risk Level',
-      value: loading ? '...' : riskLevel,
-      isHighlight: false,
+      value: loading ? '…' : riskLevel,
+      accent: 'var(--color-status-warn)',
       change: posture ? `Avg: ${(posture.avg_risk_score * 100).toFixed(0)}%` : '',
-      icon: '⚠️',
+      icon: <AlertTriangle size={16} strokeWidth={1.5} />,
     },
     {
       label: 'Users Monitored',
-      value: loading ? '...' : posture?.total_users ?? 0,
+      value: loading ? '…' : posture?.total_users ?? 0,
+      accent: 'var(--color-accent-lavender)',
       change: posture?.total_events_collected ? `${posture.total_events_collected} events collected` : 'No events yet',
-      icon: '👥',
+      icon: <Users size={16} strokeWidth={1.5} />,
     },
     {
       label: 'Events Collected',
-      value: loading ? '...' : posture?.total_events_collected ?? 0,
+      value: loading ? '…' : posture?.total_events_collected ?? 0,
+      accent: 'var(--color-status-ok)',
       change: posture?.last_pipeline_run ? `Last run: ${new Date(posture.last_pipeline_run).toLocaleTimeString()}` : 'Pipeline not run',
-      icon: '📊',
+      icon: <Activity size={16} strokeWidth={1.5} />,
     },
     {
       label: 'Training Pending',
-      value: loading ? '...' : posture?.training_pending ?? 0,
+      value: loading ? '…' : posture?.training_pending ?? 0,
+      accent: 'var(--color-accent-coral)',
       change: posture?.training_pending ? `${posture.training_pending} user(s) need training` : 'All clear',
-      icon: '📚',
+      icon: <GraduationCap size={16} strokeWidth={1.5} />,
     },
   ]
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <motion.div
-        className="space-y-2"
-        initial={{ opacity: 0, x: -20 }}
+        initial={{ opacity: 0, x: -16 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
       >
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent">
+        <h2 style={{ fontSize: 26, fontWeight: 700, color: 'var(--color-text-primary)', letterSpacing: '-0.025em', marginBottom: 4 }}>
           Security Posture Overview
         </h2>
-        <p className="text-gray-400 text-lg">
+        <p style={{ fontSize: 14, color: 'var(--color-text-secondary)' }}>
           Real-time organizational security metrics from live behavioral data
         </p>
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {metrics.map((metric, idx) => (
-          <FloatingMetricCard
-            key={idx}
-            label={metric.label}
-            value={metric.value}
-            change={metric.change}
-            isHighlight={metric.isHighlight}
-            icon={metric.icon}
-          />
+        {metrics.map((m, i) => (
+          <MetricCard key={i} {...m} />
         ))}
       </div>
 
       <motion.div
-        className="mt-8 p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 flex items-start gap-4"
+        className="glass-card"
+        style={{
+          padding: 18,
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 14,
+          background: 'rgba(107,163,190,0.06)',
+          border: '1px solid rgba(107,163,190,0.20)',
+        }}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.3 }}
       >
-        <div className="text-2xl">ℹ️</div>
-        <div>
-          <p className="text-sm text-gray-300">
-            {data && data.posture.total_users > 0 ? (
-              <>
-                <span className="font-semibold text-cyan-300">Live Data:</span> Metrics are derived from{' '}
-                <span className="text-white font-semibold">{data.posture.total_events_collected}</span> behavioral events
-                across <span className="text-white font-semibold">{data.posture.total_users}</span> monitored users.
-                {data.scheduler_status?.running
-                  ? <span className="ml-2 text-green-400 font-semibold">🟢 Auto-pipeline active</span>
-                  : <span className="ml-2 text-gray-500">⏸ Auto-pipeline stopped</span>
-                }
-              </>
-            ) : (
-              <>
-                <span className="font-semibold text-cyan-300">Getting Started:</span> Deploy the behavioral collector to
-                internal pages and run the pipeline to see real data here.
-              </>
-            )}
-          </p>
+        <div style={{
+          width: 32, height: 32, borderRadius: 10, flexShrink: 0,
+          background: 'rgba(107,163,190,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'var(--color-brand-blue)',
+        }}>
+          <Info size={16} strokeWidth={1.5} />
+        </div>
+        <div style={{ fontSize: 13, color: 'var(--color-text-secondary)', lineHeight: 1.65, paddingTop: 4 }}>
+          {data && data.posture.total_users > 0 ? (
+            <>
+              <span style={{ fontWeight: 700, color: 'var(--color-brand-blue)' }}>Live Data:</span> Metrics are derived from{' '}
+              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>{data.posture.total_events_collected}</span> behavioral events across{' '}
+              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>{data.posture.total_users}</span> monitored users.
+              {data.scheduler_status?.running ? (
+                <span style={{ marginLeft: 8, color: 'var(--color-status-ok)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4, verticalAlign: 'middle' }}>
+                  <CheckCircle2 size={13} strokeWidth={2} /> Auto-pipeline active
+                </span>
+              ) : (
+                <span style={{ marginLeft: 8, color: 'var(--color-text-muted)', display: 'inline-flex', alignItems: 'center', gap: 4, verticalAlign: 'middle' }}>
+                  <PauseCircle size={13} strokeWidth={1.5} /> Auto-pipeline stopped
+                </span>
+              )}
+            </>
+          ) : (
+            <>
+              <span style={{ fontWeight: 700, color: 'var(--color-brand-blue)' }}>Getting Started:</span> Deploy the behavioral collector to internal pages and run the pipeline to see real data here.
+            </>
+          )}
         </div>
       </motion.div>
 
-      {/* User State Distribution */}
       {data?.state_distribution && Object.values(data.state_distribution).some(v => v > 0) && (
         <motion.div
-          className="mt-4 p-4 rounded-xl bg-slate-800/30 border border-slate-700/50"
+          className="glass-card"
+          style={{ padding: 20 }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.4 }}
         >
-          <p className="text-sm font-semibold text-gray-300 mb-3">User Training States</p>
-          <div className="flex gap-2 flex-wrap">
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--color-text-muted)', marginBottom: 12 }}>
+            User Training States
+          </p>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {[
-              { key: 'CLEAN', label: 'Clean', color: 'bg-gray-600', text: 'text-gray-200' },
-              { key: 'PHISH_SENT', label: 'Phish Sent', color: 'bg-blue-600', text: 'text-blue-200' },
-              { key: 'PHISH_CLICKED', label: 'Clicked', color: 'bg-red-600', text: 'text-red-200' },
-              { key: 'MICRO_TRAINING_REQUIRED', label: 'Micro Training', color: 'bg-orange-600', text: 'text-orange-200' },
-              { key: 'MICRO_TRAINING_COMPLETED', label: 'Micro Done', color: 'bg-amber-600', text: 'text-amber-200' },
-              { key: 'MANDATORY_TRAINING_REQUIRED', label: 'Mandatory', color: 'bg-yellow-600', text: 'text-yellow-200' },
-              { key: 'COMPLIANT', label: 'Compliant', color: 'bg-green-600', text: 'text-green-200' },
+              { key: 'CLEAN', label: 'Clean', color: '#9b9b9b' },
+              { key: 'PHISH_SENT', label: 'Phish Sent', color: '#6ba3be' },
+              { key: 'PHISH_CLICKED', label: 'Clicked', color: '#c97070' },
+              { key: 'MICRO_TRAINING_REQUIRED', label: 'Micro Training', color: '#E8917A' },
+              { key: 'MICRO_TRAINING_COMPLETED', label: 'Micro Done', color: '#d4a56a' },
+              { key: 'MANDATORY_TRAINING_REQUIRED', label: 'Mandatory', color: '#D4A853' },
+              { key: 'COMPLIANT', label: 'Compliant', color: '#7dba9c' },
             ].filter(s => (data.state_distribution?.[s.key] ?? 0) > 0).map(s => (
-              <div key={s.key} className={`${s.color}/20 border border-white/10 rounded-lg px-3 py-2 text-center`}>
-                <div className={`text-lg font-bold ${s.text}`}>{data.state_distribution?.[s.key] ?? 0}</div>
-                <div className="text-xs text-gray-400">{s.label}</div>
+              <div key={s.key} style={{
+                background: `${s.color}14`,
+                border: `1px solid ${s.color}30`,
+                borderRadius: 12,
+                padding: '10px 14px',
+                textAlign: 'center',
+                minWidth: 84,
+              }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: s.color, lineHeight: 1.1 }}>
+                  {data.state_distribution?.[s.key] ?? 0}
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginTop: 2 }}>
+                  {s.label}
+                </div>
               </div>
             ))}
           </div>
