@@ -1,77 +1,55 @@
 /**
- * Animated Background with Wisprflow Aesthetic
- * - Floating gradient blobs with soft animations
- * - CSS-based for performance
- * - NO THREE.js (replaced with simple divs)
+ * AnimatedBackground — Warm pastel floating gradient blobs.
+ * Replaces the prior Three.js dark mesh with a wisprflow-inspired ambient layer.
  */
-
 export default function AnimatedBackground() {
-  return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" style={{ background: 'var(--color-bg-base)' }}>
-      {/* Lavender blob - top right */}
-      <div
-        className="floating"
-        style={{
-          position: 'absolute',
-          top: -120,
-          right: -120,
-          width: 300,
-          height: 300,
-          background: 'radial-gradient(circle, rgba(212, 197, 240, 0.3) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(100px)',
-          animationDelay: '0s',
-        }}
-      />
+    return (
+        <div
+            className="fixed inset-0 z-0 pointer-events-none overflow-hidden"
+            aria-hidden
+        >
+            {/* Cream base with subtle gradient */}
+            <div
+                className="absolute inset-0"
+                style={{
+                    background:
+                        "radial-gradient(ellipse at 20% 10%, rgba(212, 197, 240, 0.35) 0%, transparent 55%)," +
+                        "radial-gradient(ellipse at 85% 30%, rgba(232, 145, 122, 0.18) 0%, transparent 50%)," +
+                        "radial-gradient(ellipse at 50% 80%, rgba(184, 212, 184, 0.28) 0%, transparent 55%)," +
+                        "radial-gradient(ellipse at 90% 90%, rgba(212, 168, 83, 0.15) 0%, transparent 50%)",
+                }}
+            />
 
-      {/* Sage blob - bottom left */}
-      <div
-        className="floating-delayed"
-        style={{
-          position: 'absolute',
-          bottom: -150,
-          left: -100,
-          width: 400,
-          height: 400,
-          background: 'radial-gradient(circle, rgba(61, 90, 71, 0.2) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(120px)',
-          animationDelay: '2s',
-        }}
-      />
+            {/* Floating decorative blobs */}
+            <div
+                className="blob blob-lavender animate-float"
+                style={{ width: 380, height: 380, top: "5%", right: "-5%", opacity: 0.35 }}
+            />
+            <div
+                className="blob blob-sage animate-float-slow"
+                style={{ width: 460, height: 460, bottom: "-10%", left: "-8%", opacity: 0.3 }}
+            />
+            <div
+                className="blob blob-coral animate-float-delayed"
+                style={{ width: 280, height: 280, top: "40%", left: "15%", opacity: 0.18 }}
+            />
+            <div
+                className="blob blob-gold animate-float"
+                style={{ width: 220, height: 220, top: "60%", right: "20%", opacity: 0.15 }}
+            />
+            <div
+                className="blob blob-lavender animate-float-slow"
+                style={{ width: 320, height: 320, top: "20%", left: "40%", opacity: 0.2 }}
+            />
 
-      {/* Coral blob - center */}
-      <div
-        className="floating-delayed-lg"
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 250,
-          height: 250,
-          background: 'radial-gradient(circle, rgba(232, 145, 122, 0.15) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(100px)',
-          animationDelay: '4s',
-        }}
-      />
-
-      {/* Gold accent blob - top left */}
-      <div
-        className="floating"
-        style={{
-          position: 'absolute',
-          top: '10%',
-          left: '10%',
-          width: 200,
-          height: 200,
-          background: 'radial-gradient(circle, rgba(212, 168, 83, 0.1) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(90px)',
-          animationDelay: '1s',
-        }}
-      />
-    </div>
-  );
+            {/* Subtle grain overlay for warmth */}
+            <div
+                className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+                style={{
+                    backgroundImage:
+                        "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+                }}
+            />
+        </div>
+    );
 }

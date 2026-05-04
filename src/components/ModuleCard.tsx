@@ -39,7 +39,7 @@ export default function ModuleCard({ title, description, icon, status, metrics, 
                         <div
                             className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} p-[1px] group-hover:scale-110 transition-transform`}
                         >
-                            <div className="w-full h-full rounded-xl bg-navy-900 flex items-center justify-center text-white">
+                            <div className="w-full h-full rounded-xl  flex items-center justify-center text-[#1A1A2E]">
                                 {icon}
                             </div>
                         </div>
@@ -50,7 +50,7 @@ export default function ModuleCard({ title, description, icon, status, metrics, 
                     </div>
 
                     {/* Content */}
-                    <h3 className="text-white font-semibold text-lg mb-1 group-hover:text-cyan-400 transition-colors">
+                    <h3 className="text-[#1A1A2E] font-semibold text-lg mb-1 group-hover:text-black transition-colors">
                         {title}
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed mb-4">{description}</p>
@@ -61,7 +61,7 @@ export default function ModuleCard({ title, description, icon, status, metrics, 
                             {metrics.map((m, i) => (
                                 <div key={i}>
                                     <p className="text-[10px] text-slate-600 uppercase tracking-wider">{m.label}</p>
-                                    <p className="text-white font-bold text-lg">{m.value}</p>
+                                    <p className="text-[#1A1A2E] font-bold text-lg">{m.value}</p>
                                 </div>
                             ))}
                         </div>

@@ -39,10 +39,10 @@ export default function Checkout() {
     if (step === "success") {
         const modulesUnlocked = Object.keys(targetPlan.moduleLimits).length;
         return (
-            <div className="min-h-screen bg-navy-950 flex items-center justify-center px-6">
+            <div className="min-h-screen  flex items-center justify-center px-6">
                 <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{
-                    background: "rgba(10,14,26,0.6)", backdropFilter: "blur(20px)",
-                    border: "1px solid rgba(148,163,184,0.06)", borderRadius: 24,
+                    background: "var(--color-bg-card)", backdropFilter: "blur(20px)",
+                    border: "1px solid var(--color-border)", borderRadius: 24,
                     padding: 48, maxWidth: 440, textAlign: "center",
                 }}>
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }} style={{
@@ -53,13 +53,13 @@ export default function Checkout() {
                     }}>
                         <svg viewBox="0 0 24 24" style={{ width: 40, height: 40, color: "#34d399" }} fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </motion.div>
-                    <h2 style={{ fontSize: 24, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>
+                    <h2 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 8 }}>
                         You're on {targetPlan.name}!
                     </h2>
-                    <p style={{ fontSize: 14, color: "#64748b", marginBottom: 8 }}>
+                    <p style={{ fontSize: 14, color: "var(--color-text-muted)", marginBottom: 8 }}>
                         <span style={{ color: targetPlan.color, fontWeight: 600 }}>{modulesUnlocked} security modules</span> are now available.
                     </p>
-                    <p style={{ fontSize: 12, color: "#475569", marginBottom: 32 }}>Access everything from your dashboard. Modules open in their deployed environments.</p>
+                    <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 32 }}>Access everything from your dashboard. Modules open in their deployed environments.</p>
                     <Link to="/dashboard" className="btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                         Go to Dashboard
                         <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
@@ -71,37 +71,37 @@ export default function Checkout() {
 
     if (step === "processing") {
         return (
-            <div className="min-h-screen bg-navy-950 flex items-center justify-center px-6">
+            <div className="min-h-screen  flex items-center justify-center px-6">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: "center" }}>
                     <div style={{ position: "relative", width: 80, height: 80, margin: "0 auto 32px" }}>
                         <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid rgba(34,211,238,0.2)" }} />
                         <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid transparent", borderTopColor: "#22d3ee" }} className="animate-spin" />
                         <div style={{ position: "absolute", inset: 8, borderRadius: "50%", border: "2px solid transparent", borderTopColor: "#a855f7", animationDirection: "reverse", animationDuration: "1.5s" }} className="animate-spin" />
                     </div>
-                    <h2 style={{ fontSize: 20, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>Activating {targetPlan.name}</h2>
-                    <p style={{ fontSize: 13, color: "#64748b" }}>Setting up your subscription...</p>
+                    <h2 style={{ fontSize: 20, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 8 }}>Activating {targetPlan.name}</h2>
+                    <p style={{ fontSize: 13, color: "var(--color-text-muted)" }}>Setting up your subscription...</p>
                 </motion.div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-navy-950 flex items-center justify-center px-6 py-12">
+        <div className="min-h-screen  flex items-center justify-center px-6 py-12">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{
                 width: "100%", maxWidth: 560,
-                background: "rgba(10,14,26,0.6)", backdropFilter: "blur(20px)",
-                border: "1px solid rgba(148,163,184,0.06)", borderRadius: 24,
+                background: "var(--color-bg-card)", backdropFilter: "blur(20px)",
+                border: "1px solid var(--color-border)", borderRadius: 24,
                 padding: 40, position: "relative", overflow: "hidden",
             }}>
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg, #22d3ee, #a855f7)" }} />
 
-                <Link to="/pricing" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748b", marginBottom: 28 }} className="hover:text-cyan-400">
+                <Link to="/pricing" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--color-text-muted)", marginBottom: 28 }} className="hover:text-black">
                     <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
                     Back to pricing
                 </Link>
 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9" }}>
+                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "var(--color-text-primary)" }}>
                         Upgrade to {targetPlan.name}
                     </h2>
                     <div style={{
@@ -112,31 +112,31 @@ export default function Checkout() {
                         {targetPlan.name}
                     </div>
                 </div>
-                <p style={{ fontSize: 13, color: "#64748b", marginBottom: 28 }}>{targetPlan.description}</p>
+                <p style={{ fontSize: 13, color: "var(--color-text-muted)", marginBottom: 28 }}>{targetPlan.description}</p>
 
                 {/* Pricing summary */}
                 <div style={{
                     padding: "20px 24px", borderRadius: 16, marginBottom: 24,
-                    background: "rgba(148,163,184,0.03)", border: "1px solid rgba(148,163,184,0.06)",
+                    background: "rgba(0,0,0,0.03)", border: "1px solid var(--color-border)",
                 }}>
                     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 }}>
-                        <span style={{ fontSize: 14, color: "#94a3b8" }}>Shield360 {targetPlan.name}</span>
+                        <span style={{ fontSize: 14, color: "var(--color-text-secondary)" }}>Shield360 {targetPlan.name}</span>
                         <div>
-                            <span style={{ fontSize: 32, fontWeight: 800, color: "#f1f5f9" }}>${targetPlan.price}</span>
-                            <span style={{ fontSize: 13, color: "#64748b" }}>/{targetPlan.period}</span>
+                            <span style={{ fontSize: 32, fontWeight: 800, color: "var(--color-text-primary)" }}>${targetPlan.price}</span>
+                            <span style={{ fontSize: 13, color: "var(--color-text-muted)" }}>/{targetPlan.period}</span>
                         </div>
                     </div>
-                    <div style={{ borderTop: "1px solid rgba(148,163,184,0.06)", paddingTop: 12 }}>
+                    <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: 12 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-                            <span style={{ color: "#64748b" }}>Billed monthly</span>
-                            <span style={{ color: "#f1f5f9", fontWeight: 600 }}>${targetPlan.price}/mo</span>
+                            <span style={{ color: "var(--color-text-muted)" }}>Billed monthly</span>
+                            <span style={{ color: "var(--color-text-primary)", fontWeight: 600 }}>${targetPlan.price}/mo</span>
                         </div>
                     </div>
                 </div>
 
                 {/* What you unlock */}
                 <div style={{ marginBottom: 28 }}>
-                    <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#475569", marginBottom: 12 }}>
+                    <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--color-text-muted)", marginBottom: 12 }}>
                         What you'll unlock
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -148,13 +148,13 @@ export default function Checkout() {
                                 <div key={mod.slug} style={{
                                     display: "flex", alignItems: "center", gap: 12,
                                     padding: "12px 16px", borderRadius: 14,
-                                    background: "rgba(148,163,184,0.03)",
-                                    border: "1px solid rgba(148,163,184,0.06)",
+                                    background: "rgba(0,0,0,0.03)",
+                                    border: "1px solid var(--color-border)",
                                 }}>
                                     <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
                                     <div style={{ flex: 1 }}>
-                                        <p style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9" }}>{mod.name}</p>
-                                        <p style={{ fontSize: 11, color: "#64748b" }}>{mod.tag}</p>
+                                        <p style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)" }}>{mod.name}</p>
+                                        <p style={{ fontSize: 11, color: "var(--color-text-muted)" }}>{mod.tag}</p>
                                     </div>
                                     <span style={{
                                         fontSize: 10, fontWeight: 700,
@@ -179,7 +179,7 @@ export default function Checkout() {
                     Activate {targetPlan.name} · ${targetPlan.price}/mo
                 </button>
 
-                <p style={{ fontSize: 11, color: "#475569", textAlign: "center", marginTop: 16 }}>
+                <p style={{ fontSize: 11, color: "var(--color-text-muted)", textAlign: "center", marginTop: 16 }}>
                     Secure checkout · Cancel anytime · 30-day money-back guarantee
                 </p>
             </motion.div>

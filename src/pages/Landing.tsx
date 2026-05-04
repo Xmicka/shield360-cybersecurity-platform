@@ -81,9 +81,9 @@ export default function Landing() {
                     <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10 }} className="group">
                         <div style={{
                             width: 36, height: 36, borderRadius: 10,
-                            background: "linear-gradient(135deg, #6ba3be 0%, #8aab96 100%)",
+                            background: "linear-gradient(135deg, #B8A1E6 0%, #3D5A47 100%)",
                             display: "flex", alignItems: "center", justifyContent: "center",
-                            boxShadow: "0 2px 6px rgba(107,163,190,0.25)",
+                            boxShadow: "0 2px 8px rgba(184,161,230,0.35)",
                         }}>
                             <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#fff" }} fill="currentColor">
                                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
@@ -105,7 +105,7 @@ export default function Landing() {
 
             {/* ─── Hero ─── */}
             <section ref={heroRef} className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: "100vh", padding: "120px 24px 80px" }}>
-                <Aurora colorStops={["#d4e8f0", "#e8d4f0", "#d4eee0"]} speed={0.4} blend="mix-blend-multiply" />
+                <Aurora colorStops={["#E8D5F5", "#F5E6D3", "#D4E8C8"]} speed={0.4} blend="mix-blend-multiply" />
 
                 <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 text-center w-full" >
                     <motion.div
@@ -133,18 +133,19 @@ export default function Landing() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                         style={{
-                            fontSize: "clamp(40px, 6vw, 84px)",
-                            fontWeight: 700,
-                            lineHeight: 1.05,
-                            letterSpacing: "-0.035em",
+                            fontFamily: "var(--font-display)",
+                            fontSize: "clamp(48px, 7vw, 88px)",
+                            fontWeight: 400,
+                            lineHeight: 1.04,
+                            letterSpacing: "-0.025em",
                             marginBottom: 24,
                             color: "var(--color-text-primary)",
-                            maxWidth: 900,
+                            maxWidth: 920,
                             margin: "0 auto 24px",
                         }}
                     >
                         Unified security.{" "}
-                        <span className="gradient-text" style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontWeight: 400 }}>
+                        <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>
                             Complete visibility.
                         </span>
                     </motion.h1>
@@ -385,9 +386,9 @@ export default function Landing() {
 
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, marginBottom: 36, maxWidth: 720, margin: "0 auto 36px" }}>
                         {[
-                            { name: "Starter", price: "Free", desc: "Endpoint + Shadow IT · 10/mo", color: "var(--color-brand-blue)", popular: false },
-                            { name: "Professional", price: "$50", period: "/mo", desc: "All 4 modules · usage limits", color: "var(--color-brand-lavender)", popular: true },
-                            { name: "Enterprise", price: "$120", period: "/mo", desc: "Unlimited everything", color: "var(--color-brand-peach)", popular: false },
+                            { name: "Starter", price: "Free", desc: "Endpoint + Shadow IT · 10/mo", color: "var(--color-brand-sage-deep)", popular: false },
+                            { name: "Professional", price: "$99", period: "/mo", desc: "All 4 modules · 50/50/20/20", color: "var(--color-brand-lavender-dark)", popular: true },
+                            { name: "Enterprise", price: "$299", period: "/mo", desc: "Unlimited everything", color: "var(--color-brand-coral)", popular: false },
                         ].map((p) => (
                             <div key={p.name} className="glass-card" style={{
                                 padding: 24, textAlign: "center", minHeight: 180,
@@ -446,23 +447,23 @@ export default function Landing() {
             </section>
 
             {/* ─── Footer ─── */}
-            <footer className="relative z-10" style={{ background: "var(--color-bg-surface)", borderTop: "1px solid var(--color-border)", padding: "56px 24px" }}>
+            <footer className="relative z-10" style={{ background: "var(--color-bg-dark)", color: "var(--color-text-on-dark)", padding: "72px 24px 32px" }}>
                 <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 40, marginBottom: 32 }}>
                         <div>
                             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                                 <div style={{
                                     width: 32, height: 32, borderRadius: 8,
-                                    background: "linear-gradient(135deg, #6ba3be, #8aab96)",
+                                    background: "linear-gradient(135deg, #B8A1E6, #3D5A47)",
                                     display: "flex", alignItems: "center", justifyContent: "center",
                                 }}>
                                     <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#fff" }} fill="currentColor">
                                         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
                                     </svg>
                                 </div>
-                                <span style={{ fontSize: 14, fontWeight: 700, color: "var(--color-text-primary)" }}>Shield360</span>
+                                <span style={{ fontSize: 14, fontWeight: 700, color: "var(--color-text-on-dark)" }}>Shield360</span>
                             </div>
-                            <p style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.65, maxWidth: 240 }}>
+                            <p style={{ fontSize: 13, color: "rgba(245,240,232,0.65)", lineHeight: 1.65, maxWidth: 240 }}>
                                 AI-driven cybersecurity made accessible for small and medium enterprises worldwide.
                             </p>
                         </div>
@@ -472,12 +473,12 @@ export default function Landing() {
                             { title: "Legal", links: [{ label: "Privacy", to: "#" }, { label: "Terms", to: "#" }, { label: "Security", to: "#" }] },
                         ].map((col) => (
                             <div key={col.title}>
-                                <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--color-text-muted)", marginBottom: 14 }}>
+                                <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(245,240,232,0.55)", marginBottom: 14 }}>
                                     {col.title}
                                 </p>
                                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                                     {col.links.map((link) => (
-                                        <Link key={link.label} to={link.to} style={{ fontSize: 13, color: "var(--color-text-secondary)" }} className="hover:text-black">
+                                        <Link key={link.label} to={link.to} style={{ fontSize: 13, color: "rgba(245,240,232,0.8)" }} className="hover:opacity-100">
                                             {link.label}
                                         </Link>
                                     ))}
@@ -485,11 +486,11 @@ export default function Landing() {
                             </div>
                         ))}
                     </div>
-                    <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-                        <p style={{ fontSize: 12, color: "var(--color-text-muted)" }}>© 2025 Shield360. All rights reserved.</p>
+                    <div style={{ borderTop: "1px solid rgba(245,240,232,0.12)", paddingTop: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                        <p style={{ fontSize: 12, color: "rgba(245,240,232,0.55)" }}>© 2026 Shield360. All rights reserved.</p>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-status-ok)" }} />
-                            <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>All systems operational</span>
+                            <span style={{ fontSize: 12, color: "rgba(245,240,232,0.7)" }}>All systems operational</span>
                         </div>
                     </div>
                 </div>

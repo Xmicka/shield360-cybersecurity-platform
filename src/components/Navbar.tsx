@@ -5,9 +5,9 @@ import { useSubscription } from "../context/subscriptionContext";
 import { useAuth } from "../context/authContext";
 
 const planMeta: Record<string, { label: string; color: string; bg: string; border: string }> = {
-    free: { label: "Free", color: "#6b6b6b", bg: "rgba(0,0,0,0.04)", border: "rgba(0,0,0,0.08)" },
-    professional: { label: "Pro", color: "#6ba3be", bg: "rgba(107,163,190,0.10)", border: "rgba(107,163,190,0.25)" },
-    enterprise: { label: "Enterprise", color: "#b8a9c9", bg: "rgba(184,169,201,0.12)", border: "rgba(184,169,201,0.3)" },
+    free: { label: "Free", color: "#3D5A47", bg: "rgba(184,212,184,0.30)", border: "rgba(61,90,71,0.20)" },
+    professional: { label: "Pro", color: "#1A1A2E", bg: "rgba(212,197,240,0.45)", border: "rgba(184,161,230,0.40)" },
+    enterprise: { label: "Enterprise", color: "#fff", bg: "#1A1A2E", border: "rgba(212,197,240,0.40)" },
 };
 
 export default function AppNavbar() {
@@ -43,7 +43,7 @@ export default function AppNavbar() {
             className="fixed top-0 left-0 right-0 z-50"
             style={{
                 height: "var(--navbar-height, 64px)",
-                background: "rgba(250,249,247,0.85)",
+                background: "rgba(245,240,232,0.80)",
                 backdropFilter: "blur(20px) saturate(1.4)",
                 WebkitBackdropFilter: "blur(20px) saturate(1.4)",
                 borderBottom: "1px solid rgba(0,0,0,0.06)",
@@ -57,11 +57,11 @@ export default function AppNavbar() {
                             width: 36,
                             height: 36,
                             borderRadius: 10,
-                            background: "linear-gradient(135deg, #6ba3be 0%, #8aab96 100%)",
+                            background: "linear-gradient(135deg, #B8A1E6 0%, #3D5A47 100%)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            boxShadow: "0 2px 6px rgba(107,163,190,0.25)",
+                            boxShadow: "0 2px 8px rgba(184,161,230,0.35)",
                         }}
                     >
                         <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#fff" }} fill="currentColor">

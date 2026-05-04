@@ -99,12 +99,51 @@ export default function Dashboard() {
         <div style={{ display: "flex", flexDirection: "column", gap: 28, paddingTop: 8 }}>
             {/* Header */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-                <h1 style={{ fontSize: 28, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.025em", marginBottom: 6 }}>
-                    Security Dashboard
-                </h1>
-                <p style={{ fontSize: 14, color: "var(--color-text-secondary)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 10, flexWrap: "wrap" }}>
+                    <h1 style={{ fontFamily: "var(--font-display)", fontSize: 40, fontWeight: 400, color: "var(--color-text-primary)", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+                        Welcome back{user?.displayName ? `, ${user.displayName.split(" ")[0]}` : ""}
+                    </h1>
+                    <span className="pill" style={{
+                        background: plan === "enterprise"
+                            ? "var(--color-bg-dark)"
+                            : plan === "professional"
+                            ? "var(--color-brand-lavender)"
+                            : "var(--color-brand-sage)",
+                        color: plan === "enterprise" ? "var(--color-text-on-dark)" : "var(--color-text-primary)",
+                        fontSize: 11, padding: "5px 14px",
+                    }}>
+                        {plan === "free" ? "Free Trial" : plan === "professional" ? "Professional" : "Enterprise"}
+                    </span>
+                </div>
+                <p style={{ fontSize: 15, color: "var(--color-text-secondary)" }}>
                     Aggregated security metrics across all connected modules
                 </p>
+
+                {plan === "free" && (
+                    <div style={{
+                        marginTop: 18,
+                        background: "linear-gradient(135deg, rgba(212,197,240,0.4) 0%, rgba(232,213,245,0.5) 100%)",
+                        border: "1px solid rgba(184,161,230,0.3)",
+                        borderRadius: 16,
+                        padding: "16px 20px",
+                        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap",
+                    }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                            <div style={{ width: 36, height: 36, borderRadius: 10, background: "var(--color-brand-lavender-dark)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#fff" }} fill="none" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)" }}>Unlock all 4 security modules</p>
+                                <p style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Upgrade to Professional for full coverage at $99/mo</p>
+                            </div>
+                        </div>
+                        <button onClick={() => navigate("/pricing")} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>
+                            Upgrade →
+                        </button>
+                    </div>
+                )}
             </motion.div>
 
             {/* Key Metrics */}
