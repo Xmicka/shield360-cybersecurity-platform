@@ -144,15 +144,68 @@
 
 .glass-card {
   background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 20px;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 20px rgba(0, 0, 0, 0.06), 0 18px 40px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
 }
 
 .glass-card:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-4px);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08), 0 18px 44px rgba(0, 0, 0, 0.10), 0 32px 64px rgba(0, 0, 0, 0.06);
+  transform: translateY(-3px);
+}
+
+/* ─── Ghost-text safety net for unreskinned dashboard components ───
+   The protected app area lives inside .shield-main-content. Many legacy
+   sub-components use Tailwind's white/light gray utility classes which were
+   designed for dark backgrounds. On the cream surface they vanish. Scope
+   them to readable colors here so we do not have to touch every file. */
+.shield-main-content .text-white,
+.shield-main-content .text-gray-50,
+.shield-main-content .text-gray-100,
+.shield-main-content .text-gray-200,
+.shield-main-content [class*="text-slate-1"],
+.shield-main-content [class*="text-slate-2"] {
+  color: var(--color-text-primary);
+}
+
+.shield-main-content .text-gray-300,
+.shield-main-content .text-gray-400,
+.shield-main-content [class*="text-slate-3"],
+.shield-main-content [class*="text-slate-4"] {
+  color: var(--color-text-secondary);
+}
+
+.shield-main-content .text-gray-500,
+.shield-main-content .text-gray-600,
+.shield-main-content [class*="text-slate-5"],
+.shield-main-content [class*="text-slate-6"] {
+  color: var(--color-text-muted);
+}
+
+/* Replace dark surfaces still present in legacy sub-components with cream
+   cards, so panels and tables are not black islands inside the dashboard. */
+.shield-main-content [class*="bg-slate-7"],
+.shield-main-content [class*="bg-slate-8"],
+.shield-main-content [class*="bg-slate-9"],
+.shield-main-content [class*="bg-gray-7"],
+.shield-main-content [class*="bg-gray-8"],
+.shield-main-content [class*="bg-gray-9"] {
+  background: var(--color-bg-card) !important;
+}
+
+.shield-main-content [class*="border-slate-6"],
+.shield-main-content [class*="border-slate-7"],
+.shield-main-content [class*="border-slate-8"],
+.shield-main-content [class*="border-gray-7"],
+.shield-main-content [class*="border-gray-8"] {
+  border-color: var(--color-border) !important;
+}
+
+.shield-main-content input::placeholder,
+.shield-main-content textarea::placeholder {
+  color: var(--color-text-muted);
 }
 
 .glass-hover {
