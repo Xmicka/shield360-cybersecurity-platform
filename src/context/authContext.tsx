@@ -21,7 +21,6 @@ interface AuthState {
     signup: (name: string, email: string, password: string, organization: string) => Promise<void>;
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
-    loginWithGoogle: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -112,17 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error) throw error;
     };
 
-    const loginWithGoogle = async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: { redirectTo: window.location.origin + "/dashboard" },
-        });
-        if (error) throw error;
-        // OAuth redirects, so no further setup needed here. Profile bootstrap
-        // happens on auth state change via the user landing back in the app.
-    };
-
-    // Bootstrap profile after Google OAuth redirect (when user is set but profile may not exist)
+    // Bootstrap profile when user is set but profile doesn't yet exist
     useEffect(() => {
         if (!user) return;
         (async () => {
@@ -142,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [user]);
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, signup, logout, resetPassword, loginWithGoogle }}>
+        <AuthContext.Provider value={{ user, loading, login, signup, logout, resetPassword }}>
             {children}
         </AuthContext.Provider>
     );
