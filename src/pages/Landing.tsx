@@ -543,23 +543,32 @@ export default function Landing() {
             </section>
 
             {/* ─── Footer ─── */}
-            <footer className="relative z-10" style={{ background: "var(--color-bg-dark)", color: "var(--color-text-on-dark)", padding: "72px 24px 32px" }}>
+            <footer
+                className="relative z-10"
+                style={{
+                    background: "var(--color-bg-cream-light)",
+                    color: "var(--color-text-primary)",
+                    padding: "72px 24px 32px",
+                    borderTop: "1px solid var(--color-border)",
+                }}
+            >
                 <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 40, marginBottom: 32 }}>
                         <div>
                             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                                 <div style={{
-                                    width: 32, height: 32, borderRadius: 8,
-                                    background: "linear-gradient(135deg, #B8A1E6, #3D5A47)",
+                                    width: 32, height: 32, borderRadius: 10,
+                                    background: "linear-gradient(135deg, #B8A1E6 0%, #3D5A47 100%)",
                                     display: "flex", alignItems: "center", justifyContent: "center",
+                                    boxShadow: "0 2px 8px rgba(184,161,230,0.35)",
                                 }}>
                                     <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#fff" }} fill="currentColor">
                                         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
                                     </svg>
                                 </div>
-                                <span style={{ fontSize: 14, fontWeight: 700, color: "var(--color-text-on-dark)" }}>Shield360</span>
+                                <span style={{ fontSize: 14, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Shield360</span>
                             </div>
-                            <p style={{ fontSize: 13, color: "rgba(245,240,232,0.65)", lineHeight: 1.65, maxWidth: 240 }}>
+                            <p style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.65, maxWidth: 240 }}>
                                 AI-driven cybersecurity made accessible for small and medium enterprises worldwide.
                             </p>
                         </div>
@@ -569,12 +578,18 @@ export default function Landing() {
                             { title: "Legal", links: [{ label: "Privacy", to: "#" }, { label: "Terms", to: "#" }, { label: "Security", to: "#" }] },
                         ].map((col) => (
                             <div key={col.title}>
-                                <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(245,240,232,0.55)", marginBottom: 14 }}>
+                                <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--color-text-muted)", marginBottom: 14 }}>
                                     {col.title}
                                 </p>
                                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                                     {col.links.map((link) => (
-                                        <Link key={link.label} to={link.to} style={{ fontSize: 13, color: "rgba(245,240,232,0.8)" }} className="hover:opacity-100">
+                                        <Link
+                                            key={link.label}
+                                            to={link.to}
+                                            style={{ fontSize: 13, color: "var(--color-text-secondary)", transition: "color 0.18s ease" }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.color = "var(--color-brand-lavender-dark)"; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.color = "var(--color-text-secondary)"; }}
+                                        >
                                             {link.label}
                                         </Link>
                                     ))}
@@ -582,11 +597,11 @@ export default function Landing() {
                             </div>
                         ))}
                     </div>
-                    <div style={{ borderTop: "1px solid rgba(245,240,232,0.12)", paddingTop: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-                        <p style={{ fontSize: 12, color: "rgba(245,240,232,0.55)" }}>© 2026 Shield360. All rights reserved.</p>
+                    <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                        <p style={{ fontSize: 12, color: "var(--color-text-muted)" }}>© 2026 Shield360. All rights reserved.</p>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-status-ok)" }} />
-                            <span style={{ fontSize: 12, color: "rgba(245,240,232,0.7)" }}>All systems operational</span>
+                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-status-ok)", boxShadow: "0 0 0 3px rgba(143,191,150,0.20)" }} />
+                            <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>All systems operational</span>
                         </div>
                     </div>
                 </div>
