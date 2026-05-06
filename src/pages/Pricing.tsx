@@ -31,6 +31,9 @@ export default function Pricing() {
                     borderRadius: 100, padding: "10px 20px",
                     display: "flex", alignItems: "center", justifyContent: "space-between",
                     boxShadow: "var(--shadow-sm)",
+                    // Override .glass-nav 0.75 alpha (defined in styles/animations.css, owned by Animations agent)
+                    // with a more solid background so hero subtitle text behind it is not legible through the blur.
+                    background: "rgba(245, 240, 232, 0.94)",
                 }}>
                     <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         <div style={{
@@ -57,7 +60,7 @@ export default function Pricing() {
                 </div>
             </motion.nav>
 
-            <div className="relative z-10" style={{ padding: "140px 24px 96px" }}>
+            <div className="relative z-10" style={{ padding: "188px 24px 96px" }}>
                 <div style={{ maxWidth: 1100, margin: "0 auto" }}>
                     {/* Header */}
                     <motion.div {...fadeIn} className="text-center" style={{ marginBottom: 64 }}>

@@ -5,11 +5,26 @@ import { useAuth } from "../context/authContext";
 
 export default function Login() {
     const navigate = useNavigate();
-    const { login, loginWithGoogle } = useAuth();
+    const { login, loginWithGoogle, resetPassword } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [resetSent, setResetSent] = useState(false);
+
+    const handleForgotPassword = async () => {
+        if (!email) {
+            setError("Enter your email above first, then click Forgot password.");
+            return;
+        }
+        setError("");
+        try {
+            await resetPassword(email);
+            setResetSent(true);
+        } catch {
+            setError("Could not send reset email. Please try again.");
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -160,7 +175,9 @@ export default function Login() {
                                 <input type="checkbox" style={{ width: 14, height: 14, accentColor: "var(--color-brand-blue)" }} />
                                 <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>Remember me</span>
                             </label>
-                            <button type="button" style={{ fontSize: 12, color: "var(--color-brand-blue)", background: "none", border: "none", cursor: "pointer", fontWeight: 500 }}>Forgot password?</button>
+                            <button type="button" onClick={handleForgotPassword} style={{ fontSize: 12, color: "var(--color-brand-blue)", background: "none", border: "none", cursor: "pointer", fontWeight: 500 }}>
+                                {resetSent ? "Reset email sent ✓" : "Forgot password?"}
+                            </button>
                         </div>
 
                         <button type="submit" disabled={loading} className="btn-primary" style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6 }}>

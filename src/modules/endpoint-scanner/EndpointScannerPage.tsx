@@ -367,18 +367,19 @@ function EndpointScannerContent() {
       >
         <span style={{ position: "absolute", top: -40, right: 60, width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.18)", filter: "blur(40px)" }} className="animate-blob" />
         <span style={{ position: "absolute", bottom: -50, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(232,213,245,0.22)", filter: "blur(50px)" }} />
-        <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-4">
+        <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap" style={{ minWidth: 0 }}>
+          <div className="flex items-center gap-4" style={{ flex: "1 1 320px", minWidth: 0 }}>
             <div style={{
               width: 48, height: 48, borderRadius: 14,
               background: "rgba(255,255,255,0.18)",
               border: "1px solid rgba(255,255,255,0.28)",
               backdropFilter: "blur(8px)",
               display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
             }}>
               <Sparkles size={22} strokeWidth={1.6} />
             </div>
-            <div>
+            <div style={{ minWidth: 0, flex: 1 }}>
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", opacity: 0.85, marginBottom: 4 }}>
                 Full experience
               </p>
@@ -398,6 +399,8 @@ function EndpointScannerContent() {
               color: "var(--color-text-primary)",
               fontSize: 13, fontWeight: 700,
               boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
+              flexShrink: 0,
+              whiteSpace: "nowrap",
             }}
             className="group-hover:translate-x-0.5 transition-transform"
           >

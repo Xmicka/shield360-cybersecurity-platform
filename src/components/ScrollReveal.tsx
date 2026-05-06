@@ -21,6 +21,23 @@ export default function ScrollReveal({
         const el = ref.current;
         if (!el) return;
 
+        // Respect OS-level reduced-motion preference: show immediately,
+        // skip observer entirely so there's no scroll-tied jank.
+        const prefersReduced =
+            typeof window !== "undefined" &&
+            window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (prefersReduced) {
+            setVisible(true);
+            return;
+        }
+
+        // Fallback for environments without IntersectionObserver — show now.
+        if (typeof IntersectionObserver === "undefined") {
+            setVisible(true);
+            return;
+        }
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {

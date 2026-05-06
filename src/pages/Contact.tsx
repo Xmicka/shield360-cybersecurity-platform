@@ -3,6 +3,10 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Aurora from "../components/backgrounds/Aurora";
 
+const CONTACT_EMAIL = "akeshchandrasiri@gmail.com";
+const CONTACT_WEBSITE_LABEL = "shield360-cybersecurity-platform.vercel.app";
+const CONTACT_WEBSITE_URL = "https://shield360-cybersecurity-platform.vercel.app";
+
 const fadeIn = {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
@@ -26,7 +30,7 @@ const labelStyle: React.CSSProperties = {
     textTransform: "uppercase",
     letterSpacing: "0.18em",
     color: "var(--color-text-muted)",
-    marginBottom: 8,
+    marginBottom: 10,
 };
 
 const faqs = [
@@ -36,24 +40,44 @@ const faqs = [
     { q: "What kind of support do you offer?", a: "Starter plans include email support. Professional plans get priority support with 4-hour response times. Enterprise plans include a dedicated account manager." },
 ];
 
-const contactInfo: { icon: string; label: string; value: string; color: string }[] = [
+type ContactInfo = {
+    icon: string;
+    label: string;
+    value: string;
+    href?: string;
+    external?: boolean;
+    color: string;
+    tint: string;
+    border: string;
+};
+
+const contactInfo: ContactInfo[] = [
     {
         icon: "M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75",
         label: "Email",
-        value: "support@shield360.io",
+        value: CONTACT_EMAIL,
+        href: `mailto:${CONTACT_EMAIL}`,
         color: "var(--color-brand-lavender-dark)",
+        tint: "rgba(155,130,204,0.12)",
+        border: "rgba(155,130,204,0.28)",
     },
     {
         icon: "M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582",
         label: "Website",
-        value: "shield360.io",
+        value: CONTACT_WEBSITE_LABEL,
+        href: CONTACT_WEBSITE_URL,
+        external: true,
         color: "var(--color-brand-blue)",
+        tint: "rgba(107,163,190,0.12)",
+        border: "rgba(107,163,190,0.28)",
     },
     {
         icon: "M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z",
         label: "Location",
         value: "Remote First, Global",
         color: "var(--color-brand-sage)",
+        tint: "rgba(143,191,150,0.15)",
+        border: "rgba(143,191,150,0.30)",
     },
 ];
 
@@ -63,9 +87,24 @@ export default function Contact() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Persist message for the admin inbox view.
         const msgs = JSON.parse(localStorage.getItem("s360_messages") || "[]");
         msgs.push({ ...form, timestamp: new Date().toISOString() });
         localStorage.setItem("s360_messages", JSON.stringify(msgs));
+
+        // Compose a real email so the message actually reaches us.
+        const subject = encodeURIComponent(form.subject || "Shield360 enquiry");
+        const bodyLines = [
+            `Name: ${form.name}`,
+            `Email: ${form.email}`,
+            "",
+            form.message,
+        ].join("\n");
+        const body = encodeURIComponent(bodyLines);
+        const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+        window.location.href = mailtoUrl;
+
         setSent(true);
     };
 
@@ -119,7 +158,7 @@ export default function Contact() {
             </motion.nav>
 
             {/* ─── Hero ─── */}
-            <section className="relative overflow-hidden" style={{ padding: "140px 24px 60px" }}>
+            <section className="relative overflow-hidden" style={{ padding: "140px 24px 48px" }}>
                 <Aurora colorStops={["#E8D5F5", "#F5E6D3", "#D4E8C8"]} speed={0.4} blend="mix-blend-multiply" />
                 <motion.div {...fadeIn} className="relative z-10" style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
                     <p style={eyebrow}>Contact</p>
@@ -136,36 +175,88 @@ export default function Contact() {
                         <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>touch</span>
                     </h1>
                     <p style={{ fontSize: 17, color: "var(--color-text-secondary)", maxWidth: 560, margin: "0 auto", lineHeight: 1.65 }}>
-                        Have questions? We'd love to hear from you. Our team typically responds within 24 hours.
+                        Have questions? We'd love to hear from you. Messages are sent directly to{" "}
+                        <a href={`mailto:${CONTACT_EMAIL}`} className="contact-link" style={{ color: "var(--color-text-primary)", fontWeight: 600 }}>
+                            {CONTACT_EMAIL}
+                        </a>{" "}
+                        and we typically respond within 24 hours.
                     </p>
                 </motion.div>
             </section>
 
             {/* ─── Form + Sidebar ─── */}
-            <section className="relative z-10" style={{ padding: "20px 24px 80px" }}>
+            <section className="relative z-10" style={{ padding: "16px 24px 64px" }}>
                 <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 3fr) minmax(0, 2fr)", gap: 40, alignItems: "start" }} className="contact-grid">
+                    <div className="contact-grid">
                         {/* Form */}
-                        <motion.div {...fadeIn} className="glass-card" style={{ padding: 40 }}>
+                        <motion.div {...fadeIn} className="glass-card" style={{ padding: "40px 40px 36px" }}>
                             {sent ? (
-                                <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ textAlign: "center", padding: "48px 0" }}>
+                                <motion.div
+                                    initial={{ scale: 0.95, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                                    style={{ textAlign: "center", padding: "56px 12px" }}
+                                >
                                     <div style={{
-                                        width: 64, height: 64, borderRadius: "50%",
-                                        background: "rgba(143,191,150,0.15)",
+                                        width: 76, height: 76, borderRadius: "50%",
+                                        background: "radial-gradient(circle at 30% 30%, rgba(143,191,150,0.30), rgba(143,191,150,0.12))",
                                         border: "1px solid rgba(143,191,150,0.35)",
                                         display: "flex", alignItems: "center", justifyContent: "center",
-                                        margin: "0 auto 18px",
+                                        margin: "0 auto 22px",
+                                        boxShadow: "0 10px 28px rgba(143,191,150,0.28)",
                                     }}>
-                                        <svg viewBox="0 0 24 24" style={{ width: 30, height: 30, color: "var(--color-brand-sage)" }} fill="none" stroke="currentColor" strokeWidth={2}>
+                                        <svg viewBox="0 0 24 24" style={{ width: 34, height: 34, color: "var(--color-brand-sage-deep)" }} fill="none" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <h3 style={{ fontSize: 22, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 8, letterSpacing: "-0.02em" }}>Message Sent</h3>
-                                    <p style={{ fontSize: 14, color: "var(--color-text-secondary)" }}>We'll get back to you within 24 hours.</p>
+                                    <h3 style={{
+                                        fontFamily: "var(--font-display)",
+                                        fontSize: 28,
+                                        fontWeight: 400,
+                                        color: "var(--color-text-primary)",
+                                        marginBottom: 10,
+                                        letterSpacing: "-0.02em",
+                                    }}>
+                                        Message <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>sent</span>
+                                    </h3>
+                                    <p style={{ fontSize: 15, color: "var(--color-text-secondary)", maxWidth: 360, margin: "0 auto 20px", lineHeight: 1.6 }}>
+                                        Your mail client should have opened with a pre-filled message. We'll get back to you within 24 hours.
+                                    </p>
+                                    <button
+                                        onClick={() => setSent(false)}
+                                        style={{
+                                            background: "transparent",
+                                            border: "1px solid var(--color-border-strong)",
+                                            color: "var(--color-text-primary)",
+                                            padding: "10px 22px",
+                                            borderRadius: 100,
+                                            fontSize: 13,
+                                            fontWeight: 600,
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        Send another message
+                                    </button>
                                 </motion.div>
                             ) : (
-                                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+                                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                                    <div>
+                                        <h2 style={{
+                                            fontFamily: "var(--font-display)",
+                                            fontSize: 26,
+                                            fontWeight: 400,
+                                            color: "var(--color-text-primary)",
+                                            letterSpacing: "-0.02em",
+                                            marginBottom: 6,
+                                        }}>
+                                            Send us a <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>message</span>
+                                        </h2>
+                                        <p style={{ fontSize: 14, color: "var(--color-text-secondary)", lineHeight: 1.6 }}>
+                                            Fill in the form and we'll route it straight to your inbox.
+                                        </p>
+                                    </div>
+
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                                         <div>
                                             <label style={labelStyle}>Name</label>
                                             <input
@@ -174,7 +265,7 @@ export default function Contact() {
                                                 value={form.name}
                                                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                                                 placeholder="Your name"
-                                                className="input-premium"
+                                                className="contact-input"
                                             />
                                         </div>
                                         <div>
@@ -185,7 +276,7 @@ export default function Contact() {
                                                 value={form.email}
                                                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                                                 placeholder="you@company.com"
-                                                className="input-premium"
+                                                className="contact-input"
                                             />
                                         </div>
                                     </div>
@@ -197,7 +288,7 @@ export default function Contact() {
                                             value={form.subject}
                                             onChange={(e) => setForm({ ...form, subject: e.target.value })}
                                             placeholder="How can we help?"
-                                            className="input-premium"
+                                            className="contact-input"
                                         />
                                     </div>
                                     <div>
@@ -208,54 +299,101 @@ export default function Contact() {
                                             value={form.message}
                                             onChange={(e) => setForm({ ...form, message: e.target.value })}
                                             placeholder="Tell us more..."
-                                            className="input-premium"
-                                            style={{ resize: "none" }}
+                                            className="contact-input"
+                                            style={{ resize: "vertical", minHeight: 140 }}
                                         />
                                     </div>
-                                    <button type="submit" className="btn-primary" style={{ padding: "14px 0", fontSize: 14, fontWeight: 600 }}>
-                                        Send Message
+                                    <button type="submit" className="contact-submit">
+                                        <span>Send Message</span>
+                                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                        </svg>
                                     </button>
+                                    <p style={{ fontSize: 12, color: "var(--color-text-muted)", textAlign: "center", lineHeight: 1.5 }}>
+                                        Submitting opens your default mail app addressed to{" "}
+                                        <a href={`mailto:${CONTACT_EMAIL}`} className="contact-link" style={{ color: "var(--color-text-secondary)", fontWeight: 600 }}>
+                                            {CONTACT_EMAIL}
+                                        </a>
+                                        .
+                                    </p>
                                 </form>
                             )}
                         </motion.div>
 
                         {/* Sidebar Info */}
-                        <motion.div {...fadeIn} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-                            {contactInfo.map((info) => (
-                                <div key={info.label} className="glass-card" style={{ padding: 22, display: "flex", alignItems: "flex-start", gap: 14 }}>
-                                    <div style={{
-                                        width: 42, height: 42, borderRadius: 14,
-                                        background: `${info.color === "var(--color-brand-lavender-dark)" ? "rgba(155,130,204,0.12)" : info.color === "var(--color-brand-blue)" ? "rgba(107,163,190,0.12)" : "rgba(143,191,150,0.15)"}`,
-                                        border: `1px solid ${info.color === "var(--color-brand-lavender-dark)" ? "rgba(155,130,204,0.28)" : info.color === "var(--color-brand-blue)" ? "rgba(107,163,190,0.28)" : "rgba(143,191,150,0.30)"}`,
-                                        display: "flex", alignItems: "center", justifyContent: "center",
-                                        flexShrink: 0,
-                                    }}>
-                                        <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: info.color }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d={info.icon} />
-                                        </svg>
+                        <motion.div {...fadeIn} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                            {contactInfo.map((info) => {
+                                const inner = (
+                                    <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+                                        <div style={{
+                                            width: 44, height: 44, borderRadius: 14,
+                                            background: info.tint,
+                                            border: `1px solid ${info.border}`,
+                                            display: "flex", alignItems: "center", justifyContent: "center",
+                                            flexShrink: 0,
+                                        }}>
+                                            <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: info.color }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d={info.icon} />
+                                            </svg>
+                                        </div>
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--color-text-muted)", marginBottom: 5 }}>
+                                                {info.label}
+                                            </p>
+                                            <p style={{
+                                                fontSize: 14,
+                                                color: "var(--color-text-primary)",
+                                                fontWeight: 500,
+                                                wordBreak: "break-word",
+                                            }}>
+                                                {info.href ? (
+                                                    <a
+                                                        href={info.href}
+                                                        className="contact-link"
+                                                        {...(info.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                                                    >
+                                                        {info.value}
+                                                    </a>
+                                                ) : (
+                                                    info.value
+                                                )}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div style={{ flex: 1, minWidth: 0 }}>
-                                        <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--color-text-muted)", marginBottom: 4 }}>
-                                            {info.label}
-                                        </p>
-                                        <p style={{ fontSize: 14, color: "var(--color-text-primary)", fontWeight: 500 }}>{info.value}</p>
+                                );
+                                return (
+                                    <div key={info.label} className="glass-card" style={{ padding: 20 }}>
+                                        {inner}
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
 
-                            <div className="glass-card" style={{ padding: 22 }}>
-                                <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--color-text-muted)", marginBottom: 8 }}>
-                                    Response Time
-                                </p>
+                            <div className="glass-card" style={{
+                                padding: 22,
+                                background: "linear-gradient(135deg, rgba(184,161,230,0.10) 0%, rgba(143,191,150,0.10) 100%)",
+                                borderColor: "rgba(155,130,204,0.22)",
+                            }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                                    <div style={{
+                                        width: 8, height: 8, borderRadius: "50%",
+                                        background: "var(--color-brand-sage)",
+                                        boxShadow: "0 0 0 4px rgba(143,191,150,0.25)",
+                                    }} />
+                                    <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--color-text-muted)" }}>
+                                        Response Time
+                                    </p>
+                                </div>
                                 <p style={{ fontSize: 14, color: "var(--color-text-secondary)", lineHeight: 1.6 }}>
-                                    Most enquiries are answered within <span style={{ color: "var(--color-text-primary)", fontWeight: 600 }}>24 hours</span> on business days.
+                                    Most enquiries are answered within{" "}
+                                    <span style={{ color: "var(--color-text-primary)", fontWeight: 600 }}>24 hours</span>{" "}
+                                    on business days.
                                 </p>
                             </div>
                         </motion.div>
                     </div>
 
                     {/* FAQ */}
-                    <motion.div {...fadeIn} style={{ marginTop: 96, maxWidth: 760, margin: "96px auto 0" }}>
+                    <motion.div {...fadeIn} style={{ maxWidth: 760, margin: "72px auto 0" }}>
                         <div style={{ textAlign: "center", marginBottom: 32 }}>
                             <p style={eyebrow}>FAQ</p>
                             <h2 style={{

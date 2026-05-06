@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation, Outlet } from "react-router-dom";
+import { Routes, Route, useLocation, Outlet, Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { AuthProvider } from "./context/authContext";
 import { SubscriptionProvider } from "./context/subscriptionContext";
@@ -72,6 +72,25 @@ function AppLayout() {
   );
 }
 
+function NotFound() {
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--color-bg-base)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div style={{ textAlign: "center", maxWidth: 520 }}>
+        <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.25em", color: "var(--color-brand-lavender-dark)", marginBottom: 14 }}>404</p>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(40px, 6vw, 64px)", fontWeight: 400, lineHeight: 1.1, letterSpacing: "-0.025em", color: "var(--color-text-primary)", marginBottom: 16 }}>
+          Page <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>not found</span>
+        </h1>
+        <p style={{ fontSize: 16, color: "var(--color-text-secondary)", marginBottom: 28, lineHeight: 1.6 }}>
+          The page you're looking for doesn't exist or has been moved.
+        </p>
+        <Link to="/" className="btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 22px", fontSize: 14 }}>
+          Back to home
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const location = useLocation();
 
@@ -107,6 +126,8 @@ function App() {
               <Route path="/dashboard/compliance-assistant/assessment/recommendations/:assessmentId" element={<PageWrap><RecommendationsPage /></PageWrap>} />
               <Route path="/dashboard/spear-phishing" element={<PageWrap><SpearPhishingPage /></PageWrap>} />
             </Route>
+
+            <Route path="*" element={<PageWrap><NotFound /></PageWrap>} />
           </Routes>
         </AnimatePresence>
       </SubscriptionProvider>

@@ -1,5 +1,16 @@
 /* Shield360 — Warm Pastel Animations (wisprflow-inspired) */
 
+/* ─── Motion Tokens (canonical durations + easings) ───
+   Reference these from JS/TSX via getComputedStyle if needed,
+   or in any future CSS to keep entrance timing consistent. */
+:root {
+  --motion-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-duration-fast: 200ms;
+  --motion-duration-base: 450ms;
+  --motion-duration-slow: 700ms;
+}
+
 /* ─── Entry ─── */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(20px); }
@@ -53,8 +64,11 @@
 /* ─── Scroll Reveal ─── */
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(28px);
+  transition:
+    opacity var(--motion-duration-slow) var(--motion-ease-emphasized),
+    transform var(--motion-duration-slow) var(--motion-ease-emphasized);
+  will-change: opacity, transform;
 }
 
 .scroll-reveal.visible {
@@ -436,4 +450,34 @@
   letter-spacing: -0.02em;
   font-weight: 400;
   color: var(--color-text-primary);
+}
+
+/* ─── Reduced motion ───
+   Honor user OS preference. Kills long-running ambient loops (blobs,
+   aurora, gradient shifts) and collapses entrance transitions to a
+   near-instant fade so content still appears, just without travel. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .animate-blob,
+  .animate-float,
+  .animate-float-slow,
+  .animate-float-delayed,
+  .animate-gradient-shift,
+  .animate-shimmer,
+  .animate-pulse-soft {
+    animation: none !important;
+  }
 }

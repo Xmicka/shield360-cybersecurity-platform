@@ -45,11 +45,13 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     });
     const [role, setRoleState] = useState<UserRole>(() => {
         const saved = localStorage.getItem("s360_role");
-        return (saved as UserRole) || "admin";
+        return (saved as UserRole) || "user";
     });
     const [enabledModules, setEnabledModules] = useState<string[]>(() => {
         const saved = localStorage.getItem("s360_enabled_modules");
-        if (saved) return JSON.parse(saved);
+        if (saved) {
+            try { return JSON.parse(saved); } catch { /* fall through */ }
+        }
         return MODULES.map((m) => m.slug);
     });
     const [monthlyUsage, setMonthlyUsage] = useState<Record<string, number>>({});
