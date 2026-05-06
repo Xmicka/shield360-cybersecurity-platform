@@ -219,40 +219,58 @@ export default function Pricing() {
 
                     {/* Comparison table */}
                     <motion.div {...fadeIn} style={{ marginTop: 96 }}>
-                        <h3 className="headline-section" style={{ fontSize: 32, textAlign: "center", marginBottom: 36 }}>
-                            Module Access Comparison
-                        </h3>
-                        <div style={{
-                            background: "var(--color-bg-card)",
-                            border: "1px solid var(--color-border)",
-                            borderRadius: 24,
-                            overflow: "hidden",
-                            boxShadow: "var(--shadow-md)",
-                        }}>
+                        <div style={{ textAlign: "center", marginBottom: 36 }}>
+                            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.25em", color: "var(--color-brand-blue)", marginBottom: 12 }}>Compare</p>
+                            <h3 style={{
+                                fontFamily: "var(--font-display)",
+                                fontSize: "clamp(26px, 3vw, 34px)",
+                                fontWeight: 400,
+                                color: "var(--color-text-primary)",
+                                letterSpacing: "-0.02em",
+                            }}>
+                                Module access <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>comparison</span>
+                            </h3>
+                        </div>
+                        <div className="glass-card" style={{ padding: 0, overflow: "hidden" }}>
                             <div style={{
                                 display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
-                                padding: "20px 28px",
+                                padding: "18px 28px",
                                 borderBottom: "1px solid var(--color-border)",
-                                background: "var(--color-bg-cream)",
+                                background: "rgba(0,0,0,0.02)",
                             }}>
-                                <span style={{ fontSize: 11, fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.15em" }}>Module</span>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.25em" }}>Module</span>
                                 {PLANS.map((p) => (
-                                    <span key={p.id} style={{ fontSize: 11, fontWeight: 700, color: "var(--color-text-primary)", textTransform: "uppercase", letterSpacing: "0.15em", textAlign: "center" }}>
+                                    <span key={p.id} style={{ fontSize: 11, fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.25em", textAlign: "center" }}>
                                         {p.name}
                                     </span>
                                 ))}
                             </div>
                             {MODULES.map((mod, i) => (
-                                <div key={mod.slug} style={{
-                                    display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
-                                    padding: "18px 28px",
-                                    borderBottom: i < MODULES.length - 1 ? "1px solid var(--color-border)" : "none",
-                                    alignItems: "center",
-                                }}>
+                                <div
+                                    key={mod.slug}
+                                    className="comparison-row"
+                                    style={{
+                                        display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
+                                        padding: "16px 28px",
+                                        borderBottom: i < MODULES.length - 1 ? "1px solid var(--color-border)" : "none",
+                                        alignItems: "center",
+                                        transition: "background 0.18s ease",
+                                    }}
+                                    onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = "rgba(0,0,0,0.02)"; }}
+                                    onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}
+                                >
                                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                                        <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
-                                        </svg>
+                                        <div style={{
+                                            width: 32, height: 32, borderRadius: 10,
+                                            background: `${mod.color}15`,
+                                            border: `1px solid ${mod.color}30`,
+                                            display: "flex", alignItems: "center", justifyContent: "center",
+                                            flexShrink: 0,
+                                        }}>
+                                            <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: mod.color }} fill="none" stroke="currentColor" strokeWidth={1.6}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+                                            </svg>
+                                        </div>
                                         <span style={{ fontSize: 14, color: "var(--color-text-primary)", fontWeight: 500 }}>{mod.shortName}</span>
                                     </div>
                                     {PLANS.map((p) => {
@@ -262,12 +280,15 @@ export default function Pricing() {
                                             <div key={p.id} style={{ textAlign: "center" }}>
                                                 {included ? (
                                                     <span style={{
+                                                        display: "inline-block",
                                                         fontSize: 11, fontWeight: 700,
                                                         color: limit === -1 ? "var(--color-status-ok)" : "var(--color-text-primary)",
-                                                        background: limit === -1 ? "rgba(125,186,156,0.18)" : "rgba(212,197,240,0.25)",
-                                                        padding: "5px 12px", borderRadius: 100,
+                                                        background: limit === -1 ? "rgba(125,186,156,0.18)" : "rgba(155,130,204,0.18)",
+                                                        border: limit === -1 ? "1px solid rgba(125,186,156,0.30)" : "1px solid rgba(155,130,204,0.28)",
+                                                        padding: "5px 14px", borderRadius: 100,
+                                                        letterSpacing: "0.02em",
                                                     }}>
-                                                        {limit === -1 ? "∞" : `${limit}/mo`}
+                                                        {limit === -1 ? "Unlimited" : `${limit}/mo`}
                                                     </span>
                                                 ) : (
                                                     <span style={{ fontSize: 14, color: "var(--color-text-muted)" }}>—</span>

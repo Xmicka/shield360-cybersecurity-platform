@@ -67,13 +67,14 @@ const PipelineStageCard: React.FC<{
               >
                 {stage.icon}
               </motion.div>
-              <h3 className="text-sm font-bold text-white uppercase tracking-wide">{stage.label}</h3>
-              <p className="text-xs text-gray-300 leading-tight">{stage.description}</p>
+              <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{stage.label}</h3>
+              <p style={{ fontSize: 12, color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>{stage.description}</p>
             </div>
 
             {/* Expandable Details */}
             <motion.div
-              className="mt-auto pt-3 border-t border-gray-600/30 space-y-1"
+              className="mt-auto pt-3 space-y-1"
+              style={{ borderTop: '1px solid var(--color-border)' }}
               initial={{ opacity: 0, maxHeight: 0 }}
               animate={{
                 opacity: isHovered ? 1 : 0,
@@ -84,7 +85,8 @@ const PipelineStageCard: React.FC<{
               {stage.details.map((detail, idx) => (
                 <motion.div
                   key={idx}
-                  className="text-xs text-gray-300 flex items-start gap-2"
+                  className="flex items-start gap-2"
+                  style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: isHovered ? 1 : 0, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
@@ -217,10 +219,10 @@ const AdaptivePhishingPipeline: React.FC = () => {
         viewport={{ once: false }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent">
+        <h2 style={{ fontSize: "clamp(24px, 3vw, 32px)", fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.025em" }}>
           Adaptive Spear Phishing Pipeline
         </h2>
-        <p className="text-gray-400 text-lg">
+        <p style={{ fontSize: 15, color: "var(--color-text-secondary)", lineHeight: 1.6 }}>
           End-to-end workflow demonstrating how the system adapts to individual behavioral patterns
         </p>
       </motion.div>
@@ -271,20 +273,21 @@ const AdaptivePhishingPipeline: React.FC = () => {
         ].map((item, idx) => (
           <motion.div
             key={idx}
-            className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-600/50 transition-colors"
-            whileHover={{ borderColor: 'rgb(34, 211, 238, 0.5)' }}
+            className="glass-card transition-colors"
+            style={{ padding: 16 }}
           >
-            <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
-              <span className="text-cyan-400">●</span> {item.title}
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: 'var(--color-brand-blue)' }}>●</span> {item.title}
             </h4>
-            <p className="text-sm text-gray-400">{item.description}</p>
+            <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', lineHeight: 1.55 }}>{item.description}</p>
           </motion.div>
         ))}
       </motion.div>
 
       {/* Key Metrics */}
       <motion.div
-        className="p-6 rounded-xl bg-gradient-to-r from-blue-900/20 to-cyan-900/20 border border-blue-700/30"
+        className="glass-card"
+        style={{ padding: 24 }}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: false }}
@@ -298,8 +301,8 @@ const AdaptivePhishingPipeline: React.FC = () => {
             { label: 'Behavioral Improvement', value: '+18%' },
           ].map((metric, idx) => (
             <div key={idx} className="text-center">
-              <div className="text-2xl font-bold text-cyan-300">{metric.value}</div>
-              <div className="text-xs text-gray-400 mt-1">{metric.label}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--color-text-primary)' }}>{metric.value}</div>
+              <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginTop: 4 }}>{metric.label}</div>
             </div>
           ))}
         </div>

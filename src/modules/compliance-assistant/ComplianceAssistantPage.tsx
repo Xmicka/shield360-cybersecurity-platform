@@ -4,9 +4,11 @@
  */
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, BarChart3, FileText, ChevronRight, Zap, ShieldCheck, ExternalLink } from "lucide-react";
+import { CheckCircle2, BarChart3, FileText, ChevronRight, Zap, ShieldCheck, ExternalLink, Sparkles } from "lucide-react";
 import ModuleGate from "../../components/ModuleGate";
 import { MODULES } from "../../config/services";
+
+const ORIGINAL_APP_URL = "https://compliance-assistant-two.vercel.app";
 
 function ComplianceAssistantContent() {
   const navigate = useNavigate();
@@ -85,6 +87,67 @@ function ComplianceAssistantContent() {
           )}
         </div>
       </motion.div>
+
+      {/* Featured launchpad CTA */}
+      <motion.a
+        href={ORIGINAL_APP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+        whileHover={{ y: -2 }}
+        className="relative overflow-hidden block group"
+        style={{
+          padding: "22px 26px",
+          borderRadius: 22,
+          background: "linear-gradient(135deg, #B8A1E6 0%, #6BA3BE 100%)",
+          color: "#fff",
+          border: "1px solid rgba(255,255,255,0.18)",
+          boxShadow: "0 8px 24px rgba(155,130,204,0.22), 0 18px 50px rgba(107,163,190,0.18)",
+        }}
+      >
+        <span style={{ position: "absolute", top: -40, right: 60, width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.18)", filter: "blur(40px)" }} className="animate-blob" />
+        <span style={{ position: "absolute", bottom: -50, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(232,213,245,0.22)", filter: "blur(50px)" }} />
+        <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-4">
+            <div style={{
+              width: 48, height: 48, borderRadius: 14,
+              background: "rgba(255,255,255,0.18)",
+              border: "1px solid rgba(255,255,255,0.28)",
+              backdropFilter: "blur(8px)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <Sparkles size={22} strokeWidth={1.6} />
+            </div>
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", opacity: 0.85, marginBottom: 4 }}>
+                Full experience
+              </p>
+              <h3 style={{ fontSize: 19, fontWeight: 700, letterSpacing: "-0.015em" }}>
+                Open the Compliance Assistant app
+              </h3>
+              <p style={{ fontSize: 13, opacity: 0.92, marginTop: 2 }}>
+                Run framework assessments, manage controls, and generate audit reports in the standalone interface.
+              </p>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "10px 18px", borderRadius: 100,
+              background: "rgba(255,255,255,0.96)",
+              color: "var(--color-text-primary)",
+              fontSize: 13, fontWeight: 700,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
+            }}
+            className="group-hover:translate-x-0.5 transition-transform"
+          >
+            Launch app
+            <ExternalLink size={14} strokeWidth={2} />
+          </div>
+        </div>
+      </motion.a>
 
       {/* Assessment Intro */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>

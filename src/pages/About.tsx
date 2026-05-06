@@ -1,23 +1,56 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import AnimatedBackground from "../components/AnimatedBackground";
+import Aurora from "../components/backgrounds/Aurora";
 
-const fadeIn = { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true as const }, transition: { duration: 0.5 } };
+const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true as const },
+    transition: { duration: 0.5 },
+};
+
+const eyebrow: React.CSSProperties = {
+    fontSize: 11,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: "0.25em",
+    color: "var(--color-brand-blue)",
+    marginBottom: 14,
+};
+
+// Brand pastel palette (matches Landing).
+const BRAND = {
+    blue: "var(--color-brand-blue)",
+    sage: "var(--color-brand-sage)",
+    lavender: "var(--color-brand-lavender)",
+    lavenderDark: "var(--color-brand-lavender-dark)",
+    peach: "var(--color-brand-peach)",
+    coral: "var(--color-brand-coral)",
+};
+
+// Hex versions for places that need rgba mixing.
+const BRAND_HEX = {
+    blue: "#6BA3BE",
+    sage: "#8FBF96",
+    lavender: "#B8A1E6",
+    lavenderDark: "#9B82CC",
+    peach: "#E8917A",
+};
 
 const team = [
-    { name: "Akesh Chandrasiri", role: "Lead Developer", component: "Spear Phishing Simulation", color: "#22d3ee", gradient: "from-cyan-400 to-blue-500" },
-    { name: "Shanuki Liyanage", role: "Compliance Analyst/Developer", component: "Compliance Assistant", color: "#34d399", gradient: "from-emerald-400 to-teal-500" },
-    { name: "Shenal Somaweera", role: "Shadow IT Developer", component: "Shadow IT Dashboard", color: "#3b82f6", gradient: "from-blue-400 to-indigo-500" },
-    { name: "Yasindu De Silva", role: "Endpoint Scanner Developer", component: "Endpoint Risk Scanner", color: "#fbbf24", gradient: "from-amber-400 to-orange-500" },
+    { name: "Akesh Chandrasiri", role: "Lead Developer", component: "Spear Phishing Simulation", color: BRAND.blue, hex: BRAND_HEX.blue },
+    { name: "Shanuki Liyanage", role: "Compliance Analyst/Developer", component: "Compliance Assistant", color: BRAND.sage, hex: BRAND_HEX.sage },
+    { name: "Shenal Somaweera", role: "Shadow IT Developer", component: "Shadow IT Dashboard", color: BRAND.lavenderDark, hex: BRAND_HEX.lavenderDark },
+    { name: "Yasindu De Silva", role: "Endpoint Scanner Developer", component: "Endpoint Risk Scanner", color: BRAND.peach, hex: BRAND_HEX.peach },
 ];
 
 const techStack = [
-    { name: "React", desc: "Frontend Framework", icon: "M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" },
-    { name: "TypeScript", desc: "Type Safety", icon: "M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" },
-    { name: "Python", desc: "ML & Backend", icon: "M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" },
-    { name: "TensorFlow", desc: "AI Models", icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" },
-    { name: "Firebase", desc: "Auth & Database", icon: "M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" },
-    { name: "Three.js", desc: "3D Graphics", icon: "M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" },
+    { name: "React", desc: "Frontend Framework", icon: "M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5", color: BRAND.blue, hex: BRAND_HEX.blue },
+    { name: "TypeScript", desc: "Type Safety", icon: "M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z", color: BRAND.lavenderDark, hex: BRAND_HEX.lavenderDark },
+    { name: "Python", desc: "ML & Backend", icon: "M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5", color: BRAND.sage, hex: BRAND_HEX.sage },
+    { name: "TensorFlow", desc: "AI Models", icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z", color: BRAND.peach, hex: BRAND_HEX.peach },
+    { name: "Firebase", desc: "Auth & Database", icon: "M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125", color: BRAND.lavender, hex: BRAND_HEX.lavender },
+    { name: "Three.js", desc: "3D Graphics", icon: "M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25", color: BRAND.blue, hex: BRAND_HEX.blue },
 ];
 
 const values = [
@@ -25,196 +58,218 @@ const values = [
         title: "Affordable Security",
         desc: "Enterprise-grade protection at a fraction of the cost. Our subscription model means no massive upfront licensing fees.",
         icon: "M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-        color: "#22d3ee",
+        color: BRAND.blue,
+        hex: BRAND_HEX.blue,
     },
     {
         title: "AI-First Approach",
         desc: "Machine learning models power everything from phishing simulation to anomaly detection, adapting to your organisation in real-time.",
         icon: "M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5",
-        color: "#a855f7",
+        color: BRAND.lavenderDark,
+        hex: BRAND_HEX.lavenderDark,
     },
     {
         title: "Zero Trust Architecture",
         desc: "Built on zero-trust principles from the ground up. Every request is verified, every anomaly is flagged, every device is monitored.",
         icon: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
-        color: "#34d399",
+        color: BRAND.sage,
+        hex: BRAND_HEX.sage,
     },
 ];
 
 export default function About() {
     return (
-        <div className="relative min-h-screen">
-            <AnimatedBackground />
-
-            {/* Navbar */}
+        <div className="relative" style={{ background: "var(--color-bg-base)", color: "var(--color-text-primary)", minHeight: "100vh" }}>
+            {/* ─── Navbar (matches Landing) ─── */}
             <motion.nav
-                initial={{ y: -20, opacity: 0 }}
+                initial={{ y: -16, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
                 className="fixed top-0 left-0 right-0 z-50"
                 style={{ padding: "16px 24px" }}
             >
                 <div style={{
                     maxWidth: 1200,
                     margin: "0 auto",
-                    background: "rgba(245,240,232,0.80)",
-                    backdropFilter: "blur(20px) saturate(1.5)",
-                    WebkitBackdropFilter: "blur(20px) saturate(1.5)",
+                    background: "rgba(255,255,255,0.85)",
+                    backdropFilter: "blur(20px) saturate(1.4)",
+                    WebkitBackdropFilter: "blur(20px) saturate(1.4)",
                     border: "1px solid var(--color-border)",
-                    borderRadius: 16,
-                    padding: "12px 24px",
+                    borderRadius: 100,
+                    padding: "10px 20px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04)",
                 }}>
-                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10 }} className="group">
                         <div style={{
                             width: 36, height: 36, borderRadius: 10,
-                            background: "linear-gradient(135deg, #B8A1E6, #3D5A47)",
-                            padding: 2, display: "flex",
+                            background: "linear-gradient(135deg, #B8A1E6 0%, #3D5A47 100%)",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            boxShadow: "0 2px 8px rgba(184,161,230,0.35)",
                         }}>
-                            <div style={{
-                                flex: 1, borderRadius: 8, background: "var(--color-bg-cream)",
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                            }}>
-                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, color: "#B8A1E6" }} fill="currentColor">
-                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                                </svg>
-                            </div>
+                            <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: "#fff" }} fill="currentColor">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                            </svg>
                         </div>
-                        <span style={{ fontSize: 16, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Shield360</span>
+                        <span style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Shield360</span>
                     </Link>
-                    <div style={{ display: "flex", alignItems: "center", gap: 32, fontSize: 13, color: "var(--color-text-secondary)" }}>
-                        <Link to="/about" style={{ transition: "color 0.2s" }} className="hover:text-black">About</Link>
-                        <Link to="/pricing" style={{ transition: "color 0.2s" }} className="hover:text-black">Pricing</Link>
-                        <Link to="/contact" style={{ transition: "color 0.2s" }} className="hover:text-black">Contact</Link>
+                    <div className="hidden md:flex" style={{ alignItems: "center", gap: 28, fontSize: 13, color: "var(--color-text-secondary)" }}>
+                        <Link to="/about" className="hover:text-black">About</Link>
+                        <Link to="/pricing" className="hover:text-black">Pricing</Link>
+                        <Link to="/contact" className="hover:text-black">Contact</Link>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                        <Link to="/login" style={{ fontSize: 13, color: "var(--color-text-secondary)", padding: "8px 16px" }} className="hover:text-black">Sign In</Link>
-                        <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>Get Started</Link>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <Link to="/login" style={{ fontSize: 13, color: "var(--color-text-secondary)", padding: "8px 14px" }} className="hover:text-black">Sign In</Link>
+                        <Link to="/signup" className="btn-primary" style={{ fontSize: 13, padding: "9px 18px" }}>Get Started</Link>
                     </div>
                 </div>
             </motion.nav>
 
-            <div className="relative z-10" style={{ padding: "128px 32px 96px" }}>
+            {/* ─── Hero ─── */}
+            <section className="relative overflow-hidden" style={{ padding: "140px 24px 60px" }}>
+                <Aurora colorStops={["#E8D5F5", "#F5E6D3", "#D4E8C8"]} speed={0.4} blend="mix-blend-multiply" />
+                <motion.div {...fadeIn} className="relative z-10" style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
+                    <p style={eyebrow}>About Us</p>
+                    <h1 style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "clamp(40px, 6vw, 64px)",
+                        fontWeight: 400,
+                        lineHeight: 1.08,
+                        letterSpacing: "-0.025em",
+                        color: "var(--color-text-primary)",
+                        marginBottom: 20,
+                    }}>
+                        Democratising{" "}
+                        <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>cybersecurity</span>{" "}
+                        for SMEs
+                    </h1>
+                    <p style={{ fontSize: 17, color: "var(--color-text-secondary)", maxWidth: 620, margin: "0 auto 14px", lineHeight: 1.65 }}>
+                        Small and medium enterprises face the same cyber threats as large corporations, but without the budget or expertise to combat them. Shield360 was built to change that.
+                    </p>
+                    <p style={{ fontSize: 14, color: "var(--color-text-muted)", maxWidth: 620, margin: "0 auto", lineHeight: 1.7 }}>
+                        We combine AI-driven threat simulation, behavioural analytics, device monitoring, and compliance automation into a single, affordable platform.
+                    </p>
+                </motion.div>
+            </section>
+
+            <div className="relative z-10" style={{ padding: "20px 24px 96px" }}>
                 <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
-                    {/* ─── Hero / Mission ─── */}
-                    <motion.div {...fadeIn} className="text-center mb-28">
-                        <p style={{ fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: "#22d3ee", fontWeight: 700, marginBottom: 16 }}>About Us</p>
-                        <h1 style={{ fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800, color: "var(--color-text-primary)", lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 24 }}>
-                            Democratising <span className="gradient-text">cybersecurity</span> for SMEs
-                        </h1>
-                        <p style={{ fontSize: 18, color: "var(--color-text-secondary)", maxWidth: 640, margin: "0 auto", lineHeight: 1.7, marginBottom: 16 }}>
-                            Small and medium enterprises face the same cyber threats as large corporations, but without the budget or expertise to combat them. Shield360 was built to change that.
-                        </p>
-                        <p style={{ fontSize: 15, color: "var(--color-text-muted)", maxWidth: 640, margin: "0 auto", lineHeight: 1.7 }}>
-                            We combine AI-driven threat simulation, behavioural analytics, device monitoring, and compliance automation into a single, affordable platform. Our mission is to make enterprise-grade security accessible to every business, regardless of size.
-                        </p>
-                    </motion.div>
-
                     {/* ─── Values ─── */}
-                    <motion.div {...fadeIn} style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 112 }}>
-                        {values.map((v, i) => (
-                            <motion.div
-                                key={v.title}
-                                initial={{ opacity: 0, y: 24 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1, duration: 0.5 }}
-                                style={{
-                                    padding: 36,
-                                    borderRadius: 20,
-                                    background: "var(--color-bg-card)",
-                                    backdropFilter: "blur(20px)",
-                                    border: "1px solid var(--color-border)",
-                                    textAlign: "center",
-                                    position: "relative",
-                                    overflow: "hidden",
-                                }}
-                            >
-                                {/* Top accent */}
-                                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${v.color}, transparent)`, opacity: 0.4 }} />
-
-                                <div style={{
-                                    width: 56, height: 56, borderRadius: 16,
-                                    background: `${v.color}10`,
-                                    border: `1px solid ${v.color}20`,
-                                    display: "flex", alignItems: "center", justifyContent: "center",
-                                    margin: "0 auto 20px",
-                                }}>
-                                    <svg viewBox="0 0 24 24" style={{ width: 28, height: 28, color: v.color }} fill="none" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d={v.icon} />
-                                    </svg>
-                                </div>
-                                <h3 style={{ fontSize: 17, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 8 }}>{v.title}</h3>
-                                <p style={{ fontSize: 13, color: "var(--color-text-muted)", lineHeight: 1.7 }}>{v.desc}</p>
-                            </motion.div>
-                        ))}
+                    <motion.div {...fadeIn} style={{ marginBottom: 96 }}>
+                        <div style={{ textAlign: "center", marginBottom: 40 }}>
+                            <p style={eyebrow}>Our Values</p>
+                            <h2 style={{
+                                fontFamily: "var(--font-display)",
+                                fontSize: "clamp(28px, 3.5vw, 40px)",
+                                fontWeight: 400,
+                                color: "var(--color-text-primary)",
+                                letterSpacing: "-0.02em",
+                            }}>
+                                What we <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>stand for</span>
+                            </h2>
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+                            {values.map((v, i) => (
+                                <motion.div
+                                    key={v.title}
+                                    initial={{ opacity: 0, y: 24 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                                    className="glass-card"
+                                    style={{ padding: 32, textAlign: "center", position: "relative", overflow: "hidden" }}
+                                >
+                                    <div style={{
+                                        position: "absolute", top: 0, left: 0, right: 0, height: 3,
+                                        background: v.color, opacity: 0.55,
+                                        borderRadius: "20px 20px 0 0",
+                                    }} />
+                                    <div style={{
+                                        width: 56, height: 56, borderRadius: 14,
+                                        background: `${v.hex}15`,
+                                        border: `1px solid ${v.hex}30`,
+                                        display: "flex", alignItems: "center", justifyContent: "center",
+                                        margin: "0 auto 18px",
+                                    }}>
+                                        <svg viewBox="0 0 24 24" style={{ width: 26, height: 26, color: v.color }} fill="none" stroke="currentColor" strokeWidth={1.6}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d={v.icon} />
+                                        </svg>
+                                    </div>
+                                    <h3 style={{ fontSize: 17, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 8, letterSpacing: "-0.01em" }}>
+                                        {v.title}
+                                    </h3>
+                                    <p style={{ fontSize: 14, color: "var(--color-text-secondary)", lineHeight: 1.65 }}>
+                                        {v.desc}
+                                    </p>
+                                </motion.div>
+                            ))}
+                        </div>
                     </motion.div>
 
                     {/* ─── Team ─── */}
-                    <motion.div {...fadeIn} style={{ marginBottom: 112 }}>
-                        <div style={{ textAlign: "center", marginBottom: 48 }}>
-                            <p style={{ fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: "#22d3ee", fontWeight: 700, marginBottom: 12 }}>The Team</p>
-                            <h2 style={{ fontSize: 32, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Built by security researchers</h2>
+                    <motion.div {...fadeIn} style={{ marginBottom: 96 }}>
+                        <div style={{ textAlign: "center", marginBottom: 40 }}>
+                            <p style={eyebrow}>The Team</p>
+                            <h2 style={{
+                                fontFamily: "var(--font-display)",
+                                fontSize: "clamp(28px, 3.5vw, 40px)",
+                                fontWeight: 400,
+                                color: "var(--color-text-primary)",
+                                letterSpacing: "-0.02em",
+                            }}>
+                                Built by security <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>researchers</span>
+                            </h2>
                         </div>
-
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
                             {team.map((m, i) => (
                                 <motion.div
                                     key={i}
                                     initial={{ opacity: 0, y: 24 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                                    transition={{ delay: i * 0.08, duration: 0.45 }}
                                     whileHover={{ y: -4 }}
-                                    style={{
-                                        padding: 32,
-                                        borderRadius: 20,
-                                        background: "var(--color-bg-card)",
-                                        backdropFilter: "blur(20px)",
-                                        border: "1px solid var(--color-border)",
-                                        textAlign: "center",
-                                        position: "relative",
-                                        overflow: "hidden",
-                                        transition: "border-color 0.3s",
-                                    }}
-                                    className="hover:!border-[rgba(148,163,184,0.12)]"
+                                    className="glass-card"
+                                    style={{ padding: 28, textAlign: "center", position: "relative", overflow: "hidden" }}
                                 >
-                                    {/* Top accent */}
-                                    <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${m.color}, transparent)`, opacity: 0.5 }} />
-
+                                    <div style={{
+                                        position: "absolute", top: 0, left: 0, right: 0, height: 3,
+                                        background: m.color, opacity: 0.5,
+                                        borderRadius: "20px 20px 0 0",
+                                    }} />
                                     {/* Avatar */}
                                     <div style={{
                                         width: 64, height: 64, borderRadius: 18, padding: 2,
-                                        background: `linear-gradient(135deg, ${m.color}, ${m.color}60)`,
-                                        margin: "0 auto 20px",
+                                        background: `linear-gradient(135deg, ${m.hex}, ${m.hex}55)`,
+                                        margin: "0 auto 18px",
                                     }}>
                                         <div style={{
                                             width: "100%", height: "100%", borderRadius: 16,
-                                            background: "#0a0e1a",
+                                            background: "var(--color-bg-cream-light)",
                                             display: "flex", alignItems: "center", justifyContent: "center",
                                         }}>
-                                            <span style={{ fontSize: 22, fontWeight: 800, color: m.color }}>{m.name[0]}</span>
+                                            <span style={{ fontFamily: "var(--font-display)", fontSize: 26, fontWeight: 400, color: m.color, letterSpacing: "-0.02em" }}>
+                                                {m.name[0]}
+                                            </span>
                                         </div>
                                     </div>
-
-                                    {/* Name & Role */}
-                                    <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 4 }}>{m.name}</h3>
-                                    <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 16 }}>{m.role}</p>
-
-                                    {/* Component badge */}
+                                    <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 4, letterSpacing: "-0.01em" }}>
+                                        {m.name}
+                                    </h3>
+                                    <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 14 }}>{m.role}</p>
                                     <div style={{
                                         display: "inline-block",
                                         fontSize: 10,
                                         fontWeight: 700,
-                                        letterSpacing: "0.02em",
-                                        padding: "5px 14px",
-                                        borderRadius: 8,
-                                        background: `${m.color}10`,
-                                        border: `1px solid ${m.color}25`,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.08em",
+                                        padding: "4px 12px",
+                                        borderRadius: 100,
+                                        background: `${m.hex}15`,
+                                        border: `1px solid ${m.hex}30`,
                                         color: m.color,
                                     }}>
                                         {m.component}
@@ -226,12 +281,19 @@ export default function About() {
 
                     {/* ─── Tech Stack ─── */}
                     <motion.div {...fadeIn}>
-                        <div style={{ textAlign: "center", marginBottom: 48 }}>
-                            <p style={{ fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: "#22d3ee", fontWeight: 700, marginBottom: 12 }}>Technology</p>
-                            <h2 style={{ fontSize: 32, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>Built with cutting-edge tools</h2>
+                        <div style={{ textAlign: "center", marginBottom: 40 }}>
+                            <p style={eyebrow}>Technology</p>
+                            <h2 style={{
+                                fontFamily: "var(--font-display)",
+                                fontSize: "clamp(28px, 3.5vw, 40px)",
+                                fontWeight: 400,
+                                color: "var(--color-text-primary)",
+                                letterSpacing: "-0.02em",
+                            }}>
+                                Built with cutting-edge <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>tools</span>
+                            </h2>
                         </div>
-
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14 }}>
                             {techStack.map((t, i) => (
                                 <motion.div
                                     key={t.name}
@@ -240,31 +302,22 @@ export default function About() {
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.06, duration: 0.4 }}
                                     whileHover={{ y: -3 }}
-                                    style={{
-                                        padding: "28px 16px",
-                                        borderRadius: 16,
-                                        background: "var(--color-bg-cream-light)",
-                                        backdropFilter: "blur(12px)",
-                                        border: "1px solid var(--color-border)",
-                                        textAlign: "center",
-                                        cursor: "default",
-                                        transition: "border-color 0.3s",
-                                    }}
-                                    className="hover:!border-[rgba(34,211,238,0.15)]"
+                                    className="glass-card"
+                                    style={{ padding: "24px 14px", textAlign: "center" }}
                                 >
                                     <div style={{
-                                        width: 40, height: 40, borderRadius: 12,
-                                        background: "rgba(34,211,238,0.06)",
-                                        border: "1px solid rgba(34,211,238,0.1)",
+                                        width: 42, height: 42, borderRadius: 12,
+                                        background: `${t.hex}10`,
+                                        border: `1px solid ${t.hex}25`,
                                         display: "flex", alignItems: "center", justifyContent: "center",
-                                        margin: "0 auto 14px",
+                                        margin: "0 auto 12px",
                                     }}>
-                                        <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: "#22d3ee" }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                        <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: t.color }} fill="none" stroke="currentColor" strokeWidth={1.6}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d={t.icon} />
                                         </svg>
                                     </div>
-                                    <p style={{ fontSize: 13, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 4 }}>{t.name}</p>
-                                    <p style={{ fontSize: 10, color: "var(--color-text-muted)" }}>{t.desc}</p>
+                                    <p style={{ fontSize: 13, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 3 }}>{t.name}</p>
+                                    <p style={{ fontSize: 11, color: "var(--color-text-muted)" }}>{t.desc}</p>
                                 </motion.div>
                             ))}
                         </div>

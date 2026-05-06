@@ -53,15 +53,16 @@ const SMEProfilePage = () => {
 
   const selectStyle = {
     width: "100%",
-    padding: "12px 14px",
-    borderRadius: "10px",
-    border: "1px solid #e5e7eb",
-    fontSize: "0.95rem",
+    padding: "14px 18px",
+    borderRadius: "14px",
+    border: "1px solid var(--color-border)",
+    fontSize: "14px",
     fontFamily: "inherit",
-    color: "#0F172A",
-    backgroundColor: "#ffffff",
+    color: "var(--color-text-primary)",
+    backgroundColor: "var(--color-bg-cream-light)",
     cursor: "pointer",
-    transition: "border-color 0.2s ease",
+    transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+    outline: "none",
   };
 
   const textInputStyle = {
@@ -72,10 +73,12 @@ const SMEProfilePage = () => {
   const labelStyle = {
     display: "block",
     marginBottom: "8px",
-    color: "#0F172A",
-    fontSize: "0.95rem",
-    fontWeight: "600",
+    color: "var(--color-text-primary)",
+    fontSize: "15px",
+    fontWeight: 700,
   };
+
+  const helperStyle = { fontSize: "13px", color: "var(--color-text-muted)", marginTop: "6px" };
 
   return (
     <div
@@ -90,26 +93,25 @@ const SMEProfilePage = () => {
       <div style={{ marginBottom: "32px" }}>
         <h1
           style={{
-            fontSize: "2rem",
+            fontFamily: "var(--font-display)",
+            fontWeight: 400,
+            fontSize: "clamp(28px, 4vw, 40px)",
+            letterSpacing: "-0.025em",
             marginBottom: "12px",
-            color: "#f1f5f9",
+            color: "var(--color-text-primary)",
           }}
         >
           About Your Organization
         </h1>
-        <p style={{ color: "#94a3b8", fontSize: "1rem", lineHeight: "1.5" }}>
+        <p style={{ color: "var(--color-text-secondary)", fontSize: "16px", lineHeight: 1.65 }}>
           Help us understand your organization better so we can give you the most relevant recommendations.
         </p>
       </div>
 
       {/* FORM CONTAINER */}
       <div
-        style={{
-          background: "white",
-          padding: "32px",
-          borderRadius: "20px",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
-        }}
+        className="glass-card"
+        style={{ padding: "40px" }}
       >
         {/* Organization Sector */}
         <div style={{ marginBottom: "24px" }}>
@@ -123,7 +125,7 @@ const SMEProfilePage = () => {
             required
             style={textInputStyle}
           />
-          <p style={{ fontSize: "0.85rem", color: "#6b7280", marginTop: "6px" }}>
+          <p style={helperStyle}>
             This will appear in your assessment profile.
           </p>
         </div>
@@ -147,7 +149,7 @@ const SMEProfilePage = () => {
             <option>Retail / E-commerce</option>
             <option>Other</option>
           </select>
-          <p style={{ fontSize: "0.85rem", color: "#6b7280", marginTop: "6px" }}>
+          <p style={helperStyle}>
             This helps us contextualize the controls relevant to your industry.
           </p>
         </div>
@@ -168,7 +170,7 @@ const SMEProfilePage = () => {
             <option>51–100</option>
             <option>101–250</option>
           </select>
-          <p style={{ fontSize: "0.85rem", color: "#6b7280", marginTop: "6px" }}>
+          <p style={helperStyle}>
             Helps us understand your resource constraints.
           </p>
         </div>
@@ -189,7 +191,7 @@ const SMEProfilePage = () => {
             <option>Financial data</option>
             <option>Sensitive personal data</option>
           </select>
-          <p style={{ fontSize: "0.85rem", color: "#6b7280", marginTop: "6px" }}>
+          <p style={helperStyle}>
             Important for assessing your security requirements.
           </p>
         </div>
@@ -206,48 +208,15 @@ const SMEProfilePage = () => {
         >
           <button
             onClick={() => navigate("/dashboard/compliance-assistant")}
-            style={{
-              padding: "12px 28px",
-              borderRadius: "999px",
-              background: "#f3f4f6",
-              color: "#0F172A",
-              border: "1px solid #d1d5db",
-              cursor: "pointer",
-              fontSize: "0.95rem",
-              fontWeight: "600",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#e5e7eb";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "#f3f4f6";
-            }}
+            className="btn-ghost"
+            style={{ fontSize: "14px", padding: "12px 24px" }}
           >
             Back
           </button>
           <button
             onClick={handleSubmit}
-            style={{
-              padding: "12px 32px",
-              borderRadius: "999px",
-              background: "linear-gradient(135deg, #2563eb, #14b8a6)",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "0.95rem",
-              fontWeight: "600",
-              boxShadow: "0 10px 20px rgba(37, 99, 235, 0.2)",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = "translateY(-2px)";
-              e.target.style.boxShadow = "0 12px 24px rgba(37, 99, 235, 0.3)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "0 10px 20px rgba(37, 99, 235, 0.2)";
-            }}
+            className="btn-primary"
+            style={{ fontSize: "14px", padding: "12px 28px" }}
           >
             Save and start assessment
           </button>

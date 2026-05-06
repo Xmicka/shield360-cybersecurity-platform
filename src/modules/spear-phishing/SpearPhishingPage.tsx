@@ -4,8 +4,11 @@
  */
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Sparkles, ExternalLink } from "lucide-react";
 import ModuleGate from "../../components/ModuleGate";
 import { MODULES } from "../../config/services";
+
+const ORIGINAL_APP_URL = "https://spear-phishing-dashboard.onrender.com/";
 
 // Dashboard sections
 import SecurityPostureOverview from "./dashboard/SecurityPostureOverview";
@@ -291,23 +294,86 @@ function SpearPhishingContent() {
         </div>
       </motion.div>
 
+      {/* Featured launchpad CTA */}
+      <motion.a
+        href={ORIGINAL_APP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+        whileHover={{ y: -2 }}
+        className="relative overflow-hidden block group"
+        style={{
+          padding: "22px 26px",
+          borderRadius: 22,
+          background: "linear-gradient(135deg, #B8A1E6 0%, #6BA3BE 100%)",
+          color: "#fff",
+          border: "1px solid rgba(255,255,255,0.18)",
+          boxShadow: "0 8px 24px rgba(155,130,204,0.22), 0 18px 50px rgba(107,163,190,0.18)",
+        }}
+      >
+        <span style={{ position: "absolute", top: -40, right: 60, width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.18)", filter: "blur(40px)" }} className="animate-blob" />
+        <span style={{ position: "absolute", bottom: -50, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(232,213,245,0.22)", filter: "blur(50px)" }} />
+        <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-4">
+            <div style={{
+              width: 48, height: 48, borderRadius: 14,
+              background: "rgba(255,255,255,0.18)",
+              border: "1px solid rgba(255,255,255,0.28)",
+              backdropFilter: "blur(8px)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <Sparkles size={22} strokeWidth={1.6} />
+            </div>
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", opacity: 0.85, marginBottom: 4 }}>
+                Full experience
+              </p>
+              <h3 style={{ fontSize: 19, fontWeight: 700, letterSpacing: "-0.015em" }}>
+                Open the Spear Phishing Simulation app
+              </h3>
+              <p style={{ fontSize: 13, opacity: 0.92, marginTop: 2 }}>
+                Launch adaptive campaigns, monitor click detection, and run training enforcement in the standalone interface.
+              </p>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "10px 18px", borderRadius: 100,
+              background: "rgba(255,255,255,0.96)",
+              color: "var(--color-text-primary)",
+              fontSize: 13, fontWeight: 700,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
+            }}
+            className="group-hover:translate-x-0.5 transition-transform"
+          >
+            Launch app
+            <ExternalLink size={14} strokeWidth={2} />
+          </div>
+        </div>
+      </motion.a>
+
       {/* Internal Section Tabs */}
-      <div style={{ display: "flex", gap: 4, padding: 6, borderRadius: 14, background: "var(--color-bg-card)", border: "1px solid var(--color-border)", overflowX: "auto", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div className="glass-card" style={{ display: "flex", gap: 2, padding: 6, borderRadius: 100, overflowX: "auto", flexWrap: "nowrap" }}>
         {sections.map((s) => {
           const active = activeSection === s.id;
           return (
             <button key={s.id} onClick={() => setActiveSection(s.id)}
+              onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = "rgba(0,0,0,0.04)"; e.currentTarget.style.color = "var(--color-text-primary)"; } }}
+              onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--color-text-secondary)"; } }}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 6,
-                padding: "8px 14px", borderRadius: 100,
-                fontSize: 12, fontWeight: 600, whiteSpace: "nowrap",
+                padding: "10px 16px", borderRadius: 100,
+                fontSize: 13, fontWeight: 600, whiteSpace: "nowrap",
                 border: "none", cursor: "pointer",
-                background: active ? "var(--color-bg-base)" : "transparent",
-                color: active ? "var(--color-text-primary)" : "var(--color-text-muted)",
-                boxShadow: active ? "0 1px 3px rgba(0,0,0,0.06)" : "none",
-                transition: "all 0.18s ease",
+                background: active ? "var(--color-brand-lavender)" : "transparent",
+                color: active ? "var(--color-text-primary)" : "var(--color-text-secondary)",
+                boxShadow: active ? "0 2px 8px rgba(184,161,230,0.3)" : "none",
+                transition: "all 0.2s ease",
               }}>
-              <span style={{ display: "inline-flex", color: active ? "var(--color-brand-blue)" : "var(--color-text-muted)" }}>{s.icon}</span>
+              <span style={{ display: "inline-flex", width: 15, height: 15, color: active ? "var(--color-text-primary)" : "currentColor" }}>{s.icon}</span>
               {s.label}
             </button>
           );

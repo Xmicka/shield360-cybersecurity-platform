@@ -112,7 +112,8 @@ const moduleCards = MODULES.map((mod) => ({
     tag: mod.tag,
     deployedUrl: mod.deployedUrl,
     tier: mod.tier,
-    features: mod.features,
+    // Compliance currently ships with ISO 27001 support; other frameworks are roadmap.
+    features: mod.slug === "compliance-assistant" ? ["ISO 27001"] : mod.features,
 }));
 
 const containerStagger = {
@@ -337,7 +338,8 @@ export default function Landing() {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, margin: "-50px" }}
-                        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20 }}
+                        className="grid gap-5 grid-cols-1 md:grid-cols-2"
+                        style={{ maxWidth: 980, margin: "0 auto" }}
                     >
                         {moduleCards.map((mod) => (
                             <motion.div key={mod.title} variants={childFade}>

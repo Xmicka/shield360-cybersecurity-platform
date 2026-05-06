@@ -89,10 +89,10 @@ const BehavioralRiskDistribution: React.FC = () => {
         viewport={{ once: false }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent">
+        <h2 style={{ fontSize: "clamp(24px, 3vw, 32px)", fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-0.025em" }}>
           Behavioral Risk Distribution
         </h2>
-        <p className="text-gray-400 text-lg">
+        <p style={{ fontSize: 15, color: "var(--color-text-secondary)", lineHeight: 1.6 }}>
           Real-time categorization from Isolation Forest anomaly detection pipeline
         </p>
       </motion.div>
@@ -134,9 +134,9 @@ const BehavioralRiskDistribution: React.FC = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <div className="text-3xl font-bold text-white">{loading ? '...' : totalUsers}</div>
-              <div className="text-xs text-gray-400 text-center">Total</div>
-              <div className="text-xs text-gray-400 text-center">Users</div>
+              <div style={{ fontSize: 30, fontWeight: 700, color: "var(--color-text-primary)" }}>{loading ? '...' : totalUsers}</div>
+              <div style={{ fontSize: 11, color: "var(--color-text-muted)", textAlign: "center" }}>Total</div>
+              <div style={{ fontSize: 11, color: "var(--color-text-muted)", textAlign: "center" }}>Users</div>
             </motion.div>
 
             {segments.find(s => s.category === 'High Risk' && s.value > 0) && (
@@ -165,20 +165,20 @@ const BehavioralRiskDistribution: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-4 h-4 rounded-full"
+                      className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: segment.color }}
                     />
-                    <span className="text-lg font-semibold text-white">{segment.category}</span>
-                    <span className="text-sm text-gray-400">({segment.value} users)</span>
+                    <span style={{ fontSize: 16, fontWeight: 600, color: "var(--color-text-primary)" }}>{segment.category}</span>
+                    <span style={{ fontSize: 13, color: "var(--color-text-muted)" }}>({segment.value} users)</span>
                   </div>
-                  <span className="text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  <span style={{ fontSize: 22, fontWeight: 700, color: "var(--color-text-primary)" }}>
                     {safePercent(segment)}%
                   </span>
                 </div>
 
-                <div className="h-3 bg-slate-700/50 rounded-full overflow-hidden backdrop-blur-sm">
+                <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(0,0,0,0.06)" }}>
                   <motion.div
-                    className="h-full rounded-full transition-colors group-hover:brightness-125"
+                    className="h-full rounded-full transition-colors group-hover:brightness-110"
                     style={{ backgroundColor: segment.color }}
                     initial={{ width: 0 }}
                     whileInView={{ width: `${safePercent(segment)}%` }}
@@ -187,7 +187,7 @@ const BehavioralRiskDistribution: React.FC = () => {
                   />
                 </div>
 
-                <p className="text-xs text-gray-400 mt-2">
+                <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 8 }}>
                   {segment.category === 'Safe' &&
                     'Users demonstrating normal behavioral patterns (no anomalies detected)'}
                   {segment.category === 'Watchlist' &&
@@ -200,13 +200,14 @@ const BehavioralRiskDistribution: React.FC = () => {
           ))}
 
           <motion.div
-            className="mt-8 p-4 rounded-lg bg-gradient-to-r from-green-900/20 to-green-800/10 border border-green-700/30"
+            className="mt-8"
+            style={{ padding: 16, borderRadius: 14, background: "var(--color-bg-cream-light)", border: "1px solid rgba(143,191,150,0.3)" }}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: false }}
             transition={{ delay: 0.6 }}
           >
-            <p className="text-sm text-green-200">
+            <p style={{ fontSize: 13, color: "var(--color-text-secondary)" }}>
               {totalUsers > 0 ? (
                 <>
                   <span className="font-semibold">✓ Live Data:</span>{' '}

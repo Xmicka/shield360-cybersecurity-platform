@@ -89,29 +89,29 @@ function EndpointDashboard({ onSelectEndpoint: _onSelectEndpoint }: { onSelectEn
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2">
           <span
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
-            style={{ background: "rgba(125,186,156,0.14)", color: "#5b9a7c", border: "1px solid rgba(125,186,156,0.32)" }}
+            className="inline-flex items-center gap-1.5 text-[11px] font-semibold"
+            style={{ background: "rgba(143,191,150,0.14)", color: "#5b9a7c", border: "1px solid rgba(143,191,150,0.3)", padding: "4px 10px", borderRadius: 100 }}
           >
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-status-ok)" }} /> {onlineCount} Online
+            <span className="rounded-full" style={{ width: 6, height: 6, background: "var(--color-status-ok)" }} /> {onlineCount} Online
           </span>
           <span
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
-            style={{ background: "rgba(201,112,112,0.12)", color: "#a85555", border: "1px solid rgba(201,112,112,0.32)" }}
+            className="inline-flex items-center gap-1.5 text-[11px] font-semibold"
+            style={{ background: "rgba(224,122,95,0.12)", color: "#a85555", border: "1px solid rgba(224,122,95,0.28)", padding: "4px 10px", borderRadius: 100 }}
           >
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-status-error)" }} /> {offlineCount} Offline
+            <span className="rounded-full" style={{ width: 6, height: 6, background: "var(--color-status-error)" }} /> {offlineCount} Offline
           </span>
         </div>
-        <div className="flex items-center gap-2 text-xs" style={{ color: "var(--color-text-muted)" }}>
+        <div className="inline-flex items-center gap-1 text-[11px]" style={{ color: "var(--color-text-muted)" }}>
           <span>Updated {lastRefresh.toLocaleTimeString()}</span>
           <button
             onClick={() => void load()}
-            className="rounded-lg p-1.5 transition"
+            className="rounded-full p-1 transition"
             style={{ color: "var(--color-text-muted)", background: "transparent" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(0,0,0,0.04)"; e.currentTarget.style.color = "var(--color-text-primary)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--color-text-muted)"; }}
             title="Refresh"
           >
-            <RefreshCw size={16} strokeWidth={1.5} />
+            <RefreshCw size={14} strokeWidth={1.5} />
           </button>
         </div>
       </div>
@@ -178,15 +178,17 @@ function EndpointDashboard({ onSelectEndpoint: _onSelectEndpoint }: { onSelectEn
                     key={it.endpoint_id}
                     className="transition-colors"
                     style={{ borderBottom: "1px solid var(--color-border)" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.02)")}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.025)")}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
                     <td className="whitespace-nowrap px-5 py-4">
                       <span
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold"
-                        style={{ color: online ? "#5b9a7c" : "#a85555" }}
+                        className="inline-flex items-center gap-1.5 text-[11px] font-semibold"
+                        style={online
+                          ? { background: "rgba(143,191,150,0.14)", color: "#5b9a7c", border: "1px solid rgba(143,191,150,0.3)", padding: "4px 10px", borderRadius: 100 }
+                          : { background: "rgba(224,122,95,0.12)", color: "#a85555", border: "1px solid rgba(224,122,95,0.28)", padding: "4px 10px", borderRadius: 100 }}
                       >
-                        <span className="h-2 w-2 rounded-full" style={{ background: online ? "var(--color-status-ok)" : "var(--color-status-error)" }} />
+                        <span className="rounded-full" style={{ width: 6, height: 6, background: online ? "var(--color-status-ok)" : "var(--color-status-error)" }} />
                         {online ? "Online" : "Offline"}
                       </span>
                     </td>
@@ -218,36 +220,40 @@ function EndpointDashboard({ onSelectEndpoint: _onSelectEndpoint }: { onSelectEn
                       <div className="inline-flex items-center gap-2">
                         <button
                           onClick={openOriginalApp}
-                          className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
-                          style={{ background: "var(--color-bg-card)", color: "var(--color-text-primary)", border: "1px solid var(--color-border)" }}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.03)")}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = "var(--color-bg-card)")}
+                          className="inline-flex items-center gap-1.5 text-[11px] font-semibold transition"
+                          style={{ background: "rgba(184,161,230,0.14)", color: "var(--color-brand-lavender-dark)", border: "1px solid rgba(184,161,230,0.3)", padding: "5px 12px", borderRadius: 100 }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(184,161,230,0.22)")}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(184,161,230,0.14)")}
                           title="Open in original app"
                         >
-                          <Eye size={14} strokeWidth={1.5} />
+                          <Eye size={13} strokeWidth={1.6} />
                           View
-                          <ExternalLink size={11} strokeWidth={1.5} style={{ opacity: 0.5 }} />
+                          <ExternalLink size={10} strokeWidth={1.6} style={{ opacity: 0.55 }} />
                         </button>
                         {isScanning ? (
                           <button
                             onClick={openOriginalApp}
-                            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition"
-                            style={{ background: "var(--color-status-error)" }}
+                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold transition"
+                            style={{ background: "rgba(224,122,95,0.14)", color: "#a85555", border: "1px solid rgba(224,122,95,0.3)", padding: "5px 12px", borderRadius: 100 }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(224,122,95,0.22)")}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(224,122,95,0.14)")}
                             title="Manage scan in original app"
                           >
-                            <X size={14} strokeWidth={2} />
+                            <X size={13} strokeWidth={2} />
                             Cancel
                           </button>
                         ) : (
                           <button
                             onClick={openOriginalApp}
-                            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition"
-                            style={{ background: "var(--color-brand-blue)", color: "#fff" }}
+                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold transition"
+                            style={{ background: "rgba(143,191,150,0.14)", color: "#5b9a7c", border: "1px solid rgba(143,191,150,0.3)", padding: "5px 12px", borderRadius: 100 }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(143,191,150,0.22)")}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(143,191,150,0.14)")}
                             title="Run scan in original app"
                           >
-                            <Scan size={14} strokeWidth={1.8} />
+                            <Scan size={13} strokeWidth={1.8} />
                             Scan
-                            <ExternalLink size={11} strokeWidth={1.5} style={{ opacity: 0.6 }} />
+                            <ExternalLink size={10} strokeWidth={1.6} style={{ opacity: 0.6 }} />
                           </button>
                         )}
                       </div>
