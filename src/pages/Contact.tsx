@@ -84,28 +84,62 @@ const contactInfo: ContactInfo[] = [
 export default function Contact() {
     const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
     const [sent, setSent] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        // Persist message for the admin inbox view.
-        const msgs = JSON.parse(localStorage.getItem("s360_messages") || "[]");
-        msgs.push({ ...form, timestamp: new Date().toISOString() });
-        localStorage.setItem("s360_messages", JSON.stringify(msgs));
-
-        // Compose a real email so the message actually reaches us.
+    const openMailtoFallback = () => {
         const subject = encodeURIComponent(form.subject || "Shield360 enquiry");
-        const bodyLines = [
-            `Name: ${form.name}`,
-            `Email: ${form.email}`,
-            "",
-            form.message,
-        ].join("\n");
-        const body = encodeURIComponent(bodyLines);
-        const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-        window.location.href = mailtoUrl;
+        const bodyLines = [`Name: ${form.name}`, `Email: ${form.email}`, "", form.message];
+        const body = encodeURIComponent(bodyLines.join("\n"));
+        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    };
 
-        setSent(true);
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (submitting) return;
+        setErrorMsg(null);
+        setSubmitting(true);
+
+        // Always keep a local copy for the admin inbox view (and resilience if
+        // the network call fails).
+        try {
+            const msgs = JSON.parse(localStorage.getItem("s360_messages") || "[]");
+            msgs.push({ ...form, timestamp: new Date().toISOString() });
+            localStorage.setItem("s360_messages", JSON.stringify(msgs));
+        } catch { /* localStorage might be disabled — non-fatal */ }
+
+        const fnUrl = import.meta.env.VITE_CONTACT_FORM_URL as string | undefined;
+
+        // If the Edge Function URL is configured, hit it. Otherwise fall back
+        // to mailto so the form is never a dead end.
+        if (!fnUrl) {
+            openMailtoFallback();
+            setSubmitting(false);
+            setSent(true);
+            return;
+        }
+
+        try {
+            const res = await fetch(fnUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data?.error || `Request failed (${res.status})`);
+            }
+            setSent(true);
+        } catch (err) {
+            // Soft-fail: open mailto as a fallback path so the message can
+            // still be sent even when the function is down or misconfigured.
+            const message = err instanceof Error ? err.message : "Something went wrong.";
+            setErrorMsg(`${message}. Opening your mail client as a fallback…`);
+            openMailtoFallback();
+            setSent(true);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -303,18 +337,37 @@ export default function Contact() {
                                             style={{ resize: "vertical", minHeight: 140 }}
                                         />
                                     </div>
-                                    <button type="submit" className="contact-submit">
-                                        <span>Send Message</span>
-                                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                                        </svg>
+                                    {errorMsg && (
+                                        <div role="alert" style={{
+                                            fontSize: 13, color: "var(--color-brand-coral, #E07A5F)",
+                                            background: "rgba(224,122,95,0.08)",
+                                            border: "1px solid rgba(224,122,95,0.25)",
+                                            borderRadius: 12, padding: "10px 14px", lineHeight: 1.5,
+                                        }}>
+                                            {errorMsg}
+                                        </div>
+                                    )}
+                                    <button type="submit" className="contact-submit" disabled={submitting} aria-busy={submitting}>
+                                        {submitting ? (
+                                            <>
+                                                <span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block" }} className="animate-spin" />
+                                                <span>Sending…</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Send Message</span>
+                                                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                                </svg>
+                                            </>
+                                        )}
                                     </button>
                                     <p style={{ fontSize: 12, color: "var(--color-text-muted)", textAlign: "center", lineHeight: 1.5 }}>
-                                        Submitting opens your default mail app addressed to{" "}
+                                        We&apos;ll reply to{" "}
                                         <a href={`mailto:${CONTACT_EMAIL}`} className="contact-link" style={{ color: "var(--color-text-secondary)", fontWeight: 600 }}>
                                             {CONTACT_EMAIL}
                                         </a>
-                                        .
+                                        {" "}within one business day.
                                     </p>
                                 </form>
                             )}

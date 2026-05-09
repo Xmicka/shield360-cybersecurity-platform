@@ -59,19 +59,19 @@ const SimulationOutcomes: React.FC = () => {
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case 'High': return { bg: 'bg-red-900/20', border: 'border-red-700/50', text: 'text-red-300', badge: 'bg-red-500' }
-      case 'Medium': return { bg: 'bg-yellow-900/20', border: 'border-yellow-700/50', text: 'text-yellow-300', badge: 'bg-yellow-500' }
-      case 'Low': return { bg: 'bg-green-900/20', border: 'border-green-700/50', text: 'text-green-300', badge: 'bg-green-500' }
-      default: return { bg: 'bg-gray-900/20', border: 'border-gray-700/50', text: 'text-gray-300', badge: 'bg-gray-500' }
+      case 'High': return { bg: 'bg-[rgba(224,122,95,0.10)]', border: 'border-[var(--color-border)]', text: 'text-[var(--color-brand-coral)]', badge: 'bg-[var(--color-brand-coral)]' }
+      case 'Medium': return { bg: 'bg-[rgba(212,168,83,0.10)]', border: 'border-[var(--color-border)]', text: 'text-amber-600', badge: 'bg-amber-500' }
+      case 'Low': return { bg: 'bg-[rgba(143,191,150,0.10)]', border: 'border-[var(--color-border)]', text: 'text-[var(--color-brand-sage-deep)]', badge: 'bg-[var(--color-brand-sage)]' }
+      default: return { bg: 'bg-[rgba(0,0,0,0.04)]', border: 'border-[var(--color-border)]', text: 'text-[var(--color-text-secondary)]', badge: 'bg-[var(--color-text-muted)]' }
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'clicked': return 'text-red-400 bg-red-900/30'
-      case 'opened': return 'text-yellow-400 bg-yellow-900/30'
-      case 'reported': return 'text-green-400 bg-green-900/30'
-      default: return 'text-blue-400 bg-blue-900/30'
+      case 'clicked': return 'text-[var(--color-brand-coral)] bg-[rgba(224,122,95,0.12)]'
+      case 'opened': return 'text-amber-600 bg-[rgba(212,168,83,0.12)]'
+      case 'reported': return 'text-[var(--color-brand-sage-deep)] bg-[rgba(143,191,150,0.15)]'
+      default: return 'text-[var(--color-brand-lavender-dark)] bg-[rgba(155,130,204,0.10)]'
     }
   }
 
@@ -84,10 +84,10 @@ const SimulationOutcomes: React.FC = () => {
   return (
     <div className="space-y-8">
       <motion.div className="space-y-2" initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ duration: 0.5 }}>
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent">
+        <h2 className="text-4xl font-bold text-[var(--color-text-primary)]">
           Simulation Outcomes
         </h2>
-        <p className="text-gray-400 text-lg">Email campaigns, user risk profiles, and phishing outcomes</p>
+        <p className="text-[var(--color-text-secondary)] text-lg">Email campaigns, user risk profiles, and phishing outcomes</p>
       </motion.div>
 
       {/* Email Stats Banner */}
@@ -96,16 +96,16 @@ const SimulationOutcomes: React.FC = () => {
         initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.1, duration: 0.5 }}
       >
         {[
-          { label: 'Emails Sent', value: emailStats?.total_sent ?? 0, color: 'text-blue-400', icon: '📧' },
-          { label: 'Opened', value: emailStats?.total_opened ?? 0, color: 'text-yellow-400', icon: '📬' },
-          { label: 'Clicked', value: emailStats?.total_clicked ?? 0, color: 'text-red-400', icon: '🖱️' },
-          { label: 'Reported', value: emailStats?.total_reported ?? 0, color: 'text-green-400', icon: '🛡️' },
-          { label: 'Click Rate', value: `${((emailStats?.click_rate ?? 0) * 100).toFixed(0)}%`, color: 'text-purple-400', icon: '📊' },
+          { label: 'Emails Sent', value: emailStats?.total_sent ?? 0, color: 'text-[var(--color-brand-lavender-dark)]', icon: '📧' },
+          { label: 'Opened', value: emailStats?.total_opened ?? 0, color: 'text-amber-600', icon: '📬' },
+          { label: 'Clicked', value: emailStats?.total_clicked ?? 0, color: 'text-[var(--color-brand-coral)]', icon: '🖱️' },
+          { label: 'Reported', value: emailStats?.total_reported ?? 0, color: 'text-[var(--color-brand-sage-deep)]', icon: '🛡️' },
+          { label: 'Click Rate', value: `${((emailStats?.click_rate ?? 0) * 100).toFixed(0)}%`, color: 'text-[var(--color-brand-lavender-dark)]', icon: '📊' },
         ].map((stat, idx) => (
-          <motion.div key={idx} className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50 text-center" whileHover={{ translateY: -4 }}>
-            <div className="text-2xl opacity-50 mb-1">{stat.icon}</div>
+          <motion.div key={idx} className="p-4 rounded-lg bg-[var(--color-bg-card)] border border-[var(--color-border)] text-center" whileHover={{ translateY: -4 }}>
+            <div className="text-2xl opacity-60 mb-1">{stat.icon}</div>
             <div className={`text-xl font-bold ${stat.color}`}>{loading ? '...' : stat.value}</div>
-            <div className="text-xs text-gray-400 mt-1">{stat.label}</div>
+            <div className="text-xs text-[var(--color-text-muted)] mt-1">{stat.label}</div>
           </motion.div>
         ))}
       </motion.div>
@@ -115,14 +115,14 @@ const SimulationOutcomes: React.FC = () => {
         <button
           onClick={handleAutoSend}
           disabled={autoSending}
-          className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 text-white font-semibold hover:shadow-lg hover:shadow-red-500/20 transition-all disabled:opacity-50 text-sm"
+          className="btn-primary disabled:opacity-50"
         >
           {autoSending ? '⏳ Sending...' : '🚀 Auto-Send to High-Risk Users'}
         </button>
         {message && (
-          <div className={`px-4 py-2 rounded-lg text-sm font-medium ${message.type === 'success' ? 'bg-green-900/30 text-green-300 border border-green-700/50' :
-              message.type === 'error' ? 'bg-red-900/30 text-red-300 border border-red-700/50' :
-                'bg-blue-900/30 text-blue-300 border border-blue-700/50'
+          <div className={`px-4 py-2 rounded-lg text-sm font-medium border ${message.type === 'success' ? 'bg-[rgba(143,191,150,0.12)] text-[var(--color-brand-sage-deep)] border-[var(--color-border)]' :
+              message.type === 'error' ? 'bg-[rgba(224,122,95,0.12)] text-[var(--color-brand-coral)] border-[var(--color-border)]' :
+                'bg-[rgba(155,130,204,0.10)] text-[var(--color-brand-lavender-dark)] border-[var(--color-border)]'
             }`}>
             {message.text}
           </div>
@@ -136,8 +136,8 @@ const SimulationOutcomes: React.FC = () => {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === tab
-              ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'
-              : 'bg-slate-800 text-gray-300 border border-slate-700 hover:border-cyan-600/50'
+              ? 'bg-[var(--color-brand-lavender-dark)] text-white shadow-md'
+              : 'bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] border border-[var(--color-border)] hover:border-[var(--color-brand-lavender-dark)]'
               }`}
           >
             {tab === 'users' ? '👤 User Profiles' : `📧 Email Log (${emailLog.length})`}
@@ -153,8 +153,8 @@ const SimulationOutcomes: React.FC = () => {
               <motion.button
                 key={tier} onClick={() => setFilterTier(tier)}
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${filterTier === tier
-                  ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'
-                  : 'bg-slate-800 text-gray-300 border border-slate-700 hover:border-cyan-600/50'
+                  ? 'bg-[var(--color-brand-lavender-dark)] text-white shadow-md'
+                  : 'bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] border border-[var(--color-border)] hover:border-[var(--color-brand-lavender-dark)]'
                   }`}
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               >
@@ -165,9 +165,9 @@ const SimulationOutcomes: React.FC = () => {
 
           <motion.div className="space-y-3">
             {loading ? (
-              <div className="text-center text-gray-500 py-8">Loading...</div>
+              <div className="text-center text-[var(--color-text-muted)] py-8">Loading...</div>
             ) : filteredUsers.length === 0 ? (
-              <div className="text-center text-gray-500 py-8">
+              <div className="text-center text-[var(--color-text-muted)] py-8">
                 <div className="text-3xl mb-2">📭</div>
                 No user data available. Run the pipeline after collecting behavioral events.
               </div>
@@ -185,12 +185,12 @@ const SimulationOutcomes: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-7 gap-4 items-center">
                       <div className="md:col-span-2">
                         <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                          <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(to bottom right, #B8A1E6, #9B82CC)' }}>
                             {user.user_id.substring(0, 2).toUpperCase()}
                           </div>
                           <div>
-                            <p className="font-semibold text-white">{user.user_id}</p>
-                            <p className="text-xs text-gray-400">{user.login_count} login events</p>
+                            <p className="font-semibold text-[var(--color-text-primary)]">{user.user_id}</p>
+                            <p className="text-xs text-[var(--color-text-muted)]">{user.login_count} login events</p>
                           </div>
                         </div>
                       </div>
@@ -201,22 +201,22 @@ const SimulationOutcomes: React.FC = () => {
                         </div>
                       </div>
                       <div className="md:col-span-1">
-                        <span className="text-xs text-gray-400 line-clamp-2">{user.risk_reason || 'Analyzed'}</span>
+                        <span className="text-xs text-[var(--color-text-muted)] line-clamp-2">{user.risk_reason || 'Analyzed'}</span>
                       </div>
                       <div className="md:col-span-1 text-right">
-                        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg ${user.risk_score >= 0.6 ? 'bg-red-500/80' : user.risk_score >= 0.3 ? 'bg-yellow-500/80' : 'bg-green-500/80'
+                        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg ${user.risk_score >= 0.6 ? 'bg-[var(--color-brand-coral)]' : user.risk_score >= 0.3 ? 'bg-amber-500' : 'bg-[var(--color-brand-sage)]'
                           } text-white text-sm font-semibold`}>
                           {(user.risk_score * 100).toFixed(0)}%
                         </span>
                       </div>
                       <div className="md:col-span-1 text-right">
-                        <p className="text-xs text-gray-400">Failed: {(user.failed_login_ratio * 100).toFixed(0)}%</p>
+                        <p className="text-xs text-[var(--color-text-muted)]">Failed: {(user.failed_login_ratio * 100).toFixed(0)}%</p>
                       </div>
                       <div className="md:col-span-1 text-right">
                         <button
                           onClick={() => handleSendEmail(user.user_id)}
                           disabled={sending === user.user_id}
-                          className="px-3 py-1.5 rounded-lg bg-blue-600/80 hover:bg-blue-500 text-white text-xs font-medium transition-all disabled:opacity-50"
+                          className="px-3 py-1.5 rounded-lg bg-[var(--color-brand-lavender-dark)] hover:bg-[var(--color-brand-lavender)] text-white text-xs font-medium transition-all disabled:opacity-50"
                         >
                           {sending === user.user_id ? '⏳' : '📧 Send'}
                         </button>
@@ -234,7 +234,7 @@ const SimulationOutcomes: React.FC = () => {
       {activeTab === 'emails' && (
         <motion.div className="space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           {emailLog.length === 0 ? (
-            <div className="text-center text-gray-500 py-8">
+            <div className="text-center text-[var(--color-text-muted)] py-8">
               <div className="text-3xl mb-2">📭</div>
               No emails sent yet. Use the "Send" button or "Auto-Send" to start.
             </div>
@@ -242,14 +242,14 @@ const SimulationOutcomes: React.FC = () => {
             emailLog.map((email, idx) => (
               <motion.div
                 key={email.email_id}
-                className="p-4 rounded-lg bg-slate-800/20 border border-slate-700/40 hover:border-cyan-600/50 transition-all"
+                className="p-4 rounded-lg bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-brand-lavender-dark)] transition-all"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
               >
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-center">
                   <div className="md:col-span-2">
-                    <p className="font-medium text-white text-sm">{email.subject}</p>
-                    <p className="text-xs text-gray-400 mt-1">To: {email.user_id} • {email.scenario.replace('_', ' ')}</p>
+                    <p className="font-medium text-[var(--color-text-primary)] text-sm">{email.subject}</p>
+                    <p className="text-xs text-[var(--color-text-muted)] mt-1">To: {email.user_id} • {email.scenario.replace('_', ' ')}</p>
                   </div>
                   <div className="md:col-span-1">
                     <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getStatusColor(email.status)}`}>
@@ -257,29 +257,29 @@ const SimulationOutcomes: React.FC = () => {
                     </span>
                   </div>
                   <div className="md:col-span-1">
-                    <span className={`inline-block px-2 py-1 rounded text-xs ${email.risk_score >= 0.6 ? 'bg-red-900/30 text-red-300' :
-                        email.risk_score >= 0.3 ? 'bg-yellow-900/30 text-yellow-300' :
-                          'bg-green-900/30 text-green-300'
+                    <span className={`inline-block px-2 py-1 rounded text-xs ${email.risk_score >= 0.6 ? 'bg-[rgba(224,122,95,0.12)] text-[var(--color-brand-coral)]' :
+                        email.risk_score >= 0.3 ? 'bg-[rgba(212,168,83,0.12)] text-amber-600' :
+                          'bg-[rgba(143,191,150,0.12)] text-[var(--color-brand-sage-deep)]'
                       }`}>
                       Risk: {(email.risk_score * 100).toFixed(0)}%
                     </span>
                   </div>
                   <div className="md:col-span-1">
-                    <span className="text-xs text-gray-400">{email.sent_via}</span>
+                    <span className="text-xs text-[var(--color-text-muted)]">{email.sent_via}</span>
                   </div>
                   <div className="md:col-span-1 text-right">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-[var(--color-text-muted)]">
                       {new Date(email.sent_at).toLocaleString()}
                     </span>
                   </div>
                 </div>
                 {email.interactions && email.interactions.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-slate-700/50">
+                  <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
                     <div className="flex gap-2 flex-wrap">
                       {email.interactions.map((i, iIdx) => (
-                        <span key={iIdx} className={`text-xs px-2 py-1 rounded ${i.interaction === 'click' ? 'bg-red-900/40 text-red-300' :
-                            i.interaction === 'open' ? 'bg-yellow-900/40 text-yellow-300' :
-                              'bg-green-900/40 text-green-300'
+                        <span key={iIdx} className={`text-xs px-2 py-1 rounded ${i.interaction === 'click' ? 'bg-[rgba(224,122,95,0.12)] text-[var(--color-brand-coral)]' :
+                            i.interaction === 'open' ? 'bg-[rgba(212,168,83,0.12)] text-amber-600' :
+                              'bg-[rgba(143,191,150,0.12)] text-[var(--color-brand-sage-deep)]'
                           }`}>
                           {i.interaction} @ {new Date(i.timestamp).toLocaleTimeString()}
                         </span>
@@ -294,11 +294,11 @@ const SimulationOutcomes: React.FC = () => {
       )}
 
       <motion.div
-        className="p-4 rounded-lg bg-gradient-to-r from-blue-900/20 to-cyan-900/20 border border-blue-700/30"
+        className="p-4 rounded-lg bg-[rgba(155,130,204,0.10)] border border-[var(--color-border)]"
         initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.5 }}
       >
-        <p className="text-sm text-cyan-200">
-          <span className="font-semibold">📊 Live Data:</span>{' '}
+        <p className="text-sm text-[var(--color-text-secondary)]">
+          <span className="font-semibold text-[var(--color-text-primary)]">📊 Live Data:</span>{' '}
           {emailStats && emailStats.total_sent > 0
             ? `${emailStats.total_sent} emails sent. Click rate: ${(emailStats.click_rate * 100).toFixed(0)}%. ${emailStats.total_reported} reported correctly.`
             : users.length > 0

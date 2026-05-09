@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { supabase } from "../config/supabase";
 import { createUserProfile, getUserProfile, updateLastLogin } from "../services/supabaseService";
+import { identifyUser, resetUser } from "../config/telemetry";
 
 /**
  * Normalised user shape used throughout the app.
@@ -48,12 +49,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         // Get initial session
         supabase.auth.getSession().then(({ data }: { data: { session: { user: any } | null } }) => {
-            setUser(mapSupabaseUser(data.session?.user ?? null));
+            const mapped = mapSupabaseUser(data.session?.user ?? null);
+            setUser(mapped);
+            if (mapped) identifyUser(mapped.uid, { email: mapped.email });
             setLoading(false);
         });
 
-        const { data: subscription } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
-            setUser(mapSupabaseUser(session?.user ?? null));
+        const { data: subscription } = supabase.auth.onAuthStateChange((event: any, session: any) => {
+            const mapped = mapSupabaseUser(session?.user ?? null);
+            setUser(mapped);
+            if (mapped) {
+                identifyUser(mapped.uid, { email: mapped.email });
+            } else if (event === "SIGNED_OUT") {
+                resetUser();
+            }
             setLoading(false);
         });
 

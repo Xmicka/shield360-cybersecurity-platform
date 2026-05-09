@@ -1,5 +1,6 @@
 import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
+import { captureException } from "../config/telemetry";
 
 interface Props {
     children: ReactNode;
@@ -22,7 +23,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     }
 
     componentDidCatch(error: Error, info: ErrorInfo): void {
-        // TODO: forward to Sentry / PostHog when wired
+        captureException(error, { componentStack: info.componentStack });
         if (import.meta.env.DEV) {
             // eslint-disable-next-line no-console
             console.error("[ErrorBoundary]", error, info.componentStack);

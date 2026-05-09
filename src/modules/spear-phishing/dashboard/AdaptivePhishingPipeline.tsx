@@ -129,7 +129,7 @@ const PipelineStageCard: React.FC<{
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            className="text-gray-400 group-hover:text-cyan-400 transition-colors"
+            className="text-[var(--color-text-muted)] group-hover:text-[var(--color-brand-lavender-dark)] transition-colors"
             animate={{
               x: hoveredStage ? 3 : 0,
             }}
