@@ -82,10 +82,16 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
                 ]);
                 if (profile && !cancelled) {
                     setPlanState(normalizePlan(profile.plan));
-                    setRoleState(profile.role || "admin");
+                    setRoleState(profile.role || "user");
                     if (profile.enabledModules?.length) {
                         setEnabledModules(profile.enabledModules);
                     }
+                } else if (!profile && !cancelled) {
+                    // Reset to defaults on user-change so previous user's
+                    // plan/role doesn't leak before profile loads.
+                    setPlanState("free");
+                    setRoleState("user");
+                    setEnabledModules(MODULES.map((m) => m.slug));
                 }
                 if (!cancelled) setMonthlyUsage(usage);
             } catch {

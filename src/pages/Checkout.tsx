@@ -1,143 +1,145 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, Navigate } from "react-router-dom";
 import { useSubscription } from "../context/subscriptionContext";
 import { useAuth } from "../context/authContext";
-import { PLANS, MODULES, getPlanById } from "../config/services";
+import { MODULES, getPlanById } from "../config/services";
 import type { PlanType } from "../config/services";
 import { logActivity } from "../services/firestoreService";
 
+/**
+ * Checkout is currently a free-plan activation flow + a "contact sales"
+ * funnel for paid tiers. Real payment processing (Stripe) is intentionally
+ * NOT wired here — server-side webhook is the only place that should mutate
+ * a user's plan in production.
+ */
 export default function Checkout() {
     const [searchParams] = useSearchParams();
-    const targetPlanId = (searchParams.get("plan") || "professional") as PlanType;
-    const targetPlan = getPlanById(targetPlanId) || PLANS[1]; // default to Professional
+    const rawPlan = searchParams.get("plan") || "professional";
+    const targetPlan = getPlanById(rawPlan as PlanType);
 
     const { setPlan, plan: currentPlan } = useSubscription();
     const { user } = useAuth();
 
+    // Invalid plan id → bounce to pricing
+    if (!targetPlan) return <Navigate to="/pricing" replace />;
+
     const alreadyOnPlan = currentPlan === targetPlan.id;
+    const isFree = targetPlan.price === 0;
+    const isEnterprise = targetPlan.id === "enterprise";
+
     const [step, setStep] = useState<"confirm" | "processing" | "success">(alreadyOnPlan ? "success" : "confirm");
 
-    const handleUpgrade = () => {
+    const handleActivateFree = () => {
         setStep("processing");
         setTimeout(() => {
             setPlan(targetPlan.id);
             setStep("success");
-            // Log upgrade to Firestore
             if (user) {
                 logActivity({
                     userId: user.uid,
                     userEmail: user.email || "",
-                    event: `Upgraded to ${targetPlan.name}`,
+                    event: `Activated ${targetPlan.name} plan`,
                     module: "platform",
                     severity: "info",
                 }).catch(() => {});
             }
-        }, 1800);
+        }, 800);
     };
 
+    /* ─── Success ─── */
     if (step === "success") {
         const modulesUnlocked = Object.keys(targetPlan.moduleLimits).length;
         return (
-            <div className="min-h-screen  flex items-center justify-center px-6">
-                <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{
-                    background: "var(--color-bg-card)", backdropFilter: "blur(20px)",
-                    border: "1px solid var(--color-border)", borderRadius: 24,
-                    padding: 48, maxWidth: 440, textAlign: "center",
+            <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "var(--color-bg-base)" }}>
+                <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-card" style={{
+                    padding: 48, maxWidth: 460, textAlign: "center",
                 }}>
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }} style={{
-                        width: 80, height: 80, borderRadius: "50%",
-                        background: "rgba(52,211,153,0.1)",
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.15, type: "spring" }} style={{
+                        width: 72, height: 72, borderRadius: "50%",
+                        background: "rgba(143,191,150,0.16)",
+                        border: "1px solid rgba(143,191,150,0.32)",
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        margin: "0 auto 24px",
+                        margin: "0 auto 22px",
                     }}>
-                        <svg viewBox="0 0 24 24" style={{ width: 40, height: 40, color: "#34d399" }} fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <svg viewBox="0 0 24 24" style={{ width: 34, height: 34, color: "var(--color-brand-sage)" }} fill="none" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                     </motion.div>
-                    <h2 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 8 }}>
-                        You're on {targetPlan.name}!
+                    <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(26px, 3.5vw, 32px)", fontWeight: 400, color: "var(--color-text-primary)", marginBottom: 10, letterSpacing: "-0.02em" }}>
+                        You&apos;re on <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>{targetPlan.name}</span>
                     </h2>
-                    <p style={{ fontSize: 14, color: "var(--color-text-muted)", marginBottom: 8 }}>
-                        <span style={{ color: targetPlan.color, fontWeight: 600 }}>{modulesUnlocked} security modules</span> are now available.
+                    <p style={{ fontSize: 14, color: "var(--color-text-secondary)", marginBottom: 28, lineHeight: 1.6 }}>
+                        {modulesUnlocked} security {modulesUnlocked === 1 ? "module is" : "modules are"} now available from your dashboard.
                     </p>
-                    <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 32 }}>Access everything from your dashboard. Modules open in their deployed environments.</p>
-                    <Link to="/dashboard" className="btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                        Go to Dashboard
-                        <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                    <Link to="/dashboard" className="btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 22px" }}>
+                        Go to dashboard
+                        <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                     </Link>
                 </motion.div>
             </div>
         );
     }
 
+    /* ─── Processing (only used for free-plan activation) ─── */
     if (step === "processing") {
         return (
-            <div className="min-h-screen  flex items-center justify-center px-6">
+            <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "var(--color-bg-base)" }}>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: "center" }}>
-                    <div style={{ position: "relative", width: 80, height: 80, margin: "0 auto 32px" }}>
-                        <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid rgba(34,211,238,0.2)" }} />
-                        <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid transparent", borderTopColor: "#22d3ee" }} className="animate-spin" />
-                        <div style={{ position: "absolute", inset: 8, borderRadius: "50%", border: "2px solid transparent", borderTopColor: "#a855f7", animationDirection: "reverse", animationDuration: "1.5s" }} className="animate-spin" />
-                    </div>
-                    <h2 style={{ fontSize: 20, fontWeight: 700, color: "var(--color-text-primary)", marginBottom: 8 }}>Activating {targetPlan.name}</h2>
-                    <p style={{ fontSize: 13, color: "var(--color-text-muted)" }}>Setting up your subscription...</p>
+                    <div style={{ width: 56, height: 56, margin: "0 auto 22px", borderRadius: "50%", border: "3px solid var(--color-border)", borderTopColor: "var(--color-brand-lavender-dark)" }} className="animate-spin" />
+                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 6 }}>Activating {targetPlan.name}…</h2>
+                    <p style={{ fontSize: 13, color: "var(--color-text-muted)" }}>Setting up your dashboard.</p>
                 </motion.div>
             </div>
         );
     }
 
+    /* ─── Confirm step ─── */
     return (
-        <div className="min-h-screen  flex items-center justify-center px-6 py-12">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{
-                width: "100%", maxWidth: 560,
-                background: "var(--color-bg-card)", backdropFilter: "blur(20px)",
-                border: "1px solid var(--color-border)", borderRadius: 24,
-                padding: 40, position: "relative", overflow: "hidden",
+        <div className="min-h-screen flex items-center justify-center px-6 py-12" style={{ background: "var(--color-bg-base)" }}>
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="glass-card" style={{
+                width: "100%", maxWidth: 580, padding: 40, position: "relative", overflow: "hidden",
             }}>
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg, #22d3ee, #a855f7)" }} />
+                <div aria-hidden style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, #B8A1E6 0%, #6BA3BE 50%, #8FBF96 100%)" }} />
 
-                <Link to="/pricing" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--color-text-muted)", marginBottom: 28 }} className="hover:text-black">
-                    <svg viewBox="0 0 24 24" style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                <Link to="/pricing" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--color-text-muted)", marginBottom: 24 }} className="hover:text-black">
+                    <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
                     Back to pricing
                 </Link>
 
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "var(--color-text-primary)" }}>
-                        Upgrade to {targetPlan.name}
-                    </h2>
-                    <div style={{
-                        fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em",
-                        color: targetPlan.color, background: `${targetPlan.color}15`,
-                        padding: "4px 12px", borderRadius: 8,
-                    }}>
-                        {targetPlan.name}
-                    </div>
-                </div>
-                <p style={{ fontSize: 13, color: "var(--color-text-muted)", marginBottom: 28 }}>{targetPlan.description}</p>
+                <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.25em", color: "var(--color-brand-lavender-dark)", marginBottom: 12 }}>
+                    {isFree ? "Activate" : isEnterprise ? "Talk to sales" : "Upgrade"}
+                </p>
+                <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 3.5vw, 36px)", fontWeight: 400, color: "var(--color-text-primary)", marginBottom: 8, letterSpacing: "-0.02em" }}>
+                    {isFree ? "Start with " : "Move up to "}
+                    <span style={{ fontStyle: "italic", color: "var(--color-brand-lavender-dark)" }}>{targetPlan.name}</span>
+                </h1>
+                <p style={{ fontSize: 14, color: "var(--color-text-secondary)", marginBottom: 28, lineHeight: 1.6 }}>
+                    {targetPlan.description}
+                </p>
 
                 {/* Pricing summary */}
                 <div style={{
-                    padding: "20px 24px", borderRadius: 16, marginBottom: 24,
-                    background: "rgba(0,0,0,0.03)", border: "1px solid var(--color-border)",
+                    padding: "18px 22px", borderRadius: 16, marginBottom: 22,
+                    background: "rgba(0,0,0,0.025)", border: "1px solid var(--color-border)",
                 }}>
-                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 }}>
+                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
                         <span style={{ fontSize: 14, color: "var(--color-text-secondary)" }}>Shield360 {targetPlan.name}</span>
                         <div>
-                            <span style={{ fontSize: 32, fontWeight: 800, color: "var(--color-text-primary)" }}>${targetPlan.price}</span>
-                            <span style={{ fontSize: 13, color: "var(--color-text-muted)" }}>/{targetPlan.period}</span>
-                        </div>
-                    </div>
-                    <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: 12 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-                            <span style={{ color: "var(--color-text-muted)" }}>Billed monthly</span>
-                            <span style={{ color: "var(--color-text-primary)", fontWeight: 600 }}>${targetPlan.price}/mo</span>
+                            <span style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 400, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>
+                                {isFree ? "Free" : `$${targetPlan.price}`}
+                            </span>
+                            {!isFree && <span style={{ fontSize: 14, color: "var(--color-text-muted)" }}>/{targetPlan.period}</span>}
                         </div>
                     </div>
                 </div>
 
                 {/* What you unlock */}
-                <div style={{ marginBottom: 28 }}>
-                    <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--color-text-muted)", marginBottom: 12 }}>
-                        What you'll unlock
+                <div style={{ marginBottom: 26 }}>
+                    <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--color-text-muted)", marginBottom: 12 }}>
+                        What you&apos;ll unlock
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                         {MODULES.map((mod) => {
@@ -147,20 +149,21 @@ export default function Checkout() {
                             return (
                                 <div key={mod.slug} style={{
                                     display: "flex", alignItems: "center", gap: 12,
-                                    padding: "12px 16px", borderRadius: 14,
-                                    background: "rgba(0,0,0,0.03)",
+                                    padding: "11px 14px", borderRadius: 12,
+                                    background: "rgba(0,0,0,0.025)",
                                     border: "1px solid var(--color-border)",
                                 }}>
-                                    <svg viewBox="0 0 24 24" style={{ width: 20, height: 20, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} /></svg>
-                                    <div style={{ flex: 1 }}>
+                                    <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, color: mod.color, flexShrink: 0 }} fill="none" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d={mod.icon} />
+                                    </svg>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
                                         <p style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)" }}>{mod.name}</p>
-                                        <p style={{ fontSize: 11, color: "var(--color-text-muted)" }}>{mod.tag}</p>
                                     </div>
                                     <span style={{
-                                        fontSize: 10, fontWeight: 700,
-                                        color: limit === -1 ? "#34d399" : targetPlan.color,
-                                        background: limit === -1 ? "rgba(52,211,153,0.1)" : `${targetPlan.color}15`,
-                                        padding: "3px 10px", borderRadius: 6,
+                                        fontSize: 10, fontWeight: 700, letterSpacing: "0.04em",
+                                        color: limit === -1 ? "var(--color-brand-sage)" : "var(--color-text-primary)",
+                                        background: limit === -1 ? "rgba(143,191,150,0.16)" : "rgba(0,0,0,0.05)",
+                                        padding: "3px 10px", borderRadius: 100,
                                     }}>
                                         {limit === -1 ? "Unlimited" : `${limit}/mo`}
                                     </span>
@@ -170,18 +173,33 @@ export default function Checkout() {
                     </div>
                 </div>
 
-                <button
-                    onClick={handleUpgrade}
-                    className="btn-primary"
-                    style={{ width: "100%", padding: "16px 0", fontSize: 15, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, borderRadius: 16 }}
-                >
-                    <svg viewBox="0 0 24 24" style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>
-                    Activate {targetPlan.name} · ${targetPlan.price}/mo
-                </button>
+                {/* CTA — splits by tier */}
+                {isFree ? (
+                    <button
+                        onClick={handleActivateFree}
+                        className="btn-primary"
+                        style={{ width: "100%", padding: "14px 0", fontSize: 14, fontWeight: 600 }}
+                    >
+                        Activate {targetPlan.name}
+                    </button>
+                ) : (
+                    <>
+                        <Link
+                            to={`/contact?subject=${encodeURIComponent(`Upgrade to ${targetPlan.name} (${rawPlan})`)}`}
+                            className="btn-primary"
+                            style={{ width: "100%", padding: "14px 0", fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+                        >
+                            Contact sales to upgrade
+                            <svg viewBox="0 0 24 24" style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </Link>
+                        <p style={{ fontSize: 12, color: "var(--color-text-muted)", textAlign: "center", marginTop: 14, lineHeight: 1.6 }}>
+                            Self-serve checkout is rolling out soon. In the meantime our team will activate your plan within one business day.
+                        </p>
+                    </>
+                )}
 
-                <p style={{ fontSize: 11, color: "var(--color-text-muted)", textAlign: "center", marginTop: 16 }}>
-                    Secure checkout · Cancel anytime · 30-day money-back guarantee
-                </p>
             </motion.div>
         </div>
     );

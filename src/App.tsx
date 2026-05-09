@@ -1,35 +1,48 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, useLocation, Outlet, Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { AuthProvider } from "./context/authContext";
 import { SubscriptionProvider } from "./context/subscriptionContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Pricing from "./pages/Pricing";
-import Checkout from "./pages/Checkout";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Dashboard from "./pages/Dashboard";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminRoute from "./components/AdminRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
 import AppNavbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
-// ─── Integrated Module Pages ───
-import { EndpointScannerPage } from "./modules/endpoint-scanner";
-import { ShadowITPage } from "./modules/shadow-it";
-import { ComplianceAssistantPage } from "./modules/compliance-assistant";
-import { SpearPhishingPage } from "./modules/spear-phishing";
+/* ─── Code-split routes (each becomes its own JS chunk) ─── */
+const Landing = lazy(() => import("./pages/Landing"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 
-// ─── Compliance Assessment Sub-Pages (JSX) ───
-import SMEProfilePage from "./modules/compliance-assistant/components/SMEProfile.jsx";
-import QuestionsPage from "./modules/compliance-assistant/components/QuestionsPage.jsx";
-import Stage2Organizational from "./modules/compliance-assistant/components/Stage2Organizational.jsx";
-import Stage3People from "./modules/compliance-assistant/components/Stage3People.jsx";
-import Stage4Physical from "./modules/compliance-assistant/components/Stage4Physical.jsx";
-import Stage5Technological from "./modules/compliance-assistant/components/Stage5Technological.jsx";
-import ComplianceSummary from "./modules/compliance-assistant/components/Summary.jsx";
-import RecommendationsPage from "./modules/compliance-assistant/components/RecommendationsPage.jsx";
+/* ─── Module pages (heavier, definitely worth splitting) ─── */
+const EndpointScannerPage = lazy(() =>
+  import("./modules/endpoint-scanner").then((m) => ({ default: m.EndpointScannerPage }))
+);
+const ShadowITPage = lazy(() =>
+  import("./modules/shadow-it").then((m) => ({ default: m.ShadowITPage }))
+);
+const ComplianceAssistantPage = lazy(() =>
+  import("./modules/compliance-assistant").then((m) => ({ default: m.ComplianceAssistantPage }))
+);
+const SpearPhishingPage = lazy(() =>
+  import("./modules/spear-phishing").then((m) => ({ default: m.SpearPhishingPage }))
+);
+
+/* ─── Compliance Assessment Sub-Pages (JSX) ─── */
+const SMEProfilePage = lazy(() => import("./modules/compliance-assistant/components/SMEProfile.jsx"));
+const QuestionsPage = lazy(() => import("./modules/compliance-assistant/components/QuestionsPage.jsx"));
+const Stage2Organizational = lazy(() => import("./modules/compliance-assistant/components/Stage2Organizational.jsx"));
+const Stage3People = lazy(() => import("./modules/compliance-assistant/components/Stage3People.jsx"));
+const Stage4Physical = lazy(() => import("./modules/compliance-assistant/components/Stage4Physical.jsx"));
+const Stage5Technological = lazy(() => import("./modules/compliance-assistant/components/Stage5Technological.jsx"));
+const ComplianceSummary = lazy(() => import("./modules/compliance-assistant/components/Summary.jsx"));
+const RecommendationsPage = lazy(() => import("./modules/compliance-assistant/components/RecommendationsPage.jsx"));
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -40,6 +53,25 @@ const pageVariants = {
 
 function PageWrap({ children }: { children: React.ReactNode }) {
   return <motion.div {...pageVariants}>{children}</motion.div>;
+}
+
+/* ─── Suspense fallback shown while a route chunk loads ─── */
+function RouteFallback() {
+  return (
+    <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          width: 28,
+          height: 28,
+          border: "2px solid var(--color-border)",
+          borderTopColor: "var(--color-brand-lavender-dark)",
+          borderRadius: "50%",
+        }}
+        className="animate-spin"
+        aria-label="Loading"
+      />
+    </div>
+  );
 }
 
 function AppLayout() {
@@ -95,43 +127,56 @@ function App() {
   const location = useLocation();
 
   return (
-    <AuthProvider>
-      <SubscriptionProvider>
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            {/* Public */}
-            <Route path="/" element={<PageWrap><Landing /></PageWrap>} />
-            <Route path="/login" element={<PageWrap><Login /></PageWrap>} />
-            <Route path="/signup" element={<PageWrap><Signup /></PageWrap>} />
-            <Route path="/pricing" element={<PageWrap><Pricing /></PageWrap>} />
-            <Route path="/checkout" element={<PageWrap><Checkout /></PageWrap>} />
-            <Route path="/about" element={<PageWrap><About /></PageWrap>} />
-            <Route path="/contact" element={<PageWrap><Contact /></PageWrap>} />
+    <ErrorBoundary>
+      <AuthProvider>
+        <SubscriptionProvider>
+          <Suspense fallback={<RouteFallback />}>
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                {/* Public */}
+                <Route path="/" element={<PageWrap><Landing /></PageWrap>} />
+                <Route path="/login" element={<PageWrap><Login /></PageWrap>} />
+                <Route path="/signup" element={<PageWrap><Signup /></PageWrap>} />
+                <Route path="/pricing" element={<PageWrap><Pricing /></PageWrap>} />
+                <Route path="/about" element={<PageWrap><About /></PageWrap>} />
+                <Route path="/contact" element={<PageWrap><Contact /></PageWrap>} />
 
-            {/* App (sidebar + navbar) - protected */}
-            <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-              <Route path="/dashboard" element={<PageWrap><Dashboard /></PageWrap>} />
-              <Route path="/admin" element={<PageWrap><AdminDashboard /></PageWrap>} />
-              {/* Integrated Module Routes */}
-              <Route path="/dashboard/endpoint-scanner" element={<PageWrap><EndpointScannerPage /></PageWrap>} />
-              <Route path="/dashboard/shadow-it" element={<PageWrap><ShadowITPage /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant" element={<PageWrap><ComplianceAssistantPage /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant/assessment/profile" element={<PageWrap><SMEProfilePage /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant/assessment/mandatory" element={<PageWrap><QuestionsPage /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant/assessment/organizational" element={<PageWrap><Stage2Organizational /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant/assessment/people" element={<PageWrap><Stage3People /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant/assessment/physical" element={<PageWrap><Stage4Physical /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant/assessment/technological" element={<PageWrap><Stage5Technological /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant/assessment/summary/:assessmentId" element={<PageWrap><ComplianceSummary /></PageWrap>} />
-              <Route path="/dashboard/compliance-assistant/assessment/recommendations/:assessmentId" element={<PageWrap><RecommendationsPage /></PageWrap>} />
-              <Route path="/dashboard/spear-phishing" element={<PageWrap><SpearPhishingPage /></PageWrap>} />
-            </Route>
+                {/* Authenticated checkout (paid plans go through contact-sales) */}
+                <Route path="/checkout" element={<ProtectedRoute><PageWrap><Checkout /></PageWrap></ProtectedRoute>} />
 
-            <Route path="*" element={<PageWrap><NotFound /></PageWrap>} />
-          </Routes>
-        </AnimatePresence>
-      </SubscriptionProvider>
-    </AuthProvider>
+                {/* App (sidebar + navbar) - protected */}
+                <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+                  <Route path="/dashboard" element={<PageWrap><Dashboard /></PageWrap>} />
+                  <Route
+                    path="/admin"
+                    element={
+                      <AdminRoute>
+                        <PageWrap><AdminDashboard /></PageWrap>
+                      </AdminRoute>
+                    }
+                  />
+                  {/* Integrated Module Routes */}
+                  <Route path="/dashboard/endpoint-scanner" element={<PageWrap><EndpointScannerPage /></PageWrap>} />
+                  <Route path="/dashboard/shadow-it" element={<PageWrap><ShadowITPage /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant" element={<PageWrap><ComplianceAssistantPage /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant/assessment/profile" element={<PageWrap><SMEProfilePage /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant/assessment/mandatory" element={<PageWrap><QuestionsPage /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant/assessment/organizational" element={<PageWrap><Stage2Organizational /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant/assessment/people" element={<PageWrap><Stage3People /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant/assessment/physical" element={<PageWrap><Stage4Physical /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant/assessment/technological" element={<PageWrap><Stage5Technological /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant/assessment/summary/:assessmentId" element={<PageWrap><ComplianceSummary /></PageWrap>} />
+                  <Route path="/dashboard/compliance-assistant/assessment/recommendations/:assessmentId" element={<PageWrap><RecommendationsPage /></PageWrap>} />
+                  <Route path="/dashboard/spear-phishing" element={<PageWrap><SpearPhishingPage /></PageWrap>} />
+                </Route>
+
+                <Route path="*" element={<PageWrap><NotFound /></PageWrap>} />
+              </Routes>
+            </AnimatePresence>
+          </Suspense>
+        </SubscriptionProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

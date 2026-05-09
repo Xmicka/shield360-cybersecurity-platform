@@ -55,7 +55,7 @@ export async function createUserProfile(
         display_name: data.displayName,
         organization: data.organization,
         plan: "free",
-        role: "admin",
+        role: "user",
         enabled_modules: MODULES.map((m) => m.slug),
         created_at: new Date().toISOString(),
         last_login: new Date().toISOString(),
